@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimsWpfControls", "TimsWpfControls\TimsWpfControls.csproj", "{36D58E2D-90FC-4201-AAC7-613439D4470D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimsWpfControls_Demo", "TimsWpfControls_Demo\TimsWpfControls_Demo.csproj", "{2F70D8D7-6324-434A-8AB0-2B3D68185CDA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{36D58E2D-90FC-4201-AAC7-613439D4470D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36D58E2D-90FC-4201-AAC7-613439D4470D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36D58E2D-90FC-4201-AAC7-613439D4470D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36D58E2D-90FC-4201-AAC7-613439D4470D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F70D8D7-6324-434A-8AB0-2B3D68185CDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F70D8D7-6324-434A-8AB0-2B3D68185CDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F70D8D7-6324-434A-8AB0-2B3D68185CDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F70D8D7-6324-434A-8AB0-2B3D68185CDA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {11E149C8-9661-4B83-9BF7-DF676FE54792}
+	EndGlobalSection
+EndGlobal
