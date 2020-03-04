@@ -16,5 +16,10 @@
         <TabItem Header="IntellisenseTextBox">
             <ctrls:IntellisenseTextBox ContentAssistSource="{x:Static model:MainViewModel.IntellisenseSource}" SuffixAfterInsert=" " />
         </TabItem>
+
+        <TabItem Header="CircularProgressBar">
+            
+        </TabItem>
+        
     </TabControl>
 </mah:MetroWindow>
