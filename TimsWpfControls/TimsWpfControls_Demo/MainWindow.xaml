@@ -18,8 +18,10 @@
         </TabItem>
 
         <TabItem Header="CircularProgressBar">
-            
+            <ctrls:CircularProgressBar Maximum="20"
+                                       Minimum="10"
+                                       Value="16" />
         </TabItem>
-        
+
     </TabControl>
 </mah:MetroWindow>

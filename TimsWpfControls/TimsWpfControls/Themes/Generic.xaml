@@ -3,7 +3,9 @@
                     xmlns:ctrls="clr-namespace:TimsWpfControls">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/IntellisenseTextBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/CircularProgressBar.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style BasedOn="{StaticResource Tims.Styles.IntellisenseTextBox}" TargetType="{x:Type ctrls:IntellisenseTextBox}" />
+    <Style BasedOn="{StaticResource Tims.Styles.CircularProgressBar}" TargetType="{x:Type ctrls:CircularProgressBar}" />
 </ResourceDictionary>
