@@ -23,5 +23,12 @@
                                        Value="16" />
         </TabItem>
 
+        <TabItem Header="FileSelectionTextBox">
+            <StackPanel>
+                <ctrls:FileSelectionTextbox />
+                <ctrls:FileSelectionTextbox />
+            </StackPanel>
+        </TabItem>
+
     </TabControl>
 </mah:MetroWindow>
