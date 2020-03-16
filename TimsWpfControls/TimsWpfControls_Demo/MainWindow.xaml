@@ -8,10 +8,14 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:model="clr-namespace:TimsWpfControls_Demo.Model"
                  xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+                 xmlns:views="clr-namespace:TimsWpfControls_Demo.Views"
                  Title="Tims WPF Controls"
                  Width="800"
                  Height="450"
                  mc:Ignorable="d">
+    <mah:MetroWindow.DataContext>
+        <model:MainViewModel />
+    </mah:MetroWindow.DataContext>
     <TabControl>
         <TabItem Header="IntellisenseTextBox">
             <ctrls:IntellisenseTextBox ContentAssistSource="{x:Static model:MainViewModel.IntellisenseSource}" SuffixAfterInsert=" " />
@@ -30,5 +34,9 @@
             </StackPanel>
         </TabItem>
 
+        <TabItem Header="Dynamic Themes">
+            <views:ThemeManger />
+        </TabItem>
+        
     </TabControl>
 </mah:MetroWindow>
