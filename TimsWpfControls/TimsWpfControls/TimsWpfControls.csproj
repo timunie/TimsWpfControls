@@ -4,6 +4,7 @@
     <TargetFrameworks>net47;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
     <AutoGenerateBindingRedirects Condition=" $(TargetFramework.StartsWith('net4')) ">true</AutoGenerateBindingRedirects>
     <UseWPF>true</UseWPF>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
