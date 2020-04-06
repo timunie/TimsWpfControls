@@ -48,8 +48,7 @@ namespace TimsWpfControls
         {
             if (d is IntellisenseTextBox intellisenseTextBox)
             {
-                intellisenseTextBox.SetValue(ConentAssistSource_ResultViewProperty,
-                    intellisenseTextBox.ContentAssistSource.Where(x => x.Contains(intellisenseTextBox.sbLastWords.ToString(), StringComparison.OrdinalIgnoreCase)));
+                intellisenseTextBox.Update_AssistSourceResultView();
             }
         }
 
@@ -256,23 +255,21 @@ namespace TimsWpfControls
         }
 
 
-        //protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
-        //{
-        //    PART_IntellisensePopup.IsOpen = true;
-        //    base.OnGotKeyboardFocus(e);
-        //}
-
         protected override void OnLostFocus(RoutedEventArgs e)
         {
-            PART_IntellisensePopup.IsOpen = false;
-            Update_AssistSourceResultView();
+            if (!(PART_IntellisensePopup.IsKeyboardFocusWithin && this.IsKeyboardFocusWithin))
+            {
+                PART_IntellisensePopup.IsOpen = false;
+                Update_AssistSourceResultView();
+            }
+            
             base.OnLostFocus(e);
         }
 
         void Update_AssistSourceResultView()
         {
             SetValue(ConentAssistSource_ResultViewProperty,
-                    ContentAssistSource.Where(x => x.Contains(sbLastWords.ToString(), StringComparison.OrdinalIgnoreCase))
+                    ContentAssistSource.Where(x => sbLastWords.Length == 0 || x.IndexOf(sbLastWords.ToString(), StringComparison.OrdinalIgnoreCase) >= 0)
                     .OrderBy(x => x));
         }
 

@@ -11,8 +11,6 @@
            TargetType="Button">
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="SnapsToDevicePixels" Value="true" />
-        <Setter Property="Width" Value="48" />
-        <Setter Property="Height" Value="48" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -71,7 +69,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="mah:MetroHeader">
+    <Style x:Key="Tims.Styles.MetroHeader.Horizontal" TargetType="mah:MetroHeader">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Template">
@@ -82,10 +80,13 @@
                             <ColumnDefinition Width="Auto" SharedSizeGroup="MetroHeader_HeaderColumn" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ContentControl Content="{TemplateBinding Header}" />
-                        <ContentControl Grid.Column="1"
-                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                        Content="{TemplateBinding Content}" />
+                        <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Content="{TemplateBinding Header}"
+                                          Focusable="False" />
+                        <ContentPresenter Grid.Column="1"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Content="{TemplateBinding Content}"
+                                          Focusable="False" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
