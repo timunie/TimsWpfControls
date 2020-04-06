@@ -29,127 +29,33 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <AdornerDecorator x:Name="PART_WaitingForDataEffectAdornerDecorator"
-                                          Grid.Column="0"
-                                          Visibility="Collapsed">
-                            <Border x:Name="PART_WaitingForDataEffectGrid"
-                                    Grid.Column="0"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="Transparent"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="{TemplateBinding mah:ControlsHelper.CornerRadius}"
-                                    Effect="{DynamicResource MahApps.DropShadowEffect.WaitingForData}"
-                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </AdornerDecorator>
-
-                        <Border x:Name="Base"
-                                Grid.Column="0"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="{TemplateBinding mah:ControlsHelper.CornerRadius}"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-
-                        <Grid x:Name="PART_InnerGrid"
-                              Grid.Column="0"
-                              Margin="{TemplateBinding BorderThickness}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition x:Name="TextColumn" Width="*" />
-                                <ColumnDefinition x:Name="ButtonColumn" Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition x:Name="ButtonRow" Height="*" />
-                            </Grid.RowDefinitions>
-
-                            <ScrollViewer x:Name="PART_ContentHost"
-                                          Grid.Row="1"
-                                          Grid.Column="0"
-                                          Margin="0"
-                                          Padding="{TemplateBinding Padding}"
-                                          VerticalAlignment="Stretch"
-                                          Background="{x:Null}"
-                                          BorderThickness="0"
-                                          IsTabStop="False"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-
-                            <TextBlock x:Name="PART_Message"
-                                       Grid.Row="1"
-                                       Grid.Column="0"
-                                       Margin="4,0"
-                                       Padding="{TemplateBinding Padding}"
-                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       Style="{DynamicResource MahApps.Styles.TextBlock.Watermark}"
-                                       Text="{TemplateBinding mah:TextBoxHelper.Watermark}"
-                                       TextAlignment="{TemplateBinding mah:TextBoxHelper.WatermarkAlignment}"
-                                       TextTrimming="{TemplateBinding mah:TextBoxHelper.WatermarkTrimming}"
-                                       TextWrapping="{TemplateBinding mah:TextBoxHelper.WatermarkWrapping}"
-                                       Visibility="Collapsed" />
-
-                            <ContentControl x:Name="PART_FloatingMessageContainer"
-                                            Grid.Row="0"
-                                            Grid.Column="0"
-                                            Margin="4,0"
-                                            Style="{DynamicResource MahApps.Styles.ContentControl.FloatingMessageContainer}">
-                                <ContentControl.Height>
-                                    <MultiBinding Converter="{Converter:MathMultiplyConverter}">
-                                        <Binding ElementName="PART_FloatingMessage"
-                                                 Mode="OneWay"
-                                                 Path="ActualHeight" />
-                                        <Binding ElementName="PART_FloatingMessageContainer"
-                                                 Mode="OneWay"
-                                                 Path="Opacity" />
-                                    </MultiBinding>
-                                </ContentControl.Height>
-                                <TextBlock x:Name="PART_FloatingMessage"
-                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                           Foreground="{TemplateBinding Foreground}"
-                                           Style="{DynamicResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                                           Text="{TemplateBinding mah:TextBoxHelper.Watermark}"
-                                           TextAlignment="{TemplateBinding mah:TextBoxHelper.WatermarkAlignment}"
-                                           TextTrimming="{TemplateBinding mah:TextBoxHelper.WatermarkTrimming}">
-                                    <TextBlock.RenderTransform>
-                                        <TranslateTransform x:Name="FloatingMessageTransform">
-                                            <TranslateTransform.Y>
-                                                <MultiBinding Converter="{Converter:MathSubtractConverter}">
-                                                    <Binding ElementName="PART_FloatingMessage"
-                                                             Mode="OneWay"
-                                                             Path="ActualHeight" />
-                                                    <Binding ElementName="PART_FloatingMessageContainer"
-                                                             Mode="OneWay"
-                                                             Path="ActualHeight" />
-                                                </MultiBinding>
-                                            </TranslateTransform.Y>
-                                        </TranslateTransform>
-                                    </TextBlock.RenderTransform>
-                                </TextBlock>
-                            </ContentControl>
-
-                            <Button x:Name="PART_ClearText"
-                                    Grid.Row="0"
-                                    Grid.RowSpan="2"
-                                    Grid.Column="1"
-                                    Width="{TemplateBinding mah:TextBoxHelper.ButtonWidth}"
-                                    mah:TextBoxHelper.IsClearTextButtonBehaviorEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:TextBoxHelper.ClearTextButton), Mode=OneWay}"
-                                    Content="{TemplateBinding mah:TextBoxHelper.ButtonContent}"
-                                    ContentTemplate="{TemplateBinding mah:TextBoxHelper.ButtonContentTemplate}"
-                                    Focusable="False"
-                                    FontFamily="{TemplateBinding mah:TextBoxHelper.ButtonFontFamily}"
-                                    FontSize="{TemplateBinding mah:TextBoxHelper.ButtonFontSize}"
-                                    Foreground="{TemplateBinding Foreground}"
-                                    IsTabStop="False"
-                                    Style="{DynamicResource MahApps.Styles.Button.Chromeless}"
-                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:TextBoxHelper.ClearTextButton), Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        </Grid>
+                        <TextBox Text="{TemplateBinding Text}" 
+                                 Padding="{TemplateBinding Padding}"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Stretch"
+                                 mah:ControlsHelper.CornerRadius="{TemplateBinding mah:ControlsHelper.CornerRadius}"
+                                 mah:TextBoxHelper.AutoWatermark="{TemplateBinding mah:TextBoxHelper.AutoWatermark}"
+                                 mah:TextBoxHelper.ButtonContent="{TemplateBinding mah:TextBoxHelper.ButtonContent}"
+                                 mah:TextBoxHelper.ButtonContentTemplate="{TemplateBinding mah:TextBoxHelper.ButtonContentTemplate}"
+                                 mah:TextBoxHelper.ButtonFontFamily="{TemplateBinding mah:TextBoxHelper.ButtonFontFamily}"
+                                 mah:TextBoxHelper.ButtonFontSize="{TemplateBinding mah:TextBoxHelper.ButtonFontSize}"
+                                 mah:TextBoxHelper.ButtonWidth="{TemplateBinding mah:TextBoxHelper.ButtonWidth}"
+                                 mah:TextBoxHelper.ClearTextButton="{TemplateBinding mah:TextBoxHelper.ClearTextButton}"
+                                 mah:TextBoxHelper.Watermark="{TemplateBinding mah:TextBoxHelper.Watermark}"
+                                 mah:TextBoxHelper.WatermarkTrimming="{TemplateBinding mah:TextBoxHelper.WatermarkTrimming}"
+                                 Background="{TemplateBinding Background}"
+                                 BorderBrush="{TemplateBinding BorderBrush}"
+                                 BorderThickness="{TemplateBinding BorderThickness}"
+                                 Foreground="{TemplateBinding Foreground}"
+                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                 TextAlignment="{TemplateBinding mah:TextBoxHelper.WatermarkAlignment}"
+                                 TextWrapping="{TemplateBinding mah:TextBoxHelper.WatermarkWrapping}" />
 
                         <Button Grid.Column="1"
                                 Command="{x:Static local:FileSelectionTextbox.SelectFileCommand}"
                                 Focusable="False"
-                                IsTabStop="False"
                                 Foreground="{TemplateBinding Foreground}"
+                                IsTabStop="False"
                                 Style="{DynamicResource Tims.Styles.Button.SelectFile}"
                                 ToolTip="Select a File">
                             <Viewbox>
@@ -168,98 +74,8 @@
                                 Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:ControlsHelper.DisabledVisualElementVisibility), Mode=OneWay}" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=(mah:TextBoxHelper.ButtonsAlignment)}" Value="Left">
-                            <Setter TargetName="ButtonColumn" Property="Width" Value="*" />
-                            <Setter TargetName="PART_ClearText" Property="Grid.Column" Value="0" />
-                            <Setter TargetName="PART_ContentHost" Property="Grid.Column" Value="1" />
-                            <Setter TargetName="PART_Message" Property="Grid.Column" Value="1" />
-                            <Setter TargetName="TextColumn" Property="Width" Value="Auto" />
-                        </DataTrigger>
-
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
-                            <Setter TargetName="PART_Message" Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=IsVisible, RelativeSource={RelativeSource Self}}" Value="True" />
-                                <Condition Binding="{Binding Path=(mah:TextBoxHelper.UseFloatingWatermark), RelativeSource={RelativeSource Self}}" Value="True" />
-                                <Condition Binding="{Binding Path=(mah:TextBoxHelper.HasText), RelativeSource={RelativeSource Self}}" Value="True" />
-                            </MultiDataTrigger.Conditions>
-                            <MultiDataTrigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource MahApps.Storyboard.ShowFloatingMessage}" />
-                            </MultiDataTrigger.EnterActions>
-                            <MultiDataTrigger.ExitActions>
-                                <BeginStoryboard Storyboard="{StaticResource MahApps.Storyboard.HideFloatingMessage}" />
-                            </MultiDataTrigger.ExitActions>
-                        </MultiDataTrigger>
-
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(mah:TextBoxHelper.ButtonsAlignment)}" Value="Right" />
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(mah:TextBoxHelper.ClearTextButton)}" Value="False" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter TargetName="PART_ContentHost" Property="Grid.ColumnSpan" Value="2" />
-                            <Setter TargetName="PART_Message" Property="Grid.ColumnSpan" Value="2" />
-                        </MultiDataTrigger>
-
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Base" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:ControlsHelper.MouseOverBorderBrush)}" />
-                        </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="DisabledVisualElement" Property="Opacity" Value="0.6" />
-                        </Trigger>
-                        <Trigger Property="IsReadOnly" Value="True">
-                            <Setter TargetName="PART_ClearText" Property="IsEnabled" Value="False" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="Base" Property="BorderBrush" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:ControlsHelper.FocusBorderBrush)}" />
-                            <Setter TargetName="PART_FloatingMessage" Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
-                            <Setter TargetName="PART_FloatingMessage" Property="Opacity" Value="1" />
-                        </Trigger>
-                        <Trigger SourceName="PART_ClearText" Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PART_ClearText" Property="Background" Value="{DynamicResource MahApps.Brushes.Gray8}" />
-                            <Setter TargetName="PART_ClearText" Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
-                        </Trigger>
-                        <Trigger SourceName="PART_ClearText" Property="IsPressed" Value="True">
-                            <Setter TargetName="PART_ClearText" Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
-                            <Setter TargetName="PART_ClearText" Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeBackground}" />
-                        </Trigger>
-
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="mah:TextBoxHelper.HasText" Value="False" />
-                                <Condition Property="IsFocused" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <MultiTrigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource MahApps.Storyboard.EnterGotFocus}" />
-                            </MultiTrigger.EnterActions>
-                            <MultiTrigger.ExitActions>
-                                <BeginStoryboard Storyboard="{StaticResource MahApps.Storyboard.ExitGotFocus}" />
-                            </MultiTrigger.ExitActions>
-                        </MultiTrigger>
-
-                        <Trigger Property="mah:TextBoxHelper.HasText" Value="True">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource MahApps.Storyboard.EnterHasText}" />
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard Storyboard="{StaticResource MahApps.Storyboard.ExitHasText}" />
-                            </Trigger.ExitActions>
-                        </Trigger>
-
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsVisible" Value="True" />
-                                <Condition Property="mah:TextBoxHelper.IsWaitingForData" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="PART_WaitingForDataEffectAdornerDecorator" Property="Visibility" Value="Visible" />
-                            <MultiTrigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource MahApps.Storyboard.WaitingForData}" />
-                            </MultiTrigger.EnterActions>
-                        </MultiTrigger>
-                        <Trigger Property="mah:TextBoxHelper.IsWaitingForData" Value="False">
-                            <Setter TargetName="PART_WaitingForDataEffectAdornerDecorator" Property="Visibility" Value="Collapsed" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0748" />
     <PackageReference Include="MaterialDesignThemes" Version="3.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="XamlColorSchemeGenerator" Version="3.0.0.31" />
   </ItemGroup>
 
 </Project>
