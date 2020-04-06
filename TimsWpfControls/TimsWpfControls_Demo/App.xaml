@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/TimsStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

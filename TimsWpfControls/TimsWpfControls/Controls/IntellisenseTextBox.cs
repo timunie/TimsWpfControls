@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using TimsWpfControls.ExtensionMethods;
 
 namespace TimsWpfControls
 {
@@ -47,8 +48,7 @@ namespace TimsWpfControls
         {
             if (d is IntellisenseTextBox intellisenseTextBox)
             {
-                intellisenseTextBox.SetValue(ConentAssistSource_ResultViewProperty,
-                    intellisenseTextBox.ContentAssistSource.Where(x => x.Contains(intellisenseTextBox.sbLastWords.ToString(), StringComparison.OrdinalIgnoreCase)));
+                intellisenseTextBox.Update_AssistSourceResultView();
             }
         }
 
@@ -77,6 +77,7 @@ namespace TimsWpfControls
         private void PART_IntellisensePopup_Closed(object sender, EventArgs e)
         {
             sbLastWords.Clear();
+            IsAssistKeyPressed = false;
             Update_AssistSourceResultView();
         }
 
@@ -134,11 +135,11 @@ namespace TimsWpfControls
                 this.InsertText(selectedString);
 
                 isInserted = true;
-            }
 
-            PART_IntellisensePopup.IsOpen = false;
-            sbLastWords.Clear();
-            IsAssistKeyPressed = false;
+                PART_IntellisensePopup.IsOpen = false;
+                sbLastWords.Clear();
+                IsAssistKeyPressed = false;
+            }            
             return isInserted;
         }
 
@@ -161,7 +162,20 @@ namespace TimsWpfControls
         {
             if (!PART_IntellisensePopup.IsOpen)
             {
-                base.OnPreviewKeyDown(e);
+                if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.Space)
+                {
+                    if (sbLastWords.Length == 0 && Text.Length > 0 && !char.IsWhiteSpace(Text, CaretIndex - 1))
+                    {
+                        sbLastWords.Append(Text.GetStringToTheRight(CaretIndex, ' '));
+                        Update_AssistSourceResultView();
+                    }
+                    PART_IntellisensePopup.IsOpen = true;
+                    e.Handled = true;
+                }
+                else
+                {
+                    base.OnPreviewKeyDown(e);
+                }
                 return;
             }
 
@@ -184,7 +198,6 @@ namespace TimsWpfControls
                     break;
 
                 case Key.Enter:
-                case Key.Space:
                 case Key.Tab:
                     if (InsertAssistWord())
                     {
@@ -202,6 +215,7 @@ namespace TimsWpfControls
                         PART_IntellisenseListBox.SelectedIndex -= 1;
                     break;
 
+                case Key.Space:
                 case Key.Escape:
                     sbLastWords.Clear();
                     PART_IntellisensePopup.IsOpen = false;
@@ -218,8 +232,9 @@ namespace TimsWpfControls
         protected override void OnTextInput(System.Windows.Input.TextCompositionEventArgs e)
         {
             base.OnTextInput(e);
-            if (PART_IntellisensePopup.IsOpen == false && e.Text.Length == 1)
+            if (PART_IntellisensePopup.IsOpen == false && e.Text.Length == 1 && e.Text != "\u001B")
             {
+                sbLastWords.Clear();
                 PART_IntellisensePopup.IsOpen = true;
                 IsAssistKeyPressed = true;
                 Update_AssistSourceResultView();
@@ -227,28 +242,34 @@ namespace TimsWpfControls
 
             if (IsAssistKeyPressed)
             {
-                sbLastWords.Append(e.Text);
+                if (sbLastWords.Length == 0 && Text.Length > 0 && !char.IsWhiteSpace(Text, CaretIndex - 1))
+                {
+                    sbLastWords.Append(Text.GetStringToTheRight(CaretIndex, ' '));
+                }
+                else
+                {
+                    sbLastWords.Append(e.Text);
+                }
                 Update_AssistSourceResultView();
             }
         }
 
-        protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
-        {
-            PART_IntellisensePopup.IsOpen = true;
-            base.OnGotKeyboardFocus(e);
-        }
 
         protected override void OnLostFocus(RoutedEventArgs e)
         {
-            PART_IntellisensePopup.IsOpen = false;
-            Update_AssistSourceResultView();
+            if (!(PART_IntellisensePopup.IsKeyboardFocusWithin && this.IsKeyboardFocusWithin))
+            {
+                PART_IntellisensePopup.IsOpen = false;
+                Update_AssistSourceResultView();
+            }
+            
             base.OnLostFocus(e);
         }
 
         void Update_AssistSourceResultView()
         {
             SetValue(ConentAssistSource_ResultViewProperty,
-                    ContentAssistSource.Where(x => x.Contains(sbLastWords.ToString(), StringComparison.OrdinalIgnoreCase))
+                    ContentAssistSource.Where(x => sbLastWords.Length == 0 || x.IndexOf(sbLastWords.ToString(), StringComparison.OrdinalIgnoreCase) >= 0)
                     .OrderBy(x => x));
         }
 

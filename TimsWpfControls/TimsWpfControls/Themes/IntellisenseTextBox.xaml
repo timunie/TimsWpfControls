@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:Converters="http://metro.mahapps.com/winfx/xaml/shared"
                     xmlns:ctrls="clr-namespace:TimsWpfControls"
-                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                    xmlns:Converters="http://metro.mahapps.com/winfx/xaml/shared">
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
     <Style x:Key="Tims.Styles.IntellisenseTextBox"
            BasedOn="{StaticResource MahApps.Styles.TextBox}"
            TargetType="{x:Type ctrls:IntellisenseTextBox}">
@@ -128,11 +128,18 @@
                                    MinWidth="200"
                                    MinHeight="100"
                                    MaxHeight="300"
-                                   Focusable="True">
+                                   Focusable="True"
+                                   StaysOpen="False">
+                                <Popup.Resources>
+                                    <Style BasedOn="{StaticResource MahApps.Styles.ListBoxItem}" TargetType="ListBoxItem">
+                                        <Setter Property="Focusable" Value="True" />
+                                    </Style>
+                                </Popup.Resources>
                                 <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
                                     <ListBox x:Name="PART_IntellisenseListBox"
-                                             Focusable="True"
+                                             Focusable="False"
                                              ItemsSource="{TemplateBinding ConentAssistSource_ResultView}"
+                                             KeyboardNavigation.DirectionalNavigation="Contained"
                                              SelectionMode="Single" />
                                 </Border>
                             </Popup>
