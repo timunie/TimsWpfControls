@@ -20,6 +20,10 @@ namespace TimsWpfControls
         public static readonly DependencyProperty ContentAssistSourceProperty =
             DependencyProperty.Register("ContentAssistSource", typeof(IEnumerable<string>), typeof(IntellisenseTextBox), new UIPropertyMetadata(new List<string>(), OnContentAssistSourceChanged));
 
+        // Using a DependencyProperty as the backing store for MatchBeginning.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MatchBeginningProperty =
+            DependencyProperty.Register("MatchBeginning", typeof(bool), typeof(IntellisenseTextBox), new PropertyMetadata(true));
+
         public IEnumerable<string> ContentAssistSource
         {
             get { return (IEnumerable<string>)GetValue(ContentAssistSourceProperty); }
@@ -27,7 +31,11 @@ namespace TimsWpfControls
         }
 
 
-
+        public bool MatchBeginning
+        {
+            get { return (bool)GetValue(MatchBeginningProperty); }
+            set { SetValue(MatchBeginningProperty, value); }
+        }
 
         public IEnumerable<string> ConentAssistSource_ResultView
         {
@@ -164,19 +172,20 @@ namespace TimsWpfControls
             {
                 if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.Space)
                 {
-                    if (sbLastWords.Length == 0 && Text.Length > 0 && !char.IsWhiteSpace(Text, CaretIndex - 1))
+                    if (CaretIndex > 0 && sbLastWords.Length == 0 && Text.Length > 0 && !char.IsWhiteSpace(Text, CaretIndex - 1))
                     {
-                        sbLastWords.Append(Text.GetStringToTheRight(CaretIndex, ' '));
+                        sbLastWords.Append(Text.GetStringToTheRight(CaretIndex, new char[]{' ', '\r', '\n'} ));
                         Update_AssistSourceResultView();
                     }
                     PART_IntellisensePopup.IsOpen = true;
                     e.Handled = true;
+                    return;
                 }
-                else
-                {
-                    base.OnPreviewKeyDown(e);
-                }
-                return;
+                //else
+                //{
+                //    base.OnPreviewKeyDown(e);
+                //}
+                //return;
             }
 
             Update_AssistSourceResultView();
@@ -208,11 +217,13 @@ namespace TimsWpfControls
                 case Key.Down:
                     if (PART_IntellisenseListBox.SelectedIndex < PART_IntellisenseListBox.Items.Count - 1)
                         PART_IntellisenseListBox.SelectedIndex += 1;
+                    e.Handled = true;
                     break;
 
                 case Key.Up:
                     if (PART_IntellisenseListBox.SelectedIndex > -1)
                         PART_IntellisenseListBox.SelectedIndex -= 1;
+                    e.Handled = true;
                     break;
 
                 case Key.Space:
@@ -244,11 +255,11 @@ namespace TimsWpfControls
             {
                 if (sbLastWords.Length == 0 && Text.Length > 0 && !char.IsWhiteSpace(Text, CaretIndex - 1))
                 {
-                    sbLastWords.Append(Text.GetStringToTheRight(CaretIndex, ' '));
+                    sbLastWords.Append(Text.GetStringToTheRight(CaretIndex, new char[] { ' ', '\r', '\n' }));
                 }
                 else
                 {
-                    sbLastWords.Append(e.Text);
+                    if (!string.IsNullOrWhiteSpace(e.Text)) sbLastWords.Append(e.Text);
                 }
                 Update_AssistSourceResultView();
             }
@@ -268,9 +279,29 @@ namespace TimsWpfControls
 
         void Update_AssistSourceResultView()
         {
+            var compareTo = sbLastWords.ToString();
             SetValue(ConentAssistSource_ResultViewProperty,
-                    ContentAssistSource.Where(x => sbLastWords.Length == 0 || x.IndexOf(sbLastWords.ToString(), StringComparison.OrdinalIgnoreCase) >= 0)
+                    ContentAssistSource.Where(x => IsMatch(x, compareTo))
                     .OrderBy(x => x));
+
+            if (!ConentAssistSource_ResultView.Any())
+            {
+                PART_IntellisensePopup.IsOpen = false;
+            }
+        }
+
+        bool IsMatch(string str, string compareTo)
+        {
+            if (sbLastWords.Length == 0) return true;
+
+            if (MatchBeginning)
+            {
+                return str?.StartsWith(compareTo, StringComparison.OrdinalIgnoreCase) ?? false;
+            }
+            else
+            {
+                return str?.IndexOf(compareTo.ToString(), StringComparison.OrdinalIgnoreCase) >= 0;
+            }
         }
 
         #endregion

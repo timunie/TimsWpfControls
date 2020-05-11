@@ -1,8 +1,15 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:Converters="http://metro.mahapps.com/winfx/xaml/shared"
+                    xmlns:controlzex="urn:controlzex"
                     xmlns:ctrls="clr-namespace:TimsWpfControls"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.TextBox.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
     <Style x:Key="Tims.Styles.IntellisenseTextBox"
            BasedOn="{StaticResource MahApps.Styles.TextBox}"
            TargetType="{x:Type ctrls:IntellisenseTextBox}">
@@ -125,15 +132,15 @@
                                     Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:TextBoxHelper.ClearTextButton), Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Popup x:Name="PART_IntellisensePopup"
-                                   MinWidth="200"
-                                   MinHeight="100"
-                                   MaxHeight="300"
-                                   Focusable="True"
-                                   StaysOpen="False">
+                                                MinWidth="200"
+                                                MinHeight="100"
+                                                MaxHeight="300"
+                                                Focusable="True"
+                                                StaysOpen="False">
                                 <Popup.Resources>
-                                    <Style BasedOn="{StaticResource MahApps.Styles.ListBoxItem}" TargetType="ListBoxItem">
+                                    <!--<Style BasedOn="{StaticResource MahApps.Styles.ListBoxItem}" TargetType="ListBoxItem">
                                         <Setter Property="Focusable" Value="True" />
-                                    </Style>
+                                    </Style>-->
                                 </Popup.Resources>
                                 <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
                                     <ListBox x:Name="PART_IntellisenseListBox"

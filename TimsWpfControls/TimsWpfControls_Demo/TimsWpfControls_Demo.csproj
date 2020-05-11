@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0748" />
+    <PackageReference Include="ICSharpCode.WpfDesigner" Version="8.0.175" />
+    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0775" />
     <PackageReference Include="MaterialDesignThemes" Version="3.0.1" />
   </ItemGroup>
 

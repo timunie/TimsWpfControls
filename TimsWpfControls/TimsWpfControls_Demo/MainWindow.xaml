@@ -18,13 +18,11 @@
     </mah:MetroWindow.DataContext>
     <TabControl>
         <TabItem Header="IntellisenseTextBox">
-            <ctrls:IntellisenseTextBox ContentAssistSource="{x:Static model:MainViewModel.IntellisenseSource}" SuffixAfterInsert=" " />
+            <ctrls:IntellisenseTextBox AcceptsReturn="True"  ContentAssistSource="{x:Static model:MainViewModel.IntellisenseSource}" SuffixAfterInsert=" " />
         </TabItem>
 
         <TabItem Header="CircularProgressBar">
-            <ctrls:CircularProgressBar Maximum="20"
-                                       Minimum="10"
-                                       Value="16" />
+            <views:RadialProgressExample />
         </TabItem>
 
         <TabItem Header="FileSelectionTextBox">

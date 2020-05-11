@@ -1,10 +1,10 @@
-﻿using MahApps.Metro;
+﻿using ControlzEx.Theming;
+using MahApps.Metro;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows.Media;
-using TimsWpfControls.MahAppsHelper;
 using TimsWpfControls.Model;
 
 namespace TimsWpfControls_Demo.Model
@@ -54,7 +54,7 @@ namespace TimsWpfControls_Demo.Model
 
         public string HighlightColorName
         {
-            get { return _AccentColor.ToString(); }
+            get { return HighlightColor.ToString(); }
             set
             {
                 if (ColorConverter.ConvertFromString(value) is Color color)
@@ -67,7 +67,7 @@ namespace TimsWpfControls_Demo.Model
         }
 
 
-        public ReadOnlyObservableCollection<string> BaseThemes => ThemeManager.BaseColors;
+        public ReadOnlyObservableCollection<string> BaseThemes => ThemeManager.Current.BaseColors;
         private string _BaseTheme = "Light";
         public string BaseTheme
         {
@@ -78,7 +78,19 @@ namespace TimsWpfControls_Demo.Model
 
         internal void ChangeAppTheme()
         {
-            ThemeManagerHelper.CreateAppStyleBy(BaseTheme, AccentColor, HighlightColor);
+            Theme newTheme = new Theme("Custom",
+                                       "Custom",
+                                       BaseTheme,
+                                       AccentColorName,
+                                       AccentColor,
+                                       new SolidColorBrush(AccentColor),
+                                       true,
+                                       false);
+
+            newTheme.Resources["MahApps.Colors.Highlight"] = HighlightColor;
+            newTheme.Resources["MahApps.Brushes.Highlight"] = new SolidColorBrush(HighlightColor);
+
+            ThemeManager.Current.ChangeTheme(App.Current, newTheme);
         }
 
         #endregion
