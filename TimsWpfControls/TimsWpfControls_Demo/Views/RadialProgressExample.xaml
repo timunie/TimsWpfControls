@@ -4,25 +4,35 @@
              xmlns:ctrls="clr-namespace:TimsWpfControls;assembly=TimsWpfControls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:TimsWpfControls_Demo.Views"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:sd="http://sharpdevelop.net"
+             xmlns:model="clr-namespace:TimsWpfControls_Demo.Model"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" MinWidth="100" />
-            <ColumnDefinition Width="3" />
-            <ColumnDefinition Width="*" MinWidth="100" />
-        </Grid.ColumnDefinitions>
-        <sd:PropertyGridView x:Name="propertyGrid"
-                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                             Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                             SelectedItems="{Binding DesignContext.Services.Selection.SelectedItems, ElementName=designSurface}" />
-        <GridSplitter Grid.Column="1" />
 
-        <sd:DesignSurface x:Name="designSurface"
-                          Grid.Column="2"
-                          Background="{DynamicResource MahApps.Brushes.ThemeBackground}" />
-    </Grid>
+
+    <local:ExampleView_Base DataContext="{Binding Source={x:Reference MyProgressBar}}">
+        <local:ExampleView_Base.DemoProperties>
+            
+            <model:DemoProperty PropertyName="Value"
+                                ValueTemplate="{StaticResource NumericDataTemplate}"
+                                Value="{Binding Source={x:Reference MyProgressBar}, Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                MaxValue="100"
+                                MinValue="0"/>
+            
+            <model:DemoProperty PropertyName="IsIndeterminate"
+                                ValueTemplate="{StaticResource BooleanDataTemplate}"
+                                Value="{Binding Source={x:Reference MyProgressBar}, Path=IsIndeterminate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </local:ExampleView_Base.DemoProperties>
+        <local:ExampleView_Base.Content>
+            <ctrls:CircularProgressBar x:Name="MyProgressBar" 
+                                       Value="5" 
+                                       Minimum="0"
+                                       Width="200"
+                                       Height="200"
+                                       ContentStringFormat="0' %'"
+                                       Maximum="100"/>
+        </local:ExampleView_Base.Content>
+    </local:ExampleView_Base>
 </UserControl>

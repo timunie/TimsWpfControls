@@ -1,5 +1,4 @@
 ﻿using ControlzEx.Theming;
-using ICSharpCode.WpfDesign.Designer.PropertyGrid.Editors.BrushEditor;
 using MahApps.Metro;
 using System;
 using System.Collections.Generic;
@@ -21,8 +20,6 @@ namespace TimsWpfControls_Demo
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
-            BrushItem[] brushes = Array.Empty<BrushItem>();
             var theme = ThemeManager.Current.DetectTheme();
 
             foreach (var item in theme.Resources.Keys.Cast<object>()

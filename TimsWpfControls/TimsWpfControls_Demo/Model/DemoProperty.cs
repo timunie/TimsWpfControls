@@ -7,43 +7,52 @@ using TimsWpfControls.Model;
 
 namespace TimsWpfControls_Demo.Model
 {
-    public class DemoProperty : BaseClass
+    public class DemoProperty : DependencyObject
     {
+		public static readonly DependencyProperty PropertyNameProperty = DependencyProperty.Register("PropertyName", typeof(string), typeof(DemoProperty), new PropertyMetadata(null));
+		public static readonly DependencyProperty GroupNameProperty = DependencyProperty.Register("GroupName", typeof(string), typeof(DemoProperty), new PropertyMetadata(null));
+		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(object), typeof(DemoProperty), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+		public static readonly DependencyProperty MinValueProperty = DependencyProperty.Register("MinValue", typeof(object), typeof(DemoProperty), new PropertyMetadata(null));
+		public static readonly DependencyProperty MaxValueProperty = DependencyProperty.Register("MaxValue", typeof(object), typeof(DemoProperty), new PropertyMetadata(null));
+		public static readonly DependencyProperty ValueTemplateProperty = DependencyProperty.Register("ValueTemplate", typeof(DataTemplate), typeof(DemoProperty), new PropertyMetadata(null));
 
-		private string _PropertyName;
 		public string PropertyName
 		{
-			get { return _PropertyName; }
-			set { _PropertyName = value; RaisePropertyChanged(nameof(PropertyName)); }
+			get { return (string)GetValue(PropertyNameProperty); }
+			set { SetValue(PropertyNameProperty, value); }
 		}
 
-		private object _Value;
+
+		public string GroupName
+		{
+			get { return (string)GetValue(GroupNameProperty); }
+			set { SetValue(GroupNameProperty, value); }
+		}
+
 		public object Value
 		{
-			get { return _Value; }
-			set { _Value = value; RaisePropertyChanged(nameof(Value)); }
+			get { return (object)GetValue(ValueProperty); }
+			set { SetValue(ValueProperty, value); }
 		}
 
-		private FrameworkElement _Control;
-		public FrameworkElement Control
+		
+		public object MinValue
 		{
-			get { return _Control; }
-			private set { _Control = value; RaisePropertyChanged(nameof(Control)); }
+			get { return (object)GetValue(MinValueProperty); }
+			set { SetValue(MinValueProperty, value); }
 		}
 
-		public void SetControl()
+
+		public object MaxValue
 		{
-			switch (Value)
-			{
-				case bool boolVal:
-					Control = new CheckBox();
-					Control.SetBinding(CheckBox.IsCheckedProperty, "Value");
-					break;
-
-				default:
-					break;
-			}
+			get { return (object)GetValue(MaxValueProperty); }
+			set { SetValue(MaxValueProperty, value); }
 		}
 
+		public DataTemplate ValueTemplate
+		{
+			get { return (DataTemplate)GetValue(ValueTemplateProperty); }
+			set { SetValue(ValueTemplateProperty, value); }
+		}
 	}
 }
