@@ -1,12 +1,17 @@
-﻿using System.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
 
 namespace TimsWpfControls_Demo.Model
 {
-    public class DemoProperty : DependencyObject
+    public class DemoProperty : DependencyObject, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public static readonly DependencyProperty PropertyNameProperty = DependencyProperty.Register("PropertyName", typeof(string), typeof(DemoProperty), new PropertyMetadata(null));
         public static readonly DependencyProperty GroupNameProperty = DependencyProperty.Register("GroupName", typeof(string), typeof(DemoProperty), new PropertyMetadata(null));
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(object), typeof(DemoProperty), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(object), typeof(DemoProperty), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, InternalValueChanged));
+
         public static readonly DependencyProperty MinValueProperty = DependencyProperty.Register("MinValue", typeof(object), typeof(DemoProperty), new PropertyMetadata(null));
         public static readonly DependencyProperty MaxValueProperty = DependencyProperty.Register("MaxValue", typeof(object), typeof(DemoProperty), new PropertyMetadata(null));
         public static readonly DependencyProperty ValueTemplateProperty = DependencyProperty.Register("ValueTemplate", typeof(DataTemplate), typeof(DemoProperty), new PropertyMetadata(null));
@@ -27,6 +32,20 @@ namespace TimsWpfControls_Demo.Model
         {
             get { return (object)GetValue(ValueProperty); }
             set { SetValue(ValueProperty, value); }
+        }
+
+        public static readonly RoutedEvent ValueChangedEvent = EventManager.RegisterRoutedEvent(
+                                                                        nameof(ValueChangedEvent),
+                                                                        RoutingStrategy.Bubble,
+                                                                        typeof(RoutedPropertyChangedEventHandler<object>),
+                                                                        typeof(DemoProperty));
+
+        private static void InternalValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is DemoProperty demoProperty)
+            {
+                demoProperty.PropertyChanged?.Invoke(demoProperty, new PropertyChangedEventArgs(nameof(Value)));
+            }
         }
 
         public object MinValue

@@ -1,16 +1,23 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:model="clr-namespace:TimsWpfControls_Demo.Model"
-                    xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
                     xmlns:views="clr-namespace:TimsWpfControls_Demo.Views">
 
     <DataTemplate x:Key="NumericDataTemplate" DataType="{x:Type model:DemoProperty}">
-        <mah:NumericUpDown Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="{Binding MinValue}" Maximum="{Binding MaxValue}" />
+        <mah:NumericUpDown Maximum="{Binding MaxValue}"
+                           Minimum="{Binding MinValue}"
+                           Speedup="True" 
+                           Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </DataTemplate>
 
     <DataTemplate x:Key="BooleanDataTemplate">
-        <CheckBox IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="{Binding Value}" />
+        <CheckBox Content="{Binding Value}" IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="StringDataTemplate">
+        <TextBox Text="{Binding Value, Mode=TwoWay}" />
     </DataTemplate>
 
     <Style TargetType="views:ExampleView_Base">
@@ -26,31 +33,20 @@
 
                         <TabControl Grid.Column="0" TabStripPlacement="Bottom">
                             <TabItem Header="Properties">
-                                <DataGrid ItemsSource="{TemplateBinding DemoProperties}"
-                                          CanUserAddRows="False"
+                                <DataGrid CanUserAddRows="False"
                                           IsReadOnly="True"
+                                          ItemsSource="{TemplateBinding DemoProperties}"
                                           SelectionMode="Extended">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn IsReadOnly="True" Binding="{Binding PropertyName}" Header="Property" />
-                                        <DataGridTemplateColumn Width="*"
-                                                                Header="Value">
+                                        <DataGridTextColumn Binding="{Binding PropertyName}"
+                                                            Header="Property"
+                                                            IsReadOnly="True" />
+                                        <DataGridTemplateColumn Width="*" Header="Value">
                                             <DataGridTemplateColumn.CellTemplateSelector>
-                                                <model:DemoPropertyTemplateSelector>
-                                                    <model:DemoPropertyTemplateSelector.FallbackTemplate>
-                                                        <DataTemplate>
-                                                            <TextBox Text="{Binding Value}" />
-                                                        </DataTemplate>
-                                                    </model:DemoPropertyTemplateSelector.FallbackTemplate>
-                                                </model:DemoPropertyTemplateSelector>
+                                                <model:DemoPropertyTemplateSelector FallbackTemplate="{StaticResource StringDataTemplate}" />
                                             </DataGridTemplateColumn.CellTemplateSelector>
                                             <DataGridTemplateColumn.CellEditingTemplateSelector>
-                                                <model:DemoPropertyTemplateSelector>
-                                                    <model:DemoPropertyTemplateSelector.FallbackTemplate>
-                                                        <DataTemplate>
-                                                            <TextBox Text="{Binding Value, Mode=TwoWay}" />
-                                                        </DataTemplate>
-                                                    </model:DemoPropertyTemplateSelector.FallbackTemplate>
-                                                </model:DemoPropertyTemplateSelector>
+                                                <model:DemoPropertyTemplateSelector FallbackTemplate="{StaticResource StringDataTemplate}" />
                                             </DataGridTemplateColumn.CellEditingTemplateSelector>
                                         </DataGridTemplateColumn>
                                     </DataGrid.Columns>
@@ -58,9 +54,11 @@
                             </TabItem>
 
                             <TabItem Header="XAML">
-                                <avalon:TextEditor SyntaxHighlighting="xml" Background="White">
-                                    Hello World
-                                </avalon:TextEditor>
+                                <avalon:TextEditor x:Name="PART_XamlTextEditor"
+                                                   Background="White"
+                                                   FontFamily="Courier New"
+                                                   IsReadOnly="True"
+                                                   SyntaxHighlighting="XML" />
                             </TabItem>
                         </TabControl>
 

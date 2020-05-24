@@ -26,13 +26,13 @@
         </local:ExampleView_Base.DemoProperties>
 
         <local:ExampleView_Base.Content>
-            <ctrls:CircularProgressBar x:Name="MyProgressBar"
-                                       Value="5"
-                                       Minimum="0"
-                                       Width="200"
-                                       Height="200"
-                                       ContentStringFormat="0' %'"
-                                       Maximum="100" />
+<ctrls:CircularProgressBar x:Name="MyProgressBar"
+                            Value="5"
+                            Minimum="0"
+                            Width="200"
+                            Height="200"
+                            ContentStringFormat="0' %'"
+                            Maximum="100" />
         </local:ExampleView_Base.Content>
     </local:ExampleView_Base>
 </UserControl>

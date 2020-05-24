@@ -228,8 +228,10 @@ namespace TimsWpfControls
         /// <param name="newValue">The new value of the Value property.</param>
         protected virtual void OnValueChanged(double oldValue, double newValue)
         {
-            RoutedPropertyChangedEventArgs<double> args = new RoutedPropertyChangedEventArgs<double>(oldValue, newValue);
-            args.RoutedEvent = CircularProgressBar.ValueChangedEvent;
+            RoutedPropertyChangedEventArgs<double> args = new RoutedPropertyChangedEventArgs<double>(oldValue, newValue)
+            {
+                RoutedEvent = CircularProgressBar.ValueChangedEvent
+            };
             RaiseEvent(args);
         }
 
