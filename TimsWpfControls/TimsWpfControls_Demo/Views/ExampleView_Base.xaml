@@ -26,9 +26,9 @@
                 <ControlTemplate TargetType="views:ExampleView_Base">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" MinWidth="200" />
                             <ColumnDefinition Width="3" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="2*" MinWidth="200" />
                         </Grid.ColumnDefinitions>
 
                         <TabControl Grid.Column="0" TabStripPlacement="Bottom">
