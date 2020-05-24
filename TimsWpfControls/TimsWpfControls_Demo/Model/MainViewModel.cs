@@ -1,15 +1,12 @@
 ﻿using ControlzEx.Theming;
-using MahApps.Metro;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Windows.Media;
 using TimsWpfControls.Model;
 
 namespace TimsWpfControls_Demo.Model
 {
-    public class MainViewModel :BaseClass
+    public class MainViewModel : BaseClass
     {
         public static List<string> IntellisenseSource { get; } = new List<string>()
         {
@@ -25,6 +22,7 @@ namespace TimsWpfControls_Demo.Model
         #region ThemeMananger
 
         private Color _AccentColor = Colors.Blue;
+
         public Color AccentColor
         {
             get { return _AccentColor; }
@@ -36,7 +34,7 @@ namespace TimsWpfControls_Demo.Model
             get { return _AccentColor.ToString(); }
             set
             {
-                if (ColorConverter.ConvertFromString(value)is Color color)
+                if (ColorConverter.ConvertFromString(value) is Color color)
                 {
                     AccentColor = color;
                     ChangeAppTheme();
@@ -46,6 +44,7 @@ namespace TimsWpfControls_Demo.Model
         }
 
         private Color _HighlightColor = Colors.Orange;
+
         public Color HighlightColor
         {
             get { return _HighlightColor; }
@@ -66,15 +65,14 @@ namespace TimsWpfControls_Demo.Model
             }
         }
 
-
         public ReadOnlyObservableCollection<string> BaseThemes => ThemeManager.Current.BaseColors;
         private string _BaseTheme = "Light";
+
         public string BaseTheme
         {
             get { return _BaseTheme; }
             set { _BaseTheme = value; RaisePropertyChanged(nameof(BaseTheme)); ChangeAppTheme(); }
         }
-
 
         internal void ChangeAppTheme()
         {
@@ -93,6 +91,6 @@ namespace TimsWpfControls_Demo.Model
             ThemeManager.Current.ChangeTheme(App.Current, newTheme);
         }
 
-        #endregion
+        #endregion ThemeMananger
     }
 }

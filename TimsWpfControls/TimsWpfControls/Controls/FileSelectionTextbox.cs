@@ -1,17 +1,12 @@
 ﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using TimsWpfControls.Model;
 
 namespace TimsWpfControls
 {
     public class FileSelectionTextbox : TextBox
     {
-
         // Using a DependencyProperty as the backing store for Filter.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FilterProperty = DependencyProperty.Register("Filter", typeof(string), typeof(FileSelectionTextbox), new PropertyMetadata("Any File|*.*"));
 
@@ -25,6 +20,7 @@ namespace TimsWpfControls
         public static readonly DependencyProperty AcceptsFileDropProperty = DependencyProperty.Register("AcceptsFileDrop", typeof(bool), typeof(FileSelectionTextbox), new PropertyMetadata(true));
 
         #region SelectFileCommand
+
         public static RoutedCommand SelectFileCommand = new RoutedCommand("SelectFile", typeof(FileSelectionTextbox));
 
         private void SelectFileCommand_Execute(object sender, ExecutedRoutedEventArgs e)
@@ -38,11 +34,13 @@ namespace TimsWpfControls
                 }
             }
         }
+
         private void SelectFileCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = sender is FileSelectionTextbox;
         }
-        #endregion
+
+        #endregion SelectFileCommand
 
         public override void OnApplyTemplate()
         {
@@ -56,10 +54,9 @@ namespace TimsWpfControls
             set { SetValue(FilterProperty, value); }
         }
 
-
         public OpenFileDialog OpenFileDialog
         {
-            get { return (OpenFileDialog)GetValue(OpenFileDialogProperty) ?? new OpenFileDialog { Multiselect = false, Filter = Filter } ; }
+            get { return (OpenFileDialog)GetValue(OpenFileDialogProperty) ?? new OpenFileDialog { Multiselect = false, Filter = Filter }; }
             set { SetValue(OpenFileDialogProperty, value); }
         }
 
@@ -69,13 +66,11 @@ namespace TimsWpfControls
         //    set { SetValue(SelectFileCommandProperty, value); }
         //}
 
-
         public bool AcceptsFileDrop
         {
             get { return (bool)GetValue(AcceptsFileDropProperty); }
             set { SetValue(AcceptsFileDropProperty, value); }
         }
-
 
         protected override void OnPreviewDragOver(DragEventArgs e)
         {

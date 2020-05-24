@@ -35,6 +35,5 @@
         <TabItem Header="Dynamic Themes">
             <views:ThemeManger />
         </TabItem>
-        
     </TabControl>
 </mah:MetroWindow>

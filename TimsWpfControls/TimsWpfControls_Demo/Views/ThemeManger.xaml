@@ -22,6 +22,5 @@
         <metro:MetroHeader Header="Highlight Color">
             <TextBox Text="{Binding HighlightColorName}" />
         </metro:MetroHeader>
-        
     </StackPanel>
 </UserControl>

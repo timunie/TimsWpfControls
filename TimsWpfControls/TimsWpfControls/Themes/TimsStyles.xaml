@@ -236,5 +236,4 @@
         <Setter Property="OptionsItemTemplate" Value="{StaticResource MenuItemTemplate}" />
     </Style>
     <!--#endregion-->
-
 </ResourceDictionary>

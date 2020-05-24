@@ -29,7 +29,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBox Text="{TemplateBinding Text}" 
+                        <TextBox Text="{TemplateBinding Text}"
                                  Padding="{TemplateBinding Padding}"
                                  HorizontalAlignment="Stretch"
                                  VerticalAlignment="Stretch"
@@ -82,5 +82,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 </ResourceDictionary>

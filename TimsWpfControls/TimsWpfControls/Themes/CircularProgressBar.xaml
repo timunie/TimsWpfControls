@@ -41,7 +41,6 @@
                                         ContentStringFormat="{TemplateBinding ContentStringFormat}"
                                         ContentTemplate="{TemplateBinding ContentTemplate}"
                                         Foreground="{DynamicResource MahApps.Brushes.Black}" />
-
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsFilled" Value="True">
@@ -53,7 +52,6 @@
                             <Setter TargetName="PART_Indeterminate" Property="IsActive" Value="True" />
                             <Setter TargetName="PART_Ellipse" Property="Visibility" Value="Collapsed" />
                         </Trigger>
-
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

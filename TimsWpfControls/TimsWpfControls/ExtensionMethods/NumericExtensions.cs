@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TimsWpfControls.ExtensionMethods
 {
     public static class NumericExtensions
     {
-
         /// <summary>
         /// Checks if two double values are "equal enough"
         /// </summary>

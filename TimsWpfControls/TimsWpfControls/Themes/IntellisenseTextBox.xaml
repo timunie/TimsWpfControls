@@ -9,7 +9,7 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.TextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    
+
     <Style x:Key="Tims.Styles.IntellisenseTextBox"
            BasedOn="{StaticResource MahApps.Styles.TextBox}"
            TargetType="{x:Type ctrls:IntellisenseTextBox}">
@@ -150,7 +150,6 @@
                                              SelectionMode="Single" />
                                 </Border>
                             </Popup>
-
                         </Grid>
 
                         <Border x:Name="DisabledVisualElement"

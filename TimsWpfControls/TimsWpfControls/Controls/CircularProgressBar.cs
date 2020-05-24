@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Windows;
-using TimsWpfControls.ExtensionMethods;
 using System.Windows.Controls;
 using System.Windows.Media;
+using TimsWpfControls.ExtensionMethods;
 
 namespace TimsWpfControls
 {
     [TemplatePart(Name = "PART_ArcSegment", Type = typeof(PathFigure))]
     public class CircularProgressBar : ContentControl
     {
-        PathFigure PART_ArcSegment;
+        private PathFigure PART_ArcSegment;
 
         // Using a DependencyProperty as the backing store for StartDegrees.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StartDegreesProperty = DependencyProperty.Register("StartDegrees", typeof(double), typeof(CircularProgressBar), new FrameworkPropertyMetadata(-90d, FrameworkPropertyMetadataOptions.AffectsRender));
@@ -26,11 +24,10 @@ namespace TimsWpfControls
         // Using a DependencyProperty as the backing store for IsIndeterminate.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsIndeterminateProperty = DependencyProperty.Register("IsIndeterminate", typeof(bool), typeof(CircularProgressBar), new PropertyMetadata(false));
 
-
-
         #region Implementation of Properties
 
         #region Events
+
         /// <summary>
         /// Event correspond to Value changed event
         /// </summary>
@@ -41,9 +38,11 @@ namespace TimsWpfControls
         /// </summary>
         [Category("Behavior")]
         public event RoutedPropertyChangedEventHandler<double> ValueChanged { add { AddHandler(ValueChangedEvent, value); } remove { RemoveHandler(ValueChangedEvent, value); } }
+
         #endregion Events
 
         #region Properties
+
         /// <summary>
         ///     The DependencyProperty for the Minimum property.
         ///     Flags:              none
@@ -258,7 +257,6 @@ namespace TimsWpfControls
             return IsValidDoubleValue(value) && d >= 0.0;
         }
 
-
         /// <summary>
         /// Gets or Sets if the Progressring is Indeterminate
         /// </summary>
@@ -269,10 +267,9 @@ namespace TimsWpfControls
             set { SetValue(IsIndeterminateProperty, value); }
         }
 
-        #endregion
+        #endregion Properties
 
-        #endregion
-
+        #endregion Implementation of Properties
 
         public double StartDegrees
         {
@@ -281,7 +278,6 @@ namespace TimsWpfControls
         }
 
         public double SweepDegrees => (Value - Minimum) / (Maximum - Minimum) * 360;
-
 
         public double StrokeThickness
         {
@@ -294,7 +290,6 @@ namespace TimsWpfControls
             get { return (bool)GetValue(IsFilledProperty); }
             set { SetValue(IsFilledProperty, value); }
         }
-
 
         public override void OnApplyTemplate()
         {
@@ -320,11 +315,11 @@ namespace TimsWpfControls
 
             Size EllipseSize = new Size(dx, dy);
 
-            // determine the start point 
+            // determine the start point
             Point StartPoint = new Point(ActualWidth / 2 + Math.Cos(startRadians) * dx,
                                          ActualHeight / 2 + Math.Sin(startRadians) * dy);
 
-            // determine the end point 
+            // determine the end point
             Point EndPoint = new Point(ActualWidth / 2 + Math.Cos(startRadians + sweepRadians) * dx,
                                        ActualHeight / 2 + Math.Sin(startRadians + sweepRadians) * dy);
 

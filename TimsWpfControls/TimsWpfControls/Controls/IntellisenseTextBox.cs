@@ -13,8 +13,9 @@ namespace TimsWpfControls
     public class IntellisenseTextBox : TextBox
     {
         // Templateparts
-        Popup PART_IntellisensePopup;
-        ListBox PART_IntellisenseListBox;
+        private Popup PART_IntellisensePopup;
+
+        private ListBox PART_IntellisenseListBox;
 
         // Using a DependencyProperty as the backing store for ContentAssistSource.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ContentAssistSourceProperty =
@@ -29,7 +30,6 @@ namespace TimsWpfControls
             get { return (IEnumerable<string>)GetValue(ContentAssistSourceProperty); }
             set { SetValue(ContentAssistSourceProperty, value); }
         }
-
 
         public bool MatchBeginning
         {
@@ -47,9 +47,6 @@ namespace TimsWpfControls
         public static readonly DependencyProperty ConentAssistSource_ResultViewProperty =
             DependencyProperty.Register("ConentAssistSource_ResultView", typeof(IEnumerable<string>), typeof(IntellisenseTextBox), new PropertyMetadata(default(IEnumerable<string>)));
 
-
-
-
         //public ICollectionView ContentAssistSource_CollectionView { get; private set; }
 
         private static void OnContentAssistSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -63,6 +60,7 @@ namespace TimsWpfControls
         // Using a DependencyProperty as the backing store for SuffixAfterInsert.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SuffixAfterInsertProperty =
             DependencyProperty.Register("SuffixAfterInsert", typeof(string), typeof(IntellisenseTextBox), new PropertyMetadata(null));
+
         public string SuffixAfterInsert
         {
             get { return (string)GetValue(SuffixAfterInsertProperty); }
@@ -127,8 +125,8 @@ namespace TimsWpfControls
             InsertAssistWord();
         }
 
-
         #region Content Assist
+
         private bool IsAssistKeyPressed = false;
         private readonly StringBuilder sbLastWords = new StringBuilder();
 
@@ -147,7 +145,7 @@ namespace TimsWpfControls
                 PART_IntellisensePopup.IsOpen = false;
                 sbLastWords.Clear();
                 IsAssistKeyPressed = false;
-            }            
+            }
             return isInserted;
         }
 
@@ -165,7 +163,6 @@ namespace TimsWpfControls
             Update_AssistSourceResultView();
         }
 
-
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             if (!PART_IntellisensePopup.IsOpen)
@@ -174,7 +171,7 @@ namespace TimsWpfControls
                 {
                     if (CaretIndex > 0 && sbLastWords.Length == 0 && Text.Length > 0 && !char.IsWhiteSpace(Text, CaretIndex - 1))
                     {
-                        sbLastWords.Append(Text.GetStringToTheRight(CaretIndex, new char[]{' ', '\r', '\n'} ));
+                        sbLastWords.Append(Text.GetStringToTheRight(CaretIndex, new char[] { ' ', '\r', '\n' }));
                         Update_AssistSourceResultView();
                     }
                     PART_IntellisensePopup.IsOpen = true;
@@ -239,7 +236,6 @@ namespace TimsWpfControls
             base.OnPreviewKeyDown(e);
         }
 
-
         protected override void OnTextInput(System.Windows.Input.TextCompositionEventArgs e)
         {
             base.OnTextInput(e);
@@ -265,7 +261,6 @@ namespace TimsWpfControls
             }
         }
 
-
         protected override void OnLostFocus(RoutedEventArgs e)
         {
             if (!(PART_IntellisensePopup.IsKeyboardFocusWithin && this.IsKeyboardFocusWithin))
@@ -273,11 +268,11 @@ namespace TimsWpfControls
                 PART_IntellisensePopup.IsOpen = false;
                 Update_AssistSourceResultView();
             }
-            
+
             base.OnLostFocus(e);
         }
 
-        void Update_AssistSourceResultView()
+        private void Update_AssistSourceResultView()
         {
             var compareTo = sbLastWords.ToString();
             SetValue(ConentAssistSource_ResultViewProperty,
@@ -290,7 +285,7 @@ namespace TimsWpfControls
             }
         }
 
-        bool IsMatch(string str, string compareTo)
+        private bool IsMatch(string str, string compareTo)
         {
             if (sbLastWords.Length == 0) return true;
 
@@ -304,6 +299,6 @@ namespace TimsWpfControls
             }
         }
 
-        #endregion
+        #endregion Content Assist
     }
 }

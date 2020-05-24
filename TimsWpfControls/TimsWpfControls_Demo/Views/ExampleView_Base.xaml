@@ -10,9 +10,9 @@
     </DataTemplate>
 
     <DataTemplate x:Key="BooleanDataTemplate">
-        <CheckBox IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="{Binding Value}"/>
+        <CheckBox IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="{Binding Value}" />
     </DataTemplate>
-    
+
     <Style TargetType="views:ExampleView_Base">
         <Setter Property="Template">
             <Setter.Value>
@@ -32,19 +32,19 @@
                                           SelectionMode="Extended">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn IsReadOnly="True" Binding="{Binding PropertyName}" Header="Property" />
-                                        <DataGridTemplateColumn Width="*" 
-                                                                Header="Value" >
+                                        <DataGridTemplateColumn Width="*"
+                                                                Header="Value">
                                             <DataGridTemplateColumn.CellTemplateSelector>
-                                                <model:DemoPropertyTemplateSelector >
+                                                <model:DemoPropertyTemplateSelector>
                                                     <model:DemoPropertyTemplateSelector.FallbackTemplate>
                                                         <DataTemplate>
-                                                            <TextBlock Text="{Binding Value}" />
+                                                            <TextBox Text="{Binding Value}" />
                                                         </DataTemplate>
                                                     </model:DemoPropertyTemplateSelector.FallbackTemplate>
                                                 </model:DemoPropertyTemplateSelector>
                                             </DataGridTemplateColumn.CellTemplateSelector>
                                             <DataGridTemplateColumn.CellEditingTemplateSelector>
-                                                <model:DemoPropertyTemplateSelector >
+                                                <model:DemoPropertyTemplateSelector>
                                                     <model:DemoPropertyTemplateSelector.FallbackTemplate>
                                                         <DataTemplate>
                                                             <TextBox Text="{Binding Value, Mode=TwoWay}" />
@@ -53,7 +53,6 @@
                                                 </model:DemoPropertyTemplateSelector>
                                             </DataGridTemplateColumn.CellEditingTemplateSelector>
                                         </DataGridTemplateColumn>
-                                        <DataGridTextColumn Binding="{Binding Value, Mode=TwoWay}" />
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </TabItem>
@@ -61,11 +60,8 @@
                             <TabItem Header="XAML">
                                 <avalon:TextEditor SyntaxHighlighting="xml" Background="White">
                                     Hello World
-
-
                                 </avalon:TextEditor>
                             </TabItem>
-                            
                         </TabControl>
 
                         <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" />
@@ -73,11 +69,9 @@
                         <ScrollViewer Grid.Column="2">
                             <ContentControl Content="{TemplateBinding Content}" />
                         </ScrollViewer>
-
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
 </ResourceDictionary>

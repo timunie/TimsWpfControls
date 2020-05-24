@@ -2,24 +2,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 namespace TimsWpfControls.Model
 {
     public class BaseClass : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         #region INotifyPropertyChanged
-        // This event tells the UI to update 
+
+        // This event tells the UI to update
         public event PropertyChangedEventHandler PropertyChanged;
+
         public void RaisePropertyChanged(string PropertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
         }
 
-        #endregion
-
+        #endregion INotifyPropertyChanged
 
         #region INotifyDataErrorInfo
+
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
         public bool HasErrors => _errorsByPropertyName.Count > 0;
@@ -38,7 +39,6 @@ namespace TimsWpfControls.Model
                         ? _errorsByPropertyName[propertyName]
                         : null;
             }
-
         }
 
         public bool GetHasError(string PropertyName)
@@ -66,10 +66,12 @@ namespace TimsWpfControls.Model
                 OnErrorsChanged(propertyName);
             }
         }
+
         public void OnErrorsChanged(string propertyName)
         {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
-        #endregion
+
+        #endregion INotifyDataErrorInfo
     }
 }
