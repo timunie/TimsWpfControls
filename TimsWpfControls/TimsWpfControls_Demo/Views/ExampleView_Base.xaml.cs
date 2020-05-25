@@ -76,7 +76,7 @@ namespace TimsWpfControls_Demo.Views
 
             foreach (var property in DemoProperties)
             {
-                result = result.Replace($"[{property.PropertyName}]", property.Value.ToString());
+               result = result.Replace($"[{property.PropertyName}]", property.Value?.ToString());
             }
 
             return result;
@@ -88,7 +88,7 @@ namespace TimsWpfControls_Demo.Views
 
             var property = new DemoProperty()
             {
-                GroupName = groupName ?? dependencyProperty.PropertyType.GetCustomAttribute(typeof(CategoryAttribute))?.ToString(),
+                GroupName = groupName ?? GetGroupName(dependencyProperty.Name),
                 PropertyName = dependencyProperty.Name,
                 MinValue = MinValue,
                 MaxValue = MaxValue,
@@ -119,6 +119,23 @@ namespace TimsWpfControls_Demo.Views
 
             // Fallback
             return null;
+        }
+
+        private string GetGroupName(string PropertyName)
+        {
+            switch (PropertyName)
+            {
+                case "Width":
+                case "Height":
+                case "HorizontalAlignment":
+                case "VerticalAlignment":
+                case "HorizontalContentAlignment":
+                case "VerticalContentAlignment":
+                    return "Layout";
+
+                default:
+                    return "Misc";
+            }
         }
 
         public override void OnApplyTemplate()

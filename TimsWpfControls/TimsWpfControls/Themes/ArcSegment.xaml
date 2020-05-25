@@ -1,0 +1,33 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:TimsWpfControls">
+    <Style TargetType="{x:Type local:ArcSegment}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ArcSegment">
+                    <Path x:Name="PART_Path" 
+                          Stroke="{TemplateBinding Foreground}"
+                          StrokeLineJoin="Round"
+                          StrokeThickness="{TemplateBinding StrokeThickness}">
+                        <Path.Data>
+                            <PathGeometry>
+                                <PathGeometry.Figures>
+                                    <PathFigureCollection>
+                                        <PathFigure x:Name="PART_ArcSegment" IsFilled="{TemplateBinding IsFilled}" />
+                                    </PathFigureCollection>
+                                </PathGeometry.Figures>
+                            </PathGeometry>
+                        </Path.Data>
+                    </Path>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFilled" Value="True">
+                            <Setter TargetName="PART_Path" Property="Fill" Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Foreground}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                    
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

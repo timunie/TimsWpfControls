@@ -12,27 +12,12 @@
              mc:Ignorable="d">
 
     <local:ExampleView_Base x:Name="demoView">
-        <local:ExampleView_Base.DemoProperties>
-
-            <model:DemoProperty PropertyName="Value"
-                                ValueTemplate="{StaticResource NumericDataTemplate}"
-                                Value="{Binding Source={x:Reference MyProgressBar}, Path=Value}"
-                                MaxValue="100"
-                                MinValue="0" />
-
-            <model:DemoProperty PropertyName="IsIndeterminate"
-                                ValueTemplate="{StaticResource BooleanDataTemplate}"
-                                Value="{Binding Source={x:Reference MyProgressBar}, Path=IsIndeterminate}" />
-        </local:ExampleView_Base.DemoProperties>
-
-        <local:ExampleView_Base.Content>
-<ctrls:CircularProgressBar x:Name="MyProgressBar"
+        <ctrls:CircularProgressBar x:Name="MyProgressBar"
                             Value="5"
                             Minimum="0"
                             Width="200"
                             Height="200"
                             ContentStringFormat="0' %'"
                             Maximum="100" />
-        </local:ExampleView_Base.Content>
     </local:ExampleView_Base>
 </UserControl>

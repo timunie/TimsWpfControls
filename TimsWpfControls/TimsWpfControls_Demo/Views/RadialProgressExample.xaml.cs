@@ -21,7 +21,11 @@ namespace TimsWpfControls_Demo.Views
             InitializeComponent();
             demoView.AddDemoProperty(CircularProgressBar.WidthProperty, MyProgressBar);
             demoView.AddDemoProperty(CircularProgressBar.HeightProperty, MyProgressBar);
-
+            demoView.AddDemoProperty(CircularProgressBar.IsIndeterminateProperty, MyProgressBar);
+            demoView.AddDemoProperty(CircularProgressBar.ValueProperty, MyProgressBar);
+            demoView.AddDemoProperty(CircularProgressBar.MinimumProperty, MyProgressBar);
+            demoView.AddDemoProperty(CircularProgressBar.MaximumProperty, MyProgressBar);
+            demoView.AddDemoProperty(CircularProgressBar.IsFilledProperty, MyProgressBar);
             demoView.ExampleXaml = DemoXaml;
         }
     }

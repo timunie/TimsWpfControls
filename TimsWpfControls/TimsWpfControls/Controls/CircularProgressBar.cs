@@ -10,7 +10,7 @@ namespace TimsWpfControls
     [TemplatePart(Name = "PART_ArcSegment", Type = typeof(PathFigure))]
     public class CircularProgressBar : ContentControl
     {
-        private PathFigure PART_ArcSegment;
+        private TimsWpfControls.ArcSegment PART_ArcSegment;
 
         // Using a DependencyProperty as the backing store for StartDegrees.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StartDegreesProperty = DependencyProperty.Register("StartDegrees", typeof(double), typeof(CircularProgressBar), new FrameworkPropertyMetadata(-90d, FrameworkPropertyMetadataOptions.AffectsRender));
@@ -83,6 +83,9 @@ namespace TimsWpfControls
 
             ctrl.CoerceValue(MaximumProperty);
             ctrl.CoerceValue(ValueProperty);
+
+            ctrl.UpdateProgress();
+
             ctrl.OnMinimumChanged((double)e.OldValue, (double)e.NewValue);
         }
 
@@ -146,6 +149,10 @@ namespace TimsWpfControls
             //}
 
             ctrl.CoerceValue(ValueProperty);
+            ctrl.CoerceValue(MinimumProperty);
+
+            ctrl.UpdateProgress();
+
             ctrl.OnMaximumChanged((double)e.OldValue, (double)e.NewValue);
         }
 
@@ -248,18 +255,6 @@ namespace TimsWpfControls
         }
 
         /// <summary>
-        /// Validate input value in RangeBase (SmallChange and LargeChange).
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns>Returns False if value is NaN or NegativeInfinity or PositiveInfinity or negative. Otherwise, returns True.</returns>
-        private static bool IsValidChange(object value)
-        {
-            double d = (double)value;
-
-            return IsValidDoubleValue(value) && d >= 0.0;
-        }
-
-        /// <summary>
         /// Gets or Sets if the Progressring is Indeterminate
         /// </summary>
         [Bindable(true), Category("Behavior")]
@@ -296,61 +291,18 @@ namespace TimsWpfControls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            PART_ArcSegment = (PathFigure)GetTemplateChild(nameof(PART_ArcSegment));
+            PART_ArcSegment = (ArcSegment)GetTemplateChild(nameof(PART_ArcSegment));
 
             ValueChanged += (s, e) => UpdateProgress();
             UpdateProgress();
         }
 
+
         private void UpdateProgress()
         {
-            // degrees to radians conversion
-            double startRadians = StartDegrees * Math.PI / 180.0;
-            double sweepRadians = SweepDegrees * Math.PI / 180.0;
+            if (PART_ArcSegment is null) return;
 
-            // x and y radius
-            double dx = (ActualWidth - StrokeThickness) / 2;
-            double dy = (ActualHeight - StrokeThickness) / 2;
-
-            dx = dx < 0 ? 0 : dx;
-            dy = dy < 0 ? 0 : dy;
-
-            Size EllipseSize = new Size(dx, dy);
-
-            // determine the start point
-            Point StartPoint = new Point(ActualWidth / 2 + Math.Cos(startRadians) * dx,
-                                         ActualHeight / 2 + Math.Sin(startRadians) * dy);
-
-            // determine the end point
-            Point EndPoint = new Point(ActualWidth / 2 + Math.Cos(startRadians + sweepRadians) * dx,
-                                       ActualHeight / 2 + Math.Sin(startRadians + sweepRadians) * dy);
-
-            // draw the arc
-            bool isLargeArc = Math.Abs(SweepDegrees) > 180;
-            SweepDirection sweepDirection = SweepDegrees < 0 ? SweepDirection.Counterclockwise : SweepDirection.Clockwise;
-
-            PART_ArcSegment.Segments.Clear();
-            PART_ArcSegment.StartPoint = StartPoint;
-            if (SweepDegrees.ApproximateEqualTo(360))
-            {
-                EndPoint = new Point(ActualWidth / 2 + Math.Cos(startRadians + Math.PI) * dx,
-                                     ActualHeight / 2 + Math.Sin(startRadians + Math.PI) * dy);
-                PART_ArcSegment.Segments.Add(new ArcSegment(EndPoint, EllipseSize, 0, false, sweepDirection, true));
-                PART_ArcSegment.Segments.Add(new ArcSegment(StartPoint, EllipseSize, 0, true, sweepDirection, true));
-            }
-            else if (SweepDegrees.ApproximateEqualTo(0))
-            {
-                // Do not draw anyting if there is nothing to see
-            }
-            else
-            {
-                PART_ArcSegment.Segments.Add(new ArcSegment(EndPoint, EllipseSize, 0, isLargeArc, sweepDirection, true));
-                if (IsFilled)
-                {
-                    PART_ArcSegment.Segments.Add(new LineSegment(new Point(dx + StrokeThickness / 2, dy + StrokeThickness / 2), true));
-                    PART_ArcSegment.Segments.Add(new LineSegment(StartPoint, true));
-                }
-            }
+            PART_ArcSegment.SweepDegrees = SweepDegrees;
         }
 
         protected override void OnRender(DrawingContext drawingContext)

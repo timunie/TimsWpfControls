@@ -4,6 +4,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/IntellisenseTextBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/CircularProgressBar.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/ArcSegment.xaml" />
         <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/FileSelectionTextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
