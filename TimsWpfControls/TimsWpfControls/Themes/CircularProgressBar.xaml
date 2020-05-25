@@ -9,8 +9,8 @@
                          Storyboard.TargetName="PART_IndeterminateArcSegment"
                          Storyboard.TargetProperty="StartDegrees"
                          From="0.0"
-                         To="259.9"
-                         Duration="0:0:1.25" />
+                         To="600"
+                         Duration="0:0:4" />
         <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever"
                                        Storyboard.TargetName="PART_IndeterminateArcSegment"
                                        Storyboard.TargetProperty="SweepDegrees">
