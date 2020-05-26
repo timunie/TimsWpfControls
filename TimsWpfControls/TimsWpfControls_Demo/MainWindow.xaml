@@ -43,7 +43,14 @@
                         <views:FileSelectionTextBoxExample />
                     </mah:HamburgerMenuIconItem.Tag>
                 </mah:HamburgerMenuIconItem>
-                
+
+                <!-- ColorPicker -->
+                <mah:HamburgerMenuIconItem Icon="{iconPacks:EvaIcons Kind=ColorPaletteOutline}" Label="ColorPicker">
+                    <mah:HamburgerMenuIconItem.Tag>
+                        <views:ColorPickerSample />
+                    </mah:HamburgerMenuIconItem.Tag>
+                </mah:HamburgerMenuIconItem>
+
                 <mah:HamburgerMenuSeparatorItem />
 
                 <!-- Advanced Theming -->

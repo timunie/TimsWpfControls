@@ -1,14 +1,30 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:ctrls="clr-namespace:TimsWpfControls">
+                    xmlns:ctrls="clr-namespace:TimsWpfControls" xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/IntellisenseTextBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/CircularProgressBar.xaml" />
         <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/ArcSegment.xaml" />
         <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/FileSelectionTextBox.xaml" />
+        
+        <!--#region ColorPicker -->
+        <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/ColorCanvas.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/ColorComponentSlider.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/ColorEyeDropper.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/ColorPalette.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/ColorPicker.xaml" />
+        <!--#endregion-->
+        
     </ResourceDictionary.MergedDictionaries>
 
     <Style BasedOn="{StaticResource Tims.Styles.IntellisenseTextBox}" TargetType="{x:Type ctrls:IntellisenseTextBox}" />
     <Style BasedOn="{StaticResource Tims.Styles.CircularProgressBar}" TargetType="{x:Type ctrls:CircularProgressBar}" />
     <Style BasedOn="{StaticResource Tims.Styles.FileSelectionTextBox}" TargetType="{x:Type ctrls:FileSelectionTextbox}" />
+
+
+    <sys:Double x:Key="MahApps.Sizes.ColorListBox.ItemWidth">16</sys:Double> 
+    <sys:Double x:Key="MahApps.Sizes.ColorListBox.ItemHeight">16</sys:Double> 
+    <Style BasedOn="{StaticResource MahApps.Styles.ColorPalette}" TargetType="{x:Type ctrls:ColorPalette}" />
+    <Style BasedOn="{StaticResource MahApps.Styles.ColorPicker}" TargetType="{x:Type ctrls:ColorPicker}" />
+    
 </ResourceDictionary>
