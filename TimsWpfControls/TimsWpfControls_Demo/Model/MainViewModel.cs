@@ -29,6 +29,7 @@ namespace TimsWpfControls_Demo.Model
             set { _AccentColor = value; RaisePropertyChanged(nameof(AccentColor)); }
         }
 
+
         public string AccentColorName
         {
             get { return _AccentColor.ToString(); }

@@ -36,7 +36,11 @@ namespace TimsWpfControls_Demo.Views
             {
                 foreach (DemoProperty item in e.NewItems)
                 {
-                    item.PropertyChanged += (s, e) => { PART_XamlTextEditor.Text = FillExampleXaml(); };
+                    item.PropertyChanged += (s, e) => 
+                    { 
+                        if (PART_XamlTextEditor != null)
+                            PART_XamlTextEditor.Text = FillExampleXaml(); 
+                    };
                 }
             }
 
@@ -73,6 +77,8 @@ namespace TimsWpfControls_Demo.Views
         private string FillExampleXaml ()
         {
             var result = ExampleXaml;
+
+            if (string.IsNullOrEmpty(result)) return null;
 
             foreach (var property in DemoProperties)
             {
@@ -116,6 +122,10 @@ namespace TimsWpfControls_Demo.Views
             {
                 return App.Current.Resources["BooleanDataTemplate"] as DataTemplate;
             }
+            else if (type.IsEnum)
+            {
+                return App.Current.Resources["EnumDataTemplate"] as DataTemplate;
+            }
 
             // Fallback
             return null;
@@ -132,6 +142,10 @@ namespace TimsWpfControls_Demo.Views
                 case "HorizontalContentAlignment":
                 case "VerticalContentAlignment":
                     return "Layout";
+
+                case "Content":
+                case "ContentStringFormat":
+                    return "Content";
 
                 default:
                     return "Misc";

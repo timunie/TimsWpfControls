@@ -23,7 +23,8 @@
             <mah:HamburgerMenuItemCollection>
                 
                 <!-- RadialProgressBar -->
-                <mah:HamburgerMenuIconItem Icon="{iconPacks:JamIcons Kind=PieChartAlt}" Label="RadialProgressBar">
+                <mah:HamburgerMenuIconItem Icon="{iconPacks:JamIcons Kind=PieChartAlt}" 
+                                           Label="RadialProgressBar">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:RadialProgressExample />
                     </mah:HamburgerMenuIconItem.Tag>
@@ -35,20 +36,38 @@
                         <views:IntellisenseTextBoxExample />
                     </mah:HamburgerMenuIconItem.Tag>
                 </mah:HamburgerMenuIconItem>
+
+                <!-- FileSelectionTextBox -->
+                <mah:HamburgerMenuIconItem Icon="{iconPacks:Modern Kind=InterfaceTextbox}" Label="FileSelectionTextBox">
+                    <mah:HamburgerMenuIconItem.Tag>
+                        <views:FileSelectionTextBoxExample />
+                    </mah:HamburgerMenuIconItem.Tag>
+                </mah:HamburgerMenuIconItem>
+                
+                <mah:HamburgerMenuSeparatorItem />
+
+                <!-- Advanced Theming -->
+                <mah:HamburgerMenuIconItem Icon="{iconPacks:Unicons Kind=PaintTool}" Label="Advanced Theming">
+                    <mah:HamburgerMenuIconItem.Tag>
+                        <views:ThemeManger />
+                    </mah:HamburgerMenuIconItem.Tag>
+                </mah:HamburgerMenuIconItem>
                 
             </mah:HamburgerMenuItemCollection>
         </mah:HamburgerMenu.ItemsSource>
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="53" />
+                <RowDefinition Height="48" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <ContentControl Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=mah:HamburgerMenu}, Path=SelectedItem.Label}"
-                            VerticalContentAlignment="Center"
-                            Background="{DynamicResource MahApps.Brushes.Gray9}"
-                            FontSize="16" FontWeight="Black" 
-                            Margin="5"/>
+            <Border HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Background="{DynamicResource MahApps.Brushes.Gray8}" >
+                <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=mah:HamburgerMenu}, Path=SelectedItem.Label}"
+                           Margin="5"
+                           VerticalAlignment="Center" FontSize="20" FontWeight="Black"  />
+            </Border>
             <ContentControl Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=mah:HamburgerMenu}, Path=SelectedItem.Tag}"
                             Grid.Row="1"
                             Margin="5"/>
