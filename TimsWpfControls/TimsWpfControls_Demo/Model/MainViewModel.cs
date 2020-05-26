@@ -1,6 +1,7 @@
 ﻿using ControlzEx.Theming;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Media;
 using TimsWpfControls.Model;
 
@@ -8,6 +9,16 @@ namespace TimsWpfControls_Demo.Model
 {
     public class MainViewModel : BaseClass
     {
+
+        public MainViewModel()
+        {
+            // Create AccentColorPalette
+            foreach (var accent in ThemeManager.Current.Themes.GroupBy(x => x.ColorScheme).OrderBy(a => a.Key).Select(a => a.First()))
+            {
+                this.AccentColorNamesDictionary.Add(accent.PrimaryAccentColor, "MahApps." + accent.ColorScheme);
+            }
+        }
+
         public static List<string> IntellisenseSource { get; } = new List<string>()
         {
             "Hello",
@@ -18,6 +29,43 @@ namespace TimsWpfControls_Demo.Model
             "short",
             "sample"
         };
+
+
+        #region ColorPicker
+        public List<Color> TintedColors
+        {
+            get
+            {
+                var list = new List<Color>();
+
+                // Add GrayScale
+                list.Add(Colors.Transparent);
+                for (int i = 0; i < 23; i++)
+                {
+                    list.Add(new HSLColor(1, 0, 0, 1 - i / 22d).ToColor());
+                }
+
+                // Add fully saturated colors
+                for (int i = 0; i < 360; i += 15)
+                {
+                    list.Add(new HSLColor(1, i, 1, 0.5).ToColor());
+                }
+
+                for (double i = 0.9; i > 0.1; i -= 0.1)
+                {
+                    for (int j = 0; j < 360; j += 15)
+                    {
+                        list.Add(new HSLColor(1, j, 1, i).ToColor());
+                    }
+                }
+
+                return list;
+            }
+        }
+
+        public Dictionary<Color?, string> AccentColorNamesDictionary { get; } = new Dictionary<Color?, string>();
+        public IEnumerable<Color?> AccentColorsPalette => AccentColorNamesDictionary.Keys;
+        #endregion
 
         #region ThemeMananger
 
