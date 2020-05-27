@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using TimsWpfControls_Demo.Model;
 
 namespace TimsWpfControls_Demo.Views
@@ -114,13 +115,17 @@ namespace TimsWpfControls_Demo.Views
 
         DataTemplate GetBuildInTemplate (Type type)
         {
-            if (type == typeof(Double) || type == typeof(Int32))
+            if (type.IsAssignableFrom(typeof(double)) || type.IsAssignableFrom(typeof(int)))
             {
                return App.Current.Resources["NumericDataTemplate"] as DataTemplate;
             }
-            else if (type == typeof(Boolean))
+            else if (type.IsAssignableFrom(typeof(Boolean)))
             {
                 return App.Current.Resources["BooleanDataTemplate"] as DataTemplate;
+            }
+            else if(type.IsAssignableFrom(typeof(Brush)))
+            {
+                return App.Current.Resources["BrushDataTemplate"] as DataTemplate;
             }
             else if (type.IsEnum)
             {
@@ -133,18 +138,16 @@ namespace TimsWpfControls_Demo.Views
 
         private string GetGroupName(string PropertyName)
         {
+
+
             switch (PropertyName)
             {
                 case "Width":
                 case "Height":
-                case "HorizontalAlignment":
-                case "VerticalAlignment":
-                case "HorizontalContentAlignment":
-                case "VerticalContentAlignment":
+                case string _ when PropertyName.EndsWith("Alignment"):
                     return "Layout";
 
-                case "Content":
-                case "ContentStringFormat":
+                case string _ when PropertyName.StartsWith("Content"):
                     return "Content";
 
                 default:

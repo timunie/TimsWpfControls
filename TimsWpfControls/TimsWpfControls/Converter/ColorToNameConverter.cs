@@ -47,7 +47,7 @@ namespace TimsWpfControls.Converter
         /// <returns>The name of the color or the Hex-Code if no name is available</returns>
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            Color color = values.FirstOrDefault(x => x.GetType() == typeof(Color)) as Color? ?? throw new ArgumentException("No valid Color found");
+            Color color = values.FirstOrDefault(x => x?.GetType() == typeof(Color)) as Color? ?? throw new ArgumentException("No valid Color found");
             Dictionary<Color?, string> colorNamesDictionary = values.FirstOrDefault(x => x?.GetType() == typeof(Dictionary<Color?, string>)) as Dictionary<Color?, string>;
 
             return ColorHelper.GetColorName(color, colorNamesDictionary);

@@ -36,10 +36,11 @@ namespace TimsWpfControls_Demo.Model
         {
             get
             {
-                var list = new List<Color>();
-
-                // Add GrayScale
-                list.Add(Colors.Transparent);
+                var list = new List<Color>
+                {
+                    // Add GrayScale
+                    Colors.Transparent
+                };
                 for (int i = 0; i < 23; i++)
                 {
                     list.Add(new HSLColor(1, 0, 0, 1 - i / 22d).ToColor());
@@ -141,5 +142,15 @@ namespace TimsWpfControls_Demo.Model
         }
 
         #endregion ThemeMananger
+
+        public static List<Color> AccentColors = new List<Color>()
+        {
+            (Color)App.Current.Resources["MahApps.Colors.Accent"],
+            (Color)App.Current.Resources["MahApps.Colors.Accent2"],
+            (Color)App.Current.Resources["MahApps.Colors.Accent3"],
+            (Color)App.Current.Resources["MahApps.Colors.Accent4"],
+            (Color)App.Current.Resources["MahApps.Colors.Highlight"],
+        };
+
     }
 }
