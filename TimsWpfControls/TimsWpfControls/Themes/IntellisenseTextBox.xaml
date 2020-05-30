@@ -147,7 +147,13 @@
                                              Focusable="False"
                                              ItemsSource="{TemplateBinding ConentAssistSource_ResultView}"
                                              KeyboardNavigation.DirectionalNavigation="Contained"
-                                             SelectionMode="Single" />
+                                             SelectionMode="Single" >
+                                        <ListBox.ItemContainerStyle>
+                                            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MahApps.Styles.ListBoxItem}">
+                                                <Setter Property="mah:ItemHelper.HoverBackgroundBrush" Value="{x:Null}" />
+                                            </Style>
+                                        </ListBox.ItemContainerStyle>
+                                    </ListBox>
                                 </Border>
                             </Popup>
                         </Grid>
