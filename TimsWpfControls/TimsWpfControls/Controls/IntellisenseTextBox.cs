@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -89,6 +90,7 @@ namespace TimsWpfControls
 
         private void PART_IntellisensePopup_Opened(object sender, EventArgs e)
         {
+            sbLastWords.Clear();
             UpdatePopupPosition();
         }
 
@@ -103,6 +105,9 @@ namespace TimsWpfControls
 
         private void PART_IntellisenseListBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            // just run this code if we have the dropdown open
+            if (!PART_IntellisensePopup.IsOpen) return;
+
             //if Enter\Tab\Space key is pressed, insert current selected item to richtextbox
             if (e.Key == Key.Enter || e.Key == Key.Tab || e.Key == Key.Space)
             {
@@ -175,14 +180,15 @@ namespace TimsWpfControls
                         Update_AssistSourceResultView();
                     }
                     PART_IntellisensePopup.IsOpen = true;
+                    IsAssistKeyPressed = true;
                     e.Handled = true;
                     return;
                 }
-                //else
-                //{
-                //    base.OnPreviewKeyDown(e);
-                //}
-                //return;
+                else
+                {
+                    base.OnPreviewKeyDown(e);
+                }
+                return;
             }
 
             Update_AssistSourceResultView();
@@ -276,7 +282,7 @@ namespace TimsWpfControls
         {
             var compareTo = sbLastWords.ToString();
             SetValue(ConentAssistSource_ResultViewProperty,
-                    ContentAssistSource.Where(x => IsMatch(x, compareTo))
+                    ContentAssistSource?.Where(x => IsMatch(x, compareTo))
                     .OrderBy(x => x));
 
             if (!ConentAssistSource_ResultView.Any())

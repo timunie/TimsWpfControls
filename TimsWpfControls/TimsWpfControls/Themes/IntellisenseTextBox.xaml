@@ -131,17 +131,17 @@
                                     Style="{DynamicResource MahApps.Styles.Button.Chromeless}"
                                     Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:TextBoxHelper.ClearTextButton), Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                            <Popup x:Name="PART_IntellisensePopup"
+                            <controlzex:PopupEx x:Name="PART_IntellisensePopup"
                                                 MinWidth="200"
                                                 MinHeight="100"
                                                 MaxHeight="300"
                                                 Focusable="True"
                                                 StaysOpen="False">
-                                <Popup.Resources>
+                                <controlzex:PopupEx.Resources>
                                     <!--<Style BasedOn="{StaticResource MahApps.Styles.ListBoxItem}" TargetType="ListBoxItem">
                                         <Setter Property="Focusable" Value="True" />
                                     </Style>-->
-                                </Popup.Resources>
+                                </controlzex:PopupEx.Resources>
                                 <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
                                     <ListBox x:Name="PART_IntellisenseListBox"
                                              Focusable="False"
@@ -155,7 +155,7 @@
                                         </ListBox.ItemContainerStyle>
                                     </ListBox>
                                 </Border>
-                            </Popup>
+                            </controlzex:PopupEx>
                         </Grid>
 
                         <Border x:Name="DisabledVisualElement"

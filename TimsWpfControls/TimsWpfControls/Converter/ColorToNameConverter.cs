@@ -91,7 +91,7 @@ namespace TimsWpfControls.Converter
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return _instance ?? (_instance = new ColorToNameConverter());
+            return _instance ??= new ColorToNameConverter();
         }
     }
 }
