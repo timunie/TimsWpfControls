@@ -71,6 +71,9 @@
     <Style x:Key="Tims.Styles.MetroHeader.Horizontal" TargetType="mah:MetroHeader">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="mah:HeaderedControlHelper.HeaderHorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="mah:HeaderedControlHelper.HeaderVerticalContentAlignment" Value="Center" />
+        <Setter Property="mah:HeaderedControlHelper.HeaderMargin" Value="0,0,5,0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="mah:MetroHeader">
@@ -79,7 +82,9 @@
                             <ColumnDefinition Width="Auto" SharedSizeGroup="MetroHeader_HeaderColumn" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        <ContentPresenter VerticalAlignment="{TemplateBinding mah:HeaderedControlHelper.HeaderVerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding mah:HeaderedControlHelper.HeaderHorizontalContentAlignment}"
+                                          Margin="{TemplateBinding mah:HeaderedControlHelper.HeaderMargin}"
                                           Content="{TemplateBinding Header}"
                                           Focusable="False" />
                         <ContentPresenter Grid.Column="1"
