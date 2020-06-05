@@ -3,11 +3,11 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:ctrls="clr-namespace:TimsWpfControls;assembly=TimsWpfControls"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:local="clr-namespace:TimsWpfControls_Demo"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:model="clr-namespace:TimsWpfControls_Demo.Model"
-                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:views="clr-namespace:TimsWpfControls_Demo.Views"
                  Title="Tims WPF Controls"
                  Width="800"
@@ -17,49 +17,55 @@
         <model:MainViewModel />
     </mah:MetroWindow.DataContext>
 
-    <mah:HamburgerMenu IsPaneOpen="True" 
-                       CanResizeOpenPane="True">
+    <mah:HamburgerMenu CanResizeOpenPane="True" IsPaneOpen="True">
         <mah:HamburgerMenu.ItemsSource>
             <mah:HamburgerMenuItemCollection>
-                
-                <!-- RadialProgressBar -->
-                <mah:HamburgerMenuIconItem Icon="{iconPacks:JamIcons Kind=PieChartAlt}" 
-                                           Label="RadialProgressBar">
+
+                <!--  RadialProgressBar  -->
+                <mah:HamburgerMenuIconItem Icon="{iconPacks:JamIcons Kind=PieChartAlt}" Label="RadialProgressBar">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:RadialProgressExample />
                     </mah:HamburgerMenuIconItem.Tag>
                 </mah:HamburgerMenuIconItem>
-                
-                <!-- IntellisenseTextBox -->
+
+                <!--  IntellisenseTextBox  -->
                 <mah:HamburgerMenuIconItem Icon="{iconPacks:Modern Kind=InterfaceTextbox}" Label="IntellisenseTextBox">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:IntellisenseTextBoxExample />
                     </mah:HamburgerMenuIconItem.Tag>
                 </mah:HamburgerMenuIconItem>
 
-                <!-- FileSelectionTextBox -->
+                <!--  FileSelectionTextBox  -->
                 <mah:HamburgerMenuIconItem Icon="{iconPacks:Modern Kind=InterfaceTextbox}" Label="FileSelectionTextBox">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:FileSelectionTextBoxExample />
                     </mah:HamburgerMenuIconItem.Tag>
                 </mah:HamburgerMenuIconItem>
 
-                <!-- ColorPicker -->
+                <!--  ColorPicker  -->
                 <mah:HamburgerMenuIconItem Icon="{iconPacks:EvaIcons Kind=ColorPaletteOutline}" Label="ColorPicker">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:ColorPickerSample />
                     </mah:HamburgerMenuIconItem.Tag>
                 </mah:HamburgerMenuIconItem>
 
+                <!--  ColorPicker  -->
+                <mah:HamburgerMenuIconItem Icon="{iconPacks:EvaIcons Kind=ColorPaletteOutline}" Label="MultiselectionComboBox">
+                    <mah:HamburgerMenuIconItem.Tag>
+                        <views:MultiselectionComboBox />
+                    </mah:HamburgerMenuIconItem.Tag>
+                </mah:HamburgerMenuIconItem>
+
+                <mah:HamburgerMenuHeaderItem Label="Theming" />
                 <mah:HamburgerMenuSeparatorItem />
 
-                <!-- Advanced Theming -->
+                <!--  Advanced Theming  -->
                 <mah:HamburgerMenuIconItem Icon="{iconPacks:Unicons Kind=PaintTool}" Label="Advanced Theming">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:ThemeManger />
                     </mah:HamburgerMenuIconItem.Tag>
                 </mah:HamburgerMenuIconItem>
-                
+
             </mah:HamburgerMenuItemCollection>
         </mah:HamburgerMenu.ItemsSource>
 
@@ -69,19 +75,21 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Border HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Background="{DynamicResource MahApps.Brushes.Gray8}" >
-                <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=mah:HamburgerMenu}, Path=SelectedItem.Label}"
-                           Margin="5"
-                           VerticalAlignment="Center" FontSize="20" FontWeight="Black"  />
+                    VerticalAlignment="Stretch"
+                    Background="{DynamicResource MahApps.Brushes.Gray8}">
+                <TextBlock Margin="5"
+                           VerticalAlignment="Center"
+                           FontSize="20"
+                           FontWeight="Black"
+                           Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=mah:HamburgerMenu}, Path=SelectedItem.Label}" />
             </Border>
-            <ContentControl Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=mah:HamburgerMenu}, Path=SelectedItem.Tag}"
-                            Grid.Row="1"
-                            Margin="5"/>
+            <ContentControl Grid.Row="1"
+                            Margin="5"
+                            Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=mah:HamburgerMenu}, Path=SelectedItem.Tag}" />
         </Grid>
-        
+
     </mah:HamburgerMenu>
-    
+
     <!--<TabControl>
         <TabItem Header="IntellisenseTextBox">
             <ctrls:IntellisenseTextBox AcceptsReturn="True"  ContentAssistSource="{x:Static model:MainViewModel.IntellisenseSource}" SuffixAfterInsert=" " />
