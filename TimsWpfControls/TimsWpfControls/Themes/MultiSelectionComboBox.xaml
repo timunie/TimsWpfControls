@@ -72,15 +72,13 @@
                                   Grid.Row="1"
                                   Grid.Column="0"
                                   Margin="1 0">
-                                <ContentPresenter Margin="{TemplateBinding Padding}"
-                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                  Content="{TemplateBinding SelectionBoxItem}"
-                                                  ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
-                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                                  IsHitTestVisible="False"
-                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                <ItemsControl ItemsSource="{TemplateBinding SelectedItems}" >
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel VerticalAlignment="Center" Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
                             </Grid>
 
                             <TextBox x:Name="PART_EditableTextBox"
@@ -185,6 +183,7 @@
                                AllowsTransparency="True"
                                Focusable="False"
                                IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                               StaysOpen="False"
                                Placement="Bottom"
                                PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                             <Grid MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}" MaxHeight="{Binding MaxDropDownHeight, RelativeSource={RelativeSource TemplatedParent}}">
@@ -196,13 +195,14 @@
                                         BorderThickness="{DynamicResource ComboBoxPopupBorderThemeThickness}"
                                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
 
-                                    <ListBox x:Name="ItemsPresenter" 
-                                                 ItemsSource="{TemplateBinding ItemsSource}"
-                                                 SelectedItem="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedItem}"
-                                                 SelectedIndex="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedIndex}"
-                                                 SelectedValue="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedValue}"
-                                                 SelectionMode="{TemplateBinding SelectionMode}"
-                                                 KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    <ScrollViewer Padding="{TemplateBinding Padding}"
+                                      CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
+                                      Focusable="False"
+                                      HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+                                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </ScrollViewer>
                                 </Border>
                             </Grid>
                         </Popup>

@@ -5,12 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TimsWpfControls_Demo.Views" 
              xmlns:model="clr-namespace:TimsWpfControls_Demo.Model"
-             xmlns:ctrls="clr-namespace:TimsWpfControls;assembly=TimsWpfControls"
+             xmlns:ctrls="clr-namespace:TimsWpfControls;assembly=TimsWpfControls" xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <local:ExampleView_Base>
-        <ctrls:MultiSelectionComboBox SelectionMode="Multiple" IsDropDownOpen="True" ItemsSource="{x:Static model:MainViewModel.AccentColors}">
-
+        <ctrls:MultiSelectionComboBox SelectionMode="Extended"
+                                      VerticalAlignment="Center" 
+                                      Text="Test1, Test2, Test3"
+                                      TextSeparator=" // "
+                                      IsEditable="True"
+                                      IsReadOnly="False">
+            <sys:String>Test1</sys:String>
+            <sys:String>Test2</sys:String>
+            <sys:String>Test3</sys:String>
+            <sys:String>Test4</sys:String>
         </ctrls:MultiSelectionComboBox>
     </local:ExampleView_Base>
 </UserControl>
