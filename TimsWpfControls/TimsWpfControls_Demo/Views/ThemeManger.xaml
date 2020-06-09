@@ -6,21 +6,65 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:model="clr-namespace:TimsWpfControls_Demo.Model"
+             xmlns:ctrls="clr-namespace:TimsWpfControls;assembly=TimsWpfControls"
              d:DataContext="{d:DesignInstance model:MainViewModel}"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
     <StackPanel Grid.IsSharedSizeScope="True">
-        <metro:MetroHeader Header="BaseTheme">
+        
+        <metro:MetroHeader Header="BaseTheme" Margin="5,2">
             <ComboBox ItemsSource="{Binding BaseThemes}" SelectedItem="{Binding BaseTheme}" />
         </metro:MetroHeader>
 
-        <metro:MetroHeader Header="Accent Color">
-            <TextBox Text="{Binding AccentColorName}" />
+        <metro:MetroHeader Header="Accent Color" Margin="5,2">
+            <ctrls:ColorPicker SelectedColor="{Binding AccentColor}" 
+                               DropDownClosed="ColorPicker_DropDownClosed"/>
         </metro:MetroHeader>
 
-        <metro:MetroHeader Header="Highlight Color">
-            <TextBox Text="{Binding HighlightColorName}" />
+        <metro:MetroHeader Header="Highlight Color" Margin="5,2">
+            <ctrls:ColorPicker SelectedColor="{Binding HighlightColor}"
+                               DropDownClosed="ColorPicker_DropDownClosed" />
         </metro:MetroHeader>
+
+        <metro:MetroHeader Header="Use solid Accent">
+            <metro:ToggleSwitch Content="{Binding UseSolidAccent}" IsOn="{Binding UseSolidAccent}"/>
+        </metro:MetroHeader> 
+        
+        <Separator Margin="5"/>
+
+        <Grid>
+            <Border Background="Yellow"  
+                    Width="20" Height="120" Margin="5,2" />
+
+            <StackPanel>
+                <metro:MetroHeader Header="Highlight" Margin="5,2">
+                    <Border Height="20" Background="{DynamicResource MahApps.Brushes.Highlight}" />
+                </metro:MetroHeader>
+
+                <metro:MetroHeader Header="AccentBase" Margin="5,2">
+                    <Border Height="20" Background="{DynamicResource MahApps.Brushes.AccentBase}" />
+                </metro:MetroHeader>
+
+                <metro:MetroHeader Header="Accent" Margin="5,2">
+                    <Border Height="20" Background="{DynamicResource MahApps.Brushes.Accent}" />
+                </metro:MetroHeader>
+
+                <metro:MetroHeader Header="Accent2" Margin="5,2">
+                    <Border Height="20" Background="{DynamicResource MahApps.Brushes.Accent2}" />
+                </metro:MetroHeader>
+
+                <metro:MetroHeader Header="Accent3" Margin="5,2">
+                    <Border Height="20" Background="{DynamicResource MahApps.Brushes.Accent3}" />
+                </metro:MetroHeader>
+
+                <metro:MetroHeader Header="Accent4" Margin="5,2">
+                    <Border Height="20" Background="{DynamicResource MahApps.Brushes.Accent4}" />
+                </metro:MetroHeader>
+            </StackPanel>
+        </Grid>
+
+
+
     </StackPanel>
 </UserControl>
