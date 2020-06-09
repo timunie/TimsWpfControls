@@ -79,20 +79,6 @@ namespace TimsWpfControls_Demo.Model
         }
 
 
-        public string AccentColorName
-        {
-            get { return _AccentColor.ToString(); }
-            set
-            {
-                if (ColorConverter.ConvertFromString(value) is Color color)
-                {
-                    AccentColor = color;
-                    ChangeAppTheme();
-                }
-                RaisePropertyChanged(nameof(AccentColorName));
-            }
-        }
-
         private Color _HighlightColor = Colors.Orange;
 
         public Color HighlightColor
@@ -101,19 +87,6 @@ namespace TimsWpfControls_Demo.Model
             set { _HighlightColor = value; RaisePropertyChanged(nameof(HighlightColor)); }
         }
 
-        public string HighlightColorName
-        {
-            get { return HighlightColor.ToString(); }
-            set
-            {
-                if (ColorConverter.ConvertFromString(value) is Color color)
-                {
-                    HighlightColor = color;
-                    ChangeAppTheme();
-                }
-                RaisePropertyChanged(nameof(HighlightColorName));
-            }
-        }
 
         public ReadOnlyObservableCollection<string> BaseThemes => ThemeManager.Current.BaseColors;
         private string _BaseTheme = "Light";
@@ -124,12 +97,22 @@ namespace TimsWpfControls_Demo.Model
             set { _BaseTheme = value; RaisePropertyChanged(nameof(BaseTheme)); ChangeAppTheme(); }
         }
 
+        private bool _UseSolidAccent;
+        public bool UseSolidAccent
+        {
+            get { return _UseSolidAccent; }
+            set { _UseSolidAccent = value; RaisePropertyChanged(nameof(UseSolidAccent)); ChangeAppTheme(); }
+        }
+
+
         internal void ChangeAppTheme()
         {
+            RuntimeThemeGenerator.Current.Options.UseHSL = UseSolidAccent;
+
             Theme newTheme = new Theme("Custom",
                                        "Custom",
                                        BaseTheme,
-                                       AccentColorName,
+                                       AccentColor.ToString(),
                                        AccentColor,
                                        new SolidColorBrush(AccentColor),
                                        true,
