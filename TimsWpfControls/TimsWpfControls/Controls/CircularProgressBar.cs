@@ -10,6 +10,11 @@ namespace TimsWpfControls
     [TemplatePart(Name = "PART_ArcSegment", Type = typeof(PathFigure))]
     public class CircularProgressBar : ContentControl
     {
+        static CircularProgressBar()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(CircularProgressBar), new FrameworkPropertyMetadata(typeof(CircularProgressBar)));
+        }
+
         private TimsWpfControls.ArcSegment PART_ArcSegment;
 
         // Using a DependencyProperty as the backing store for StartDegrees.  This enables animation, styling, binding, etc...

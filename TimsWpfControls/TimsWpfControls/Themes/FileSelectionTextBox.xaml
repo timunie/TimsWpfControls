@@ -3,6 +3,9 @@
                     xmlns:Converter="http://metro.mahapps.com/winfx/xaml/shared"
                     xmlns:local="clr-namespace:TimsWpfControls"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.TextBox.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
@@ -19,6 +22,7 @@
            BasedOn="{StaticResource MahApps.Styles.TextBox}"
            TargetType="local:FileSelectionTextbox">
         <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="ButtonWidth" Value="20" />
         <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Black}" />
         <Setter Property="AllowDrop" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=AcceptsFileDrop}" />
         <Setter Property="Template">
@@ -55,6 +59,7 @@
                                 Command="{x:Static local:FileSelectionTextbox.SelectFileCommand}"
                                 Focusable="False"
                                 Foreground="{TemplateBinding Foreground}"
+                                Width="{TemplateBinding ButtonWidth}"
                                 IsTabStop="False"
                                 Style="{DynamicResource Tims.Styles.Button.SelectFile}"
                                 ToolTip="Select a File">
