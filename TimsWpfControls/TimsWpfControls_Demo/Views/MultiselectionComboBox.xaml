@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <local:ExampleView_Base>
-        <ctrls:MultiSelectionComboBox SelectionMode="Extended"
+        <ctrls:MultiSelectionComboBox SelectionMode="Multiple"
                                       VerticalAlignment="Center" 
                                       Text="Test1, Test2, Test3"
                                       TextSeparator=" // "
