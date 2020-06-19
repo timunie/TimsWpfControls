@@ -36,8 +36,22 @@ namespace TimsWpfControls
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnTextChanged));
 
 
+        // Using a DependencyProperty as the backing store for HasCustomText.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty HasCustomTextProperty = DependencyProperty.Register("HasCustomText", typeof(bool), typeof(MultiSelectionComboBox), new PropertyMetadata(false));
+
+
         // Using a DependencyProperty as the backing store for TextSeparator.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextSeparatorProperty = DependencyProperty.Register("TextSeparator", typeof(string), typeof(MultiSelectionComboBox), new PropertyMetadata(", "));
+
+
+        // Using a DependencyProperty as the backing store for DisabledPopupOverlayConent.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DisabledPopupOverlayContentProperty =
+            DependencyProperty.Register("DisabledPopupOverlayContent", typeof(object), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
+
+
+        // Using a DependencyProperty as the backing store for DisabledPopupOverlayConentTemplate.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DisabledPopupOverlayContentTemplateProperty =
+            DependencyProperty.Register("DisabledPopupOverlayContentTemplate", typeof(DataTemplate), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
 
 
         public bool IsReadOnly
@@ -86,6 +100,14 @@ namespace TimsWpfControls
             set { SetValue(TextProperty, value); }
         }
 
+        /// <summary>
+        /// Indicates if the text is userdefined
+        /// </summary>
+        public bool HasCustomText
+        {
+            get { return (bool)GetValue(HasCustomTextProperty); }
+        }
+
         private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is MultiSelectionComboBox multiSelectionComboBox)
@@ -93,6 +115,7 @@ namespace TimsWpfControls
                 multiSelectionComboBox.UpdateEditableText();
             }
         }
+
 
         private void UpdateEditableText()
         {
@@ -103,10 +126,12 @@ namespace TimsWpfControls
             if (string.IsNullOrEmpty(Text))
             {
                 PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, string.Join(TextSeparator, (IEnumerable<object>)SelectedItems));
+                SetCurrentValue(HasCustomTextProperty, false);
             }
             else
             {
                 PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, Text);
+                SetCurrentValue(HasCustomTextProperty, true);
             }
             isUpdatingText = false;
         }
@@ -118,6 +143,18 @@ namespace TimsWpfControls
             set { SetValue(TextSeparatorProperty, value); }
         }
 
+
+        public object DisabledPopupOverlayContent
+        {
+            get { return (object)GetValue(DisabledPopupOverlayContentProperty); }
+            set { SetValue(DisabledPopupOverlayContentProperty, value); }
+        }
+
+        public DataTemplate DisabledPopupOverlayContentTemplate
+        {
+            get { return (DataTemplate)GetValue(DisabledPopupOverlayContentTemplateProperty); }
+            set { SetValue(DisabledPopupOverlayContentTemplateProperty, value); }
+        }
 
         #region Override
 
