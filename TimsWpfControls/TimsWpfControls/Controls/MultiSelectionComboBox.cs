@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
 namespace TimsWpfControls
 {
@@ -30,6 +31,13 @@ namespace TimsWpfControls
         // Using a DependencyProperty as the backing store for IsDropDownOpen.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsDropDownOpenProperty = DependencyProperty.Register("IsDropDownOpen", typeof(bool), typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIsDropDownOpenChanged));
 
+
+
+        // Using a DependencyProperty as the backing store for MaxDropDownHeight.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MaxDropDownHeightProperty = DependencyProperty.Register("MaxDropDownHeight", typeof(double), typeof(MultiSelectionComboBox), new PropertyMetadata(SystemParameters.PrimaryScreenHeight / 3));
+
+
+
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextProperty = 
             DependencyProperty.Register("Text", typeof(string), typeof(MultiSelectionComboBox), 
@@ -52,6 +60,7 @@ namespace TimsWpfControls
         // Using a DependencyProperty as the backing store for DisabledPopupOverlayConentTemplate.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DisabledPopupOverlayContentTemplateProperty =
             DependencyProperty.Register("DisabledPopupOverlayContentTemplate", typeof(DataTemplate), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
+
 
 
         public bool IsReadOnly
@@ -87,11 +96,17 @@ namespace TimsWpfControls
                             {
                                 var listBoxItem = multiSelectionComboBox.ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement;
                                 listBoxItem.Focus();
+                                ControlzEx.KeyboardNavigationEx.Focus(listBoxItem);
                             }
                         }), System.Windows.Threading.DispatcherPriority.Send);
                 }
             }
-            
+        }
+
+        public double MaxDropDownHeight
+        {
+            get { return (double)GetValue(MaxDropDownHeightProperty); }
+            set { SetValue(MaxDropDownHeightProperty, value); }
         }
 
         public string Text
