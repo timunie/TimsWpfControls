@@ -50,7 +50,7 @@
                 </mah:HamburgerMenuIconItem>
 
                 <!--  ColorPicker  -->
-                <mah:HamburgerMenuIconItem Icon="{iconPacks:EvaIcons Kind=ColorPaletteOutline}" Label="MultiselectionComboBox">
+                <mah:HamburgerMenuIconItem Icon="{iconPacks:Modern Kind=InterfaceDropdown}" Label="MultiselectionComboBox">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:MultiselectionComboBox />
                     </mah:HamburgerMenuIconItem.Tag>

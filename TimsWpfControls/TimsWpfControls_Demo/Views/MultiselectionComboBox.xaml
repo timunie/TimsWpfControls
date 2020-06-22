@@ -11,16 +11,17 @@
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
-    <local:ExampleView_Base>
-        <ctrls:MultiSelectionComboBox Text=""
+    <local:ExampleView_Base x:Name="demoView">
+        <ctrls:MultiSelectionComboBox x:Name="multiSelectionComboBox"
                                       VerticalAlignment="Center"
+                                      Margin="5"
                                       IsEditable="False"
                                       IsReadOnly="False"
-                                      mah:TextBoxHelper.ButtonWidth="20"
+                                      mah:TextBoxHelper.ClearTextButton="True"
                                       ItemTemplate="{DynamicResource Tims.DataTemplates.MultiSelectionComboBox.CheckBox}"
                                       SelectedItemsTemplate="{DynamicResource Tims.DataTemplates.MultiSelectionComboBox.Removeable}"
                                       SelectionMode="Multiple"
-                                      TextSeparator=" // ">
+                                      TextSeparator=", ">
             <sys:String>Test1</sys:String>
             <sys:String>Test2</sys:String>
             <sys:String>Test3</sys:String>
