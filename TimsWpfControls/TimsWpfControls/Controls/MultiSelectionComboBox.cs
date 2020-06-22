@@ -171,6 +171,37 @@ namespace TimsWpfControls
             set { SetValue(DisabledPopupOverlayContentTemplateProperty, value); }
         }
 
+        #region Commands
+
+        // Clear Text Command
+        public static RoutedUICommand ClearContentCommand { get; } = new RoutedUICommand("ClearContent", nameof(ClearContentCommand), typeof(MultiSelectionComboBox));
+
+        private void ExecutedClearContentCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (sender is MultiSelectionComboBox multiSelectionCombo)
+            {
+                if (multiSelectionCombo.Text != null)
+                {
+                    multiSelectionCombo.SetCurrentValue(TextProperty, null);
+                }
+                else
+                {
+                    multiSelectionCombo.SelectedItems.Clear();
+                }
+            }
+        }
+
+        private void CanExecuteClearContentCommand(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = false;
+            if (sender is MultiSelectionComboBox multiSelectionComboBox)
+            {
+                e.CanExecute = multiSelectionComboBox.Text != null || multiSelectionComboBox.SelectedItems.Count > 0;
+            }
+        }
+
+        #endregion
+
         #region Override
 
         public override void OnApplyTemplate()
@@ -185,6 +216,7 @@ namespace TimsWpfControls
             PART_PopupItemsPresenter = GetTemplateChild(nameof(PART_PopupItemsPresenter)) as ItemsPresenter;
             PART_Popup.LostFocus += PART_Popup_LostFocus;
 
+            CommandBindings.Add(new CommandBinding(ClearContentCommand, ExecutedClearContentCommand, CanExecuteClearContentCommand));
         }
 
         private void PART_Popup_LostFocus(object sender, RoutedEventArgs e)
