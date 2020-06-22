@@ -200,6 +200,52 @@ namespace TimsWpfControls
             }
         }
 
+
+        public static RoutedUICommand RemoveItemCommand { get; } = new RoutedUICommand("Remove item", nameof(RemoveItemCommand), typeof(MultiSelectionComboBox));
+
+        private void RemoveItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (sender is MultiSelectionComboBox multiSelectionCombo && multiSelectionCombo.SelectedItems.Contains(e.Parameter))
+            {
+                multiSelectionCombo.SelectedItems.Remove(e.Parameter);
+            }
+        }
+
+        private void RemoveItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = false;
+            if (sender is MultiSelectionComboBox multiSelectionComboBox)
+            {
+                e.CanExecute = e.Parameter != null;
+            }
+        }
+
+        #endregion
+
+        #region DataTemplates
+
+        // Using a DependencyProperty as the backing store for SeletedItemTemplate.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedItemsTemplateProperty =
+            DependencyProperty.Register(nameof(SelectedItemsTemplate), typeof(DataTemplate), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
+
+        // Using a DependencyProperty as the backing store for Selector.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedItemsTemplateSelectorProperty =
+            DependencyProperty.Register(nameof(SelectedItemsTemplateSelector), typeof(DataTemplateSelector), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
+        
+        
+        public DataTemplate SelectedItemsTemplate
+        {
+            get { return (DataTemplate)GetValue(SelectedItemsTemplateProperty); }
+            set { SetValue(SelectedItemsTemplateProperty, value); }
+        }
+
+
+        public DataTemplateSelector SelectedItemsTemplateSelector
+        {
+            get { return (DataTemplateSelector)GetValue(SelectedItemsTemplateSelectorProperty); }
+            set { SetValue(SelectedItemsTemplateSelectorProperty, value); }
+        }
+
         #endregion
 
         #region Override
@@ -217,6 +263,7 @@ namespace TimsWpfControls
             PART_Popup.LostFocus += PART_Popup_LostFocus;
 
             CommandBindings.Add(new CommandBinding(ClearContentCommand, ExecutedClearContentCommand, CanExecuteClearContentCommand));
+            CommandBindings.Add(new CommandBinding(RemoveItemCommand, RemoveItemCommand_Executed, RemoveItemCommand_CanExecute));
         }
 
         private void PART_Popup_LostFocus(object sender, RoutedEventArgs e)

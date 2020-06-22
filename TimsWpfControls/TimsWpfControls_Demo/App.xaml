@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
-             xmlns:local="clr-namespace:TimsWpfControls_Demo" xmlns:mahappshelper="clr-namespace:TimsWpfControls.MahAppsHelper;assembly=TimsWpfControls"
+             xmlns:local="clr-namespace:TimsWpfControls_Demo" 
+             xmlns:mahappshelper="clr-namespace:TimsWpfControls.MahAppsHelper;assembly=TimsWpfControls" 
+             xmlns:converters="http://metro.mahapps.com/winfx/xaml/shared"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -12,11 +14,14 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml" />
 
+                <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/Generic.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/TimsStyles.xaml" />
 
                 <!--  DemoView  -->
                 <ResourceDictionary Source="pack://application:,,,/TimsWpfControls_Demo;component/Views/ExampleView_Base.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <converters:SizeToCornerRadiusConverter x:Key="MahApps.Converters.SizeToCornerRadius" />
 
             <Style TargetType="mah:MetroHeader" BasedOn="{StaticResource Tims.Styles.MetroHeader.Horizontal}" />
 

@@ -11,7 +11,79 @@
 
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <Converters:SizeToCornerRadiusConverter x:Key="MahApps.Converters.SizeToCornerRadius" />
 
+    <!--#region DataTemplates-->
+    <DataTemplate x:Key="Tims.DataTemplates.MultiSelectionComboBox.Removeable">
+        <Grid>
+            <Border Margin="2"
+                    Background="{DynamicResource MahApps.Brushes.Gray8}"
+                    CornerRadius="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualHeight, Converter={StaticResource MahApps.Converters.SizeToCornerRadius}}"
+                    IsHitTestVisible="False" />
+            <StackPanel Margin="7,2,2,2" Orientation="Horizontal">
+                <ContentControl Content="{Binding}"
+                                Margin="0"
+                                VerticalAlignment="Center"
+                                IsHitTestVisible="False" />
+                <Button Width="10"
+                        Height="10"
+                        Margin="5,2,2,2"
+                        VerticalAlignment="Center"
+                        mah:ControlsHelper.CornerRadius="5"
+                        Command="ctrls:MultiSelectionComboBox.RemoveItemCommand"
+                        CommandParameter="{Binding}"
+                        IsHitTestVisible="True">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Chromeless}" TargetType="Button">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent2}" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Highlight}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <Path Data="M10,1.6c-4.639,0-8.4,3.761-8.4,8.4c0,4.639,3.761,8.4,8.4,8.4s8.4-3.761,8.4-8.4C18.4,5.361,14.639,1.6,10,1.6z   M14.789,13.061l-1.729,1.729L10,11.729l-3.061,3.06l-1.729-1.729L8.272,10L5.211,6.939L6.94,5.211L10,8.271l3.061-3.061  l1.729,1.729L11.728,10L14.789,13.061z"
+                          Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                          Stretch="Uniform" />
+                </Button>
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Tims.DataTemplates.MultiSelectionComboBox.CheckBox">
+        <CheckBox Content="{Binding}" 
+                  Foreground="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundCheckedDisabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundCheckedMouseOver="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundCheckedPressed="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundIndeterminate="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundIndeterminateDisabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundIndeterminateMouseOver="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundIndeterminatePressed="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundUnchecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundUncheckedDisabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundUncheckedMouseOver="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.ForegroundUncheckedPressed="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=Foreground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillChecked="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillCheckedDisabled="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillCheckedMouseOver="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillCheckedPressed="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillIndeterminate="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillIndeterminateDisabled="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillIndeterminateMouseOver="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillIndeterminatePressed="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillUnchecked="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillUncheckedDisabled="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillUncheckedMouseOver="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  mah:CheckBoxHelper.CheckBackgroundFillUncheckedPressed="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                  IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=IsSelected, Mode=TwoWay}" />
+    </DataTemplate>
+
+    <!--#endregion-->
 
     <Style x:Key="Tims.Styles.TextBox.MultiSelectionComboBox.Editable"
            BasedOn="{StaticResource MahApps.Styles.TextBox}"
@@ -98,12 +170,12 @@
 
                             <Button x:Name="PART_ClearText"
                                     Content="{TemplateBinding mah:TextBoxHelper.ButtonContent}"
-                                    Command="ctrls:MultiSelectionComboBox.ClearContentCommand"
                                     Grid.Row="0"
                                     Grid.RowSpan="2"
                                     Grid.Column="1"
                                     Width="{TemplateBinding mah:TextBoxHelper.ButtonWidth}"
                                     mah:TextBoxHelper.IsClearTextButtonBehaviorEnabled="False"
+                                    Command="ctrls:MultiSelectionComboBox.ClearContentCommand"
                                     ContentTemplate="{TemplateBinding mah:TextBoxHelper.ButtonContentTemplate}"
                                     Focusable="False"
                                     FontFamily="{TemplateBinding mah:TextBoxHelper.ButtonFontFamily}"
@@ -270,23 +342,34 @@
         <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="SelectedItemsTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Border Margin="2,0"
+                            Padding="5,0"
+                            Background="{DynamicResource MahApps.Brushes.Gray8}"
+                            CornerRadius="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualHeight, Converter={StaticResource MahApps.Converters.SizeToCornerRadius}}">
+                        <ContentPresenter Content="{Binding}" />
+                    </Border>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
         <Setter Property="DisabledPopupOverlayContentTemplate">
             <Setter.Value>
                 <DataTemplate>
                     <Border>
                         <Border.Background>
-                            <SolidColorBrush Color="{DynamicResource MahApps.Colors.ThemeForeground}"
-                                             Opacity="0.5" />
+                            <SolidColorBrush Opacity="0.5" Color="{DynamicResource MahApps.Colors.ThemeForeground}" />
                         </Border.Background>
                         <DockPanel LastChildFill="True">
-                            <Button DockPanel.Dock="Bottom"
+                            <Button Content="Reset Text"
                                     VerticalAlignment="Bottom"
-                                    Content="Reset Text"
-                                    Command="ctrls:MultiSelectionComboBox.ClearContentCommand" />
-                            <Path Data="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm0,18a8,8,0,0,1-8-8A7.92,7.92,0,0,1,5.69,7.1L16.9,18.31A7.92,7.92,0,0,1,12,20Zm6.31-3.1L7.1,5.69A7.92,7.92,0,0,1,12,4a8,8,0,0,1,8,8A7.92,7.92,0,0,1,18.31,16.9Z" 
-                                  Stretch="Uniform" 
+                                    Command="ctrls:MultiSelectionComboBox.ClearContentCommand"
+                                    DockPanel.Dock="Bottom" />
+                            <Path Margin="50"
+                                  Data="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm0,18a8,8,0,0,1-8-8A7.92,7.92,0,0,1,5.69,7.1L16.9,18.31A7.92,7.92,0,0,1,12,20Zm6.31-3.1L7.1,5.69A7.92,7.92,0,0,1,12,4a8,8,0,0,1,8,8A7.92,7.92,0,0,1,18.31,16.9Z"
                                   Fill="{DynamicResource MahApps.Brushes.Gray}"
-                                  Margin="50" />
+                                  Stretch="Uniform" />
                         </DockPanel>
                     </Border>
                 </DataTemplate>
@@ -354,9 +437,9 @@
                                                                 Grid.Column="1"
                                                                 Width="{TemplateBinding mah:TextBoxHelper.ButtonWidth}"
                                                                 mah:TextBoxHelper.IsClearTextButtonBehaviorEnabled="False"
+                                                                Command="ctrls:MultiSelectionComboBox.ClearContentCommand"
                                                                 ContentTemplate="{TemplateBinding mah:TextBoxHelper.ButtonContentTemplate}"
                                                                 Focusable="False"
-                                                                Command="ctrls:MultiSelectionComboBox.ClearContentCommand"
                                                                 FontFamily="{TemplateBinding mah:TextBoxHelper.ButtonFontFamily}"
                                                                 FontSize="{TemplateBinding mah:TextBoxHelper.ButtonFontSize}"
                                                                 Foreground="{TemplateBinding Foreground}"
@@ -408,8 +491,9 @@
                                   Grid.Row="1"
                                   Grid.Column="0"
                                   Margin="1,0">
-                                <ItemsControl ItemsSource="{TemplateBinding SelectedItems}"
-                                              IsHitTestVisible="False">
+                                <ItemsControl ItemTemplate="{TemplateBinding SelectedItemsTemplate}"
+                                              ItemTemplateSelector="{TemplateBinding SelectedItemsTemplateSelector}"
+                                              ItemsSource="{TemplateBinding SelectedItems}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <WrapPanel VerticalAlignment="Center" Orientation="Horizontal" />
@@ -538,8 +622,7 @@
                                                       HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                                       VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
-                                            <ItemsPresenter x:Name="PART_PopupItemsPresenter" 
-                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                            <ItemsPresenter x:Name="PART_PopupItemsPresenter" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                         </ScrollViewer>
                                         <ContentControl x:Name="PART_PopupOverlay"
                                                         Content="{TemplateBinding DisabledPopupOverlayContent}"
