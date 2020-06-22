@@ -9,6 +9,11 @@ namespace TimsWpfControls
 {
     public class ColorEyeDropper : ContentControl
     {
+        static ColorEyeDropper()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ColorEyeDropper), new FrameworkPropertyMetadata(typeof(ColorEyeDropper)));
+        }
+
         // Depency Properties
         public static readonly DependencyProperty SelectedColorProperty = DependencyProperty.Register("SelectedColor", typeof(Color), typeof(ColorEyeDropper), new FrameworkPropertyMetadata(Colors.Black, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         public static readonly DependencyProperty PreviewBrushProperty = DependencyProperty.Register("PreviewBrush", typeof(Brush), typeof(ColorEyeDropper), new PropertyMetadata(Brushes.Transparent));

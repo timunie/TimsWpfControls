@@ -7,6 +7,11 @@ namespace TimsWpfControls
 {
     public class FileSelectionTextbox : TextBox
     {
+        static FileSelectionTextbox()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(FileSelectionTextbox), new FrameworkPropertyMetadata(typeof(FileSelectionTextbox)));
+        }
+
         // Using a DependencyProperty as the backing store for Filter.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FilterProperty = DependencyProperty.Register("Filter", typeof(string), typeof(FileSelectionTextbox), new PropertyMetadata("Any File|*.*"));
 
@@ -18,6 +23,10 @@ namespace TimsWpfControls
 
         // Using a DependencyProperty as the backing store for AcceptsFileDrop.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AcceptsFileDropProperty = DependencyProperty.Register("AcceptsFileDrop", typeof(bool), typeof(FileSelectionTextbox), new PropertyMetadata(true));
+
+        // Using a DependencyProperty as the backing store for ButtonWidth.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ButtonWidthProperty = DependencyProperty.Register("ButtonWidth", typeof(double), typeof(FileSelectionTextbox), new PropertyMetadata(16d));
+
 
         #region SelectFileCommand
 
@@ -97,5 +106,12 @@ namespace TimsWpfControls
                 base.OnDrop(e);
             }
         }
+
+        public double ButtonWidth
+        {
+            get { return (double)GetValue(ButtonWidthProperty); }
+            set { SetValue(ButtonWidthProperty, value); }
+        }
+
     }
 }

@@ -12,6 +12,11 @@ namespace TimsWpfControls
 {
     public class ArcSegment : Control
     {
+        static ArcSegment()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ArcSegment), new FrameworkPropertyMetadata(typeof(ArcSegment)));
+        }
+
         private PathFigure PART_ArcSegment;
 
         public static readonly DependencyProperty StartDegreesProperty = DependencyProperty.Register("StartDegrees", typeof(double), typeof(ArcSegment), new FrameworkPropertyMetadata(-90d, FrameworkPropertyMetadataOptions.AffectsRender));

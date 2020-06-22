@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="TimsWpfControls_Demo.Views.MultiselectionComboBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctrls="clr-namespace:TimsWpfControls;assembly=TimsWpfControls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:TimsWpfControls_Demo.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:model="clr-namespace:TimsWpfControls_Demo.Model"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             mc:Ignorable="d">
+    <local:ExampleView_Base x:Name="demoView">
+        <ctrls:MultiSelectionComboBox x:Name="multiSelectionComboBox"
+                                      VerticalAlignment="Center"
+                                      Margin="5"
+                                      IsEditable="False"
+                                      IsReadOnly="False"
+                                      mah:TextBoxHelper.ClearTextButton="True"
+                                      ItemTemplate="{DynamicResource Tims.DataTemplates.MultiSelectionComboBox.CheckBox}"
+                                      SelectedItemsTemplate="{DynamicResource Tims.DataTemplates.MultiSelectionComboBox.Removeable}"
+                                      SelectionMode="Multiple"
+                                      TextSeparator=", ">
+            <sys:String>Test1</sys:String>
+            <sys:String>Test2</sys:String>
+            <sys:String>Test3</sys:String>
+            <sys:String>Test4</sys:String>            
+            <sys:String>Test5</sys:String>
+            <sys:String>Test6</sys:String>
+            <sys:String>Test7</sys:String>
+            <sys:String>Test8</sys:String>            
+            <sys:String>Test9</sys:String>
+            <sys:String>Test10</sys:String>
+            <sys:String>Test11</sys:String>
+            <sys:String>Test12</sys:String>
+            <sys:String>Test13</sys:String>
+            <sys:String>Test14</sys:String>
+            <sys:String>Test15</sys:String>
+        </ctrls:MultiSelectionComboBox>
+    </local:ExampleView_Base>
+</UserControl>

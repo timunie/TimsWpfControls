@@ -69,7 +69,7 @@
                                 <Condition Property="IsVisible" Value="True" />
                             </MultiTrigger.Conditions>
                             <MultiTrigger.EnterActions>
-                                <BeginStoryboard Name="IsIndeterminateStoryboard" Storyboard="{DynamicResource Tims.Storyboard.CircularProgressBar.Indeterminate}" />
+                                <BeginStoryboard Name="IsIndeterminateStoryboard" Storyboard="{StaticResource Tims.Storyboard.CircularProgressBar.Indeterminate}" />
                             </MultiTrigger.EnterActions>
                             <MultiTrigger.ExitActions>
                                 <RemoveStoryboard BeginStoryboardName="IsIndeterminateStoryboard" />

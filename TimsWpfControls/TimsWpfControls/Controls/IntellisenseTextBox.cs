@@ -13,6 +13,11 @@ namespace TimsWpfControls
 {
     public class IntellisenseTextBox : TextBox
     {
+        static IntellisenseTextBox()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(IntellisenseTextBox), new FrameworkPropertyMetadata(typeof(IntellisenseTextBox)));
+        }
+
         // Templateparts
         private Popup PART_IntellisensePopup;
 
