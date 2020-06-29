@@ -242,6 +242,24 @@
         <Setter Property="ShowSelectionIndicator" Value="True" />
         <Setter Property="ItemTemplate" Value="{StaticResource MenuItemTemplate}" />
         <Setter Property="OptionsItemTemplate" Value="{StaticResource MenuItemTemplate}" />
+        <Setter Property="HamburgerButtonTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <mah:FontIcon Glyph="&#xE700;" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsPaneOpen" Value="True">
+                <Setter Property="HamburgerButtonTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <mah:FontIcon Glyph="&#xE711;" />
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <!--#endregion-->
 </ResourceDictionary>
