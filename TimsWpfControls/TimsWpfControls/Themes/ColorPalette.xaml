@@ -1,8 +1,14 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:conv="clr-namespace:TimsWpfControls.Converter"
-                    xmlns:ctrls="clr-namespace:TimsWpfControls"
-                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" 
+                    xmlns:timsWpf="clr-namespace:TimsWpfControls"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+                    xmlns:conv="clr-namespace:TimsWpfControls.Converter">
+
+    <conv:ColorToNameConverter x:Key="MahApps.Converters.ColorToName" />
+
+    <sys:Double x:Key="MahApps.Sizes.ColorListBox.ItemWidth">16</sys:Double>
+    <sys:Double x:Key="MahApps.Sizes.ColorListBox.ItemHeight">16</sys:Double>
     
     <Style x:Key="MahApps.Styles.ListBoxItem.ColorPaletteItem" TargetType="{x:Type ListBoxItem}">
         <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.White}" />
@@ -35,6 +41,8 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}">
                             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </Border>
@@ -90,7 +98,8 @@
     </Style>
 
     <DataTemplate x:Key="MahApps.Templates.ColorPaletteItem">
-        <Border Width="{DynamicResource MahApps.Sizes.ColorListBox.ItemWidth}"
+        <Border x:Name="ColorPresenter" 
+                Width="{DynamicResource MahApps.Sizes.ColorListBox.ItemWidth}"
                 Height="{DynamicResource MahApps.Sizes.ColorListBox.ItemHeight}"
                 HorizontalAlignment="Center"
                 Background="{DynamicResource MahApps.Brushes.Checkerd.Small}"
@@ -98,7 +107,7 @@
             <Border.ToolTip>
                 <MultiBinding Converter="{conv:ColorToNameConverter}">
                     <Binding />
-                    <Binding Path="ColorNamesDictionary" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ctrls:ColorPalette}" />
+                    <Binding Path="ColorNamesDictionary" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=timsWpf:ColorPalette}" />
                 </MultiBinding>
             </Border.ToolTip>
             <Grid>
@@ -109,17 +118,18 @@
         </Border>
     </DataTemplate>
 
-    <Style x:Key="MahApps.Styles.ColorPalette" TargetType="ctrls:ColorPalette">
+    <Style x:Key="MahApps.Styles.ColorPalette" TargetType="timsWpf:ColorPalette">
         <Setter Property="Header" Value="Default Colors" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Focusable" Value="False" />
         <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Upper" />
         <Setter Property="mah:HeaderedControlHelper.HeaderBackground" Value="{DynamicResource MahApps.Brushes.Accent}" />
         <Setter Property="mah:HeaderedControlHelper.HeaderFontSize" Value="{DynamicResource MahApps.Font.Size.Content}" />
         <Setter Property="mah:HeaderedControlHelper.HeaderForeground" Value="{x:Null}" />
         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
-        <Setter Property="ItemTemplate" Value="{DynamicResource MahApps.Templates.ColorPaletteItem}" />
+        <Setter Property="ItemTemplate" Value="{StaticResource MahApps.Templates.ColorPaletteItem}" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource MahApps.Styles.ListBoxItem.ColorPaletteItem}" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
         <Setter Property="ItemsPanel">
@@ -131,7 +141,7 @@
         </Setter>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ctrls:ColorPalette">
+                <ControlTemplate TargetType="timsWpf:ColorPalette">
                     <GroupBox Margin="{TemplateBinding Margin}"
                               Padding="{TemplateBinding Padding}"
                               mah:HeaderedControlHelper.HeaderBackground="{TemplateBinding mah:HeaderedControlHelper.HeaderBackground}"
@@ -152,7 +162,7 @@
                                       Focusable="False"
                                       HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      ctrls:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                                      timsWpf:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                                       VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
                             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </ScrollViewer>

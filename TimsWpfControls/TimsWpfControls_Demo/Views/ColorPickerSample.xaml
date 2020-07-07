@@ -16,20 +16,6 @@
         <ctrls:ColorPicker x:Name="colorPicker" 
                            Margin="5"
                            HorizontalAlignment="Stretch"
-                           VerticalAlignment="Center" >
-            <ctrls:ColorPicker.ColorPalettes>
-                <ctrls:ColorPalette Header="Primary Colors" ItemsSource="{x:Static ctrls:ColorPalette.PrimaryColorPalette}" />
-                <ctrls:ColorPalette Header="Accent Colors" ItemsSource="{Binding AccentColorsPalette}" ColorNamesDictionary="{Binding AccentColorNamesDictionary}"/>
-                <ctrls:ColorPalette Header="WPF Colors" ItemsSource="{x:Static ctrls:ColorPalette.WpfColorPalette}" />
-                <ctrls:ColorPalette Header="Tinted Colors" ItemsSource="{Binding TintedColors}" >
-                    <ctrls:ColorPalette.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="24" IsItemsHost="True" />
-                        </ItemsPanelTemplate>
-                    </ctrls:ColorPalette.ItemsPanel>
-                </ctrls:ColorPalette>
-                <ctrls:ColorPalette Header="Recent" ItemsSource="{x:Static ctrls:ColorPalette.RecentColors}" />
-            </ctrls:ColorPicker.ColorPalettes>
-        </ctrls:ColorPicker>
+                           VerticalAlignment="Center" />
     </local:ExampleView_Base>
 </UserControl>

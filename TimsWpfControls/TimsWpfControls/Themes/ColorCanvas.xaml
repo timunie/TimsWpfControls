@@ -1,10 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:timsWpf="clr-namespace:TimsWpfControls"
                     xmlns:ControlzEx="urn:controlzex"
-                    xmlns:Converters="clr-namespace:TimsWpfControls.Converter"
-                    xmlns:ctrls="clr-namespace:TimsWpfControls"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:Converters="clr-namespace:TimsWpfControls.Converter">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/ColorComponentSlider.xaml" />
@@ -64,11 +63,28 @@
         </DrawingBrush.Drawing>
     </DrawingBrush>
 
-    <Style TargetType="{x:Type ctrls:ColorCanvas}">
+
+    <DataTemplate x:Key="MahApps.DataTemplates.ColorPicker.NoColor">
+        <Path Fill="{DynamicResource MahApps.Brushes.ThemeBackground}"
+              SnapsToDevicePixels="True"
+              Stretch="Fill"
+              Stroke="{DynamicResource MahApps.Brushes.ThemeForeground}"
+              StrokeThickness="1">
+            <Path.Data>
+                <GeometryGroup>
+                    <RectangleGeometry Rect="0,0 1,1" />
+                    <LineGeometry StartPoint="0,0" EndPoint="1,1" />
+                    <LineGeometry StartPoint="0,1" EndPoint="1,0" />
+                </GeometryGroup>
+            </Path.Data>
+        </Path>
+    </DataTemplate>
+
+    <Style TargetType="{x:Type timsWpf:ColorCanvas}">
 
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ctrls:ColorCanvas}">
+                <ControlTemplate TargetType="{x:Type timsWpf:ColorCanvas}">
                     <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -164,8 +180,8 @@
                                     </Grid.ColumnDefinitions>
 
                                     <ContentPresenter Content="{TemplateBinding LabelColorPreview}"
-                                               Margin="2,0,0,5"
-                                               VerticalAlignment="Center" />
+                                                      Margin="2,0,0,5"
+                                                      VerticalAlignment="Center" />
 
 
                                     <Border Grid.Row="0"
@@ -176,10 +192,17 @@
                                             BorderThickness="1">
                                         <Rectangle>
                                             <Rectangle.Fill>
-                                                <SolidColorBrush Color="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedColor}" />
+                                                <SolidColorBrush Color="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedColor, TargetNullValue=Transparent}" />
                                             </Rectangle.Fill>
                                         </Rectangle>
                                     </Border>
+
+                                    <ContentControl x:Name="PART_NoColorPreview"
+                                                    ContentTemplate="{DynamicResource MahApps.DataTemplates.ColorPicker.NoColor}"
+                                                    Grid.Row="0"
+                                                    Grid.Column="1"
+                                                    Margin="5,0,0,0"
+                                                    Visibility="Collapsed" />
 
                                 </Grid>
 
@@ -207,9 +230,9 @@
 
                                             <!--  R  -->
                                             <ContentPresenter Content="{TemplateBinding LabelRedChannel}"
-                                                       Grid.Row="0"
-                                                       Grid.Column="0"
-                                                       VerticalAlignment="Center" />
+                                                              Grid.Row="0"
+                                                              Grid.Column="0"
+                                                              VerticalAlignment="Center" />
                                             <Slider Grid.Row="0"
                                                     Grid.Column="1"
                                                     Style="{StaticResource MahApps.Styles.Slider.ColorComponent.ARGB}"
@@ -221,7 +244,7 @@
                                                     </LinearGradientBrush>
                                                 </Slider.Background>
                                             </Slider>
-                                            <Controls:NumericUpDown Grid.Row="0"
+                                            <mah:NumericUpDown Grid.Row="0"
                                                                     Grid.Column="2"
                                                                     Margin="2"
                                                                     Maximum="255"
@@ -230,9 +253,9 @@
 
                                             <!--  G  -->
                                             <ContentPresenter Content="{TemplateBinding LabelGreenChannel}"
-                                                       Grid.Row="1"
-                                                       Grid.Column="0"
-                                                       VerticalAlignment="Center" />
+                                                              Grid.Row="1"
+                                                              Grid.Column="0"
+                                                              VerticalAlignment="Center" />
                                             <Slider Grid.Row="1"
                                                     Grid.Column="1"
                                                     Style="{StaticResource MahApps.Styles.Slider.ColorComponent.ARGB}"
@@ -244,7 +267,7 @@
                                                     </LinearGradientBrush>
                                                 </Slider.Background>
                                             </Slider>
-                                            <Controls:NumericUpDown Grid.Row="1"
+                                            <mah:NumericUpDown Grid.Row="1"
                                                                     Grid.Column="2"
                                                                     Margin="2"
                                                                     Maximum="255"
@@ -253,9 +276,9 @@
 
                                             <!--  B  -->
                                             <ContentPresenter Content="{TemplateBinding LabelBlueChannel}"
-                                                       Grid.Row="2"
-                                                       Grid.Column="0"
-                                                       VerticalAlignment="Center" />
+                                                              Grid.Row="2"
+                                                              Grid.Column="0"
+                                                              VerticalAlignment="Center" />
                                             <Slider Grid.Row="2"
                                                     Grid.Column="1"
                                                     Style="{StaticResource MahApps.Styles.Slider.ColorComponent.ARGB}"
@@ -267,7 +290,7 @@
                                                     </LinearGradientBrush>
                                                 </Slider.Background>
                                             </Slider>
-                                            <Controls:NumericUpDown Grid.Row="2"
+                                            <mah:NumericUpDown Grid.Row="2"
                                                                     Grid.Column="2"
                                                                     Margin="2"
                                                                     Maximum="255"
@@ -292,14 +315,14 @@
 
                                             <!--  H  -->
                                             <ContentPresenter Content="{TemplateBinding LabelHueChannel}"
-                                                       Grid.Row="0"
-                                                       Grid.Column="0"
-                                                       VerticalAlignment="Center" />
+                                                              Grid.Row="0"
+                                                              Grid.Column="0"
+                                                              VerticalAlignment="Center" />
                                             <Slider Grid.Row="0"
                                                     Grid.Column="1"
                                                     Style="{StaticResource MahApps.Styles.Slider.ColorComponent.Hue}"
                                                     Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Hue, UpdateSourceTrigger=PropertyChanged}" />
-                                            <Controls:NumericUpDown Grid.Row="0"
+                                            <mah:NumericUpDown Grid.Row="0"
                                                                     Grid.Column="2"
                                                                     Margin="2"
                                                                     Maximum="360"
@@ -309,9 +332,9 @@
 
                                             <!--  S  -->
                                             <ContentPresenter Content="{TemplateBinding LabelSaturationChannel}"
-                                                       Grid.Row="1"
-                                                       Grid.Column="0"
-                                                       VerticalAlignment="Center" />
+                                                              Grid.Row="1"
+                                                              Grid.Column="0"
+                                                              VerticalAlignment="Center" />
                                             <Slider Grid.Row="1"
                                                     Grid.Column="1"
                                                     Style="{StaticResource MahApps.Styles.Slider.ColorComponent.SV}"
@@ -323,7 +346,7 @@
                                                     </LinearGradientBrush>
                                                 </Slider.Background>
                                             </Slider>
-                                            <Controls:NumericUpDown Grid.Row="1"
+                                            <mah:NumericUpDown Grid.Row="1"
                                                                     Grid.Column="2"
                                                                     Margin="2"
                                                                     Interval="0.01"
@@ -334,9 +357,9 @@
 
                                             <!--  Value  -->
                                             <ContentPresenter Content="{TemplateBinding LabelValueChannel}"
-                                                       Grid.Row="2"
-                                                       Grid.Column="0"
-                                                       VerticalAlignment="Center" />
+                                                              Grid.Row="2"
+                                                              Grid.Column="0"
+                                                              VerticalAlignment="Center" />
                                             <Slider Grid.Row="2"
                                                     Grid.Column="1"
                                                     Style="{StaticResource MahApps.Styles.Slider.ColorComponent.SV}"
@@ -348,7 +371,7 @@
                                                     </LinearGradientBrush>
                                                 </Slider.Background>
                                             </Slider>
-                                            <Controls:NumericUpDown Grid.Row="2"
+                                            <mah:NumericUpDown Grid.Row="2"
                                                                     Grid.Column="2"
                                                                     Margin="2"
                                                                     Interval="0.01"
@@ -370,9 +393,9 @@
 
                                             <!--  A  -->
                                             <ContentPresenter Content="{TemplateBinding LabelAlphaChannel}"
-                                                       Grid.Row="0"
-                                                       Grid.Column="0"
-                                                       VerticalAlignment="Center" />
+                                                              Grid.Row="0"
+                                                              Grid.Column="0"
+                                                              VerticalAlignment="Center" />
                                             <Slider Grid.Row="0"
                                                     Grid.Column="1"
                                                     Style="{StaticResource MahApps.Styles.Slider.ColorComponent.ARGB}"
@@ -384,7 +407,7 @@
                                                     </LinearGradientBrush>
                                                 </Slider.Background>
                                             </Slider>
-                                            <Controls:NumericUpDown Grid.Row="0"
+                                            <mah:NumericUpDown Grid.Row="0"
                                                                     Grid.Column="2"
                                                                     Margin="2"
                                                                     Maximum="255"
@@ -398,9 +421,9 @@
                                 <!--  HTML String und Name  -->
 
                                 <Grid Grid.Row="2"
-                                      VerticalAlignment="Top"
                                       Grid.Column="2"
-                                      Margin="0,0,5,5">
+                                      Margin="0,0,5,5"
+                                      VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
                                         <ColumnDefinition Width="*" />
@@ -408,23 +431,45 @@
                                     </Grid.ColumnDefinitions>
 
 
-                                    <ContentPresenter Content="{TemplateBinding LabelColorName}" 
+                                    <ContentPresenter Content="{TemplateBinding LabelColorName}"
                                                       Grid.Column="0"
                                                       VerticalAlignment="Center" />
-                                    
-                                    <TextBox Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ColorName, ValidatesOnExceptions=True}"
-                                             Margin="2,0,0,0"
-                                             Grid.Column="1" />
 
-                                    <ctrls:ColorEyeDropper x:Name="PART_PickColorFromScreen"
+                                    <TextBox Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ColorName, ValidatesOnExceptions=True}"
+                                             Grid.Column="1"
+                                             Margin="2,0,0,0"
+                                             mah:TextBoxHelper.ButtonCommand="{TemplateBinding mah:TextBoxHelper.ButtonCommand}"
+                                             mah:TextBoxHelper.ButtonCommandParameter="{TemplateBinding mah:TextBoxHelper.ButtonCommandParameter}"
+                                             mah:TextBoxHelper.ButtonContent="{TemplateBinding mah:TextBoxHelper.ButtonContent}"
+                                             mah:TextBoxHelper.ButtonContentTemplate="{TemplateBinding mah:TextBoxHelper.ButtonContentTemplate}"
+                                             mah:TextBoxHelper.ButtonFontFamily="{TemplateBinding mah:TextBoxHelper.ButtonFontFamily}"
+                                             mah:TextBoxHelper.ButtonFontSize="{TemplateBinding mah:TextBoxHelper.ButtonFontSize}"
+                                             mah:TextBoxHelper.ButtonTemplate="{TemplateBinding mah:TextBoxHelper.ButtonTemplate}"
+                                             mah:TextBoxHelper.ButtonWidth="{TemplateBinding mah:TextBoxHelper.ButtonWidth}"
+                                             mah:TextBoxHelper.ButtonsAlignment="{TemplateBinding mah:TextBoxHelper.ButtonsAlignment}"
+                                             mah:TextBoxHelper.ClearTextButton="{TemplateBinding mah:TextBoxHelper.ClearTextButton}" 
+                                             mah:TextBoxHelper.AutoWatermark="{TemplateBinding mah:TextBoxHelper.AutoWatermark}"
+                                             mah:TextBoxHelper.SelectAllOnFocus="{TemplateBinding mah:TextBoxHelper.SelectAllOnFocus}"
+                                             mah:TextBoxHelper.UseFloatingWatermark="{TemplateBinding mah:TextBoxHelper.UseFloatingWatermark}"
+                                             mah:TextBoxHelper.Watermark="{TemplateBinding mah:TextBoxHelper.Watermark}"
+                                             mah:TextBoxHelper.WatermarkAlignment="{TemplateBinding mah:TextBoxHelper.WatermarkAlignment}"
+                                             mah:TextBoxHelper.WatermarkTrimming="{TemplateBinding mah:TextBoxHelper.WatermarkTrimming}"
+                                             mah:TextBoxHelper.WatermarkWrapping="{TemplateBinding mah:TextBoxHelper.WatermarkWrapping}" />
+
+                                    <timsWpf:ColorEyeDropper x:Name="PART_PickColorFromScreen"
                                                               Grid.Column="2"
                                                               Height="auto"
                                                               Margin="2,0,0,0"
-                                                              SelectedColor="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedColor}" />
+                                                              SelectedColor="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedColor, TargetNullValue=Transparent}" />
                                 </Grid>
                             </Grid>
                         </Border>
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="SelectedColor" Value="{x:Null}">
+                            <Setter TargetName="PART_NoColorPreview" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

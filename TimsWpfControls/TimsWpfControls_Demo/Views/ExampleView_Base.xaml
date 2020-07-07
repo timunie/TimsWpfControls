@@ -30,10 +30,6 @@
 
     <DataTemplate x:Key="BrushDataTemplate">
         <ctrls:ColorPicker SelectedColor="{Binding Value, Converter={conv:SolidColorBrushToColorConverter}}">
-            <ctrls:ColorPicker.ColorPalettes>
-                <ctrls:ColorPalette Header="Accent Brushes" ItemsSource="{x:Static model:MainViewModel.AccentColors}" />
-                <ctrls:ColorPalette Header="Theme Brushes" />
-            </ctrls:ColorPicker.ColorPalettes>
         </ctrls:ColorPicker>
     </DataTemplate>
     

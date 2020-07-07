@@ -2,19 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controlzEx="urn:controlzex"
                     xmlns:conv="http://metro.mahapps.com/winfx/xaml/shared"
-                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                    xmlns:ctrls="clr-namespace:TimsWpfControls"
+                    xmlns:timsWpf="clr-namespace:TimsWpfControls"
                     xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
 
     <Cursor x:Key="MahApps.Cursors.EyeDropper">../Controls/ColorPicker/Eyedropper.cur</Cursor>
 
-    <Style TargetType="{x:Type ctrls:ColorEyeDropper}">
+    <Style TargetType="{x:Type timsWpf:ColorEyeDropper}">
 
         <Setter Property="EyeDropperCursor" Value="{StaticResource MahApps.Cursors.EyeDropper}" />
 
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ctrls:ColorEyeDropper}">
+                <ControlTemplate TargetType="{x:Type timsWpf:ColorEyeDropper}">
 
 
                     <Button Content="{TemplateBinding Content}"

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
@@ -70,22 +69,13 @@ namespace TimsWpfControls
         /// This function tries to convert a given string into a Color in the following order:
         ///    1. If the string starts with '#' the function tries to get the color from the hex-code
         ///    2. else the function tries to find the color in the color names Dictionary
-        ///    3. If 1. and 2. were not successfull the function adds a '#' sign and tries 1. and 2. again
+        ///    3. If 1. + 2. were not successfull the function adds a '#' sign and tries 1. + 2. again
         /// </summary>
         /// <param name="ColorName">The localized name of the color, the hex-code of the color or the internal colorname</param>
-        /// <param name="colorNamesDictionary">
-        ///     Optional: The Dictionary with the stored color Names. 
-        ///     If this values is null, the build in Dictinary <see cref="ColorNamesDictionary"/> will be used.
-        /// </param>
         /// <returns>the Color if successfull, else null</returns>
         public static Color? ColorFromString(string ColorName, Dictionary<Color?, string> colorNamesDictionary = null)
         {
-            
             Color? result = null;
-            if (colorNamesDictionary is null)
-            {
-                colorNamesDictionary = ColorNamesDictionary;
-            }
 
             try
             {
@@ -94,14 +84,14 @@ namespace TimsWpfControls
 
                 if (! ColorName.StartsWith("#"))
                 {
-                    result = colorNamesDictionary.FirstOrDefault(x => string.Equals(x.Value, ColorName, StringComparison.OrdinalIgnoreCase)).Key as Color?;
+                    result = ColorNamesDictionary.FirstOrDefault(x => string.Equals(x.Value, ColorName, StringComparison.OrdinalIgnoreCase)).Key as Color?;
                 }
                 if (!result.HasValue)
                 {
                     result = ColorConverter.ConvertFromString(ColorName) as Color?;
                 }
             }
-            catch (FormatException)
+            catch (FormatException e)
             {
                 if (!result.HasValue && !ColorName.StartsWith("#"))
                 {
@@ -122,20 +112,18 @@ namespace TimsWpfControls
         /// <summary>
         /// Searches for the localized name of a given <paramref name="color"/>
         /// </summary>
-        /// <param name="color">The <see cref="Color"/> to look up</param>
-        /// <param name="colorNamesDictionary">
-        ///     Optional: The Dictionary with the stored color Names. 
-        ///     If this values is null, the build in Dictinary <see cref="ColorNamesDictionary"/> will be used.
-        /// </param>
+        /// <param name="color">color</param>
         /// <returns>the local color name or null if the given color doesn't have a name</returns>
-        public static string GetColorName(Color color, Dictionary<Color?, string> colorNamesDictionary = null)
+        public static string GetColorName(Color? color, Dictionary<Color?, string> colorNamesDictionary = null)
         {
+            if (color is null) return null;
+
             if (colorNamesDictionary is null)
             {
                 colorNamesDictionary = ColorNamesDictionary;
             }
 
-            return colorNamesDictionary.TryGetValue(color, out string name) ? $"{name} ({color})" : color.ToString();
+            return colorNamesDictionary.TryGetValue(color, out string name) ? $"{name} ({color})" : $"{color}";
         }
 
     }

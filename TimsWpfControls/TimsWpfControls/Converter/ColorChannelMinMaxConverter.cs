@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using MahApps.Metro.Controls;
+using TimsWpfControls;
 
 namespace TimsWpfControls.Converter
 {

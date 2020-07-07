@@ -19,7 +19,10 @@ namespace TimsWpfControls
         #endregion
 
         #region Dependcy Properties
-        public static readonly DependencyProperty SelectedColorProperty = DependencyProperty.Register(nameof(SelectedColor), typeof(Color), typeof(ColorPickerBase), new FrameworkPropertyMetadata(Colors.Black, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, ColorChanged));
+        /// <summary>Identifies the <see cref="SelectedColor"/> dependency property.</summary>
+        public static readonly DependencyProperty SelectedColorProperty = DependencyProperty.Register(nameof(SelectedColor), typeof(Color?), typeof(ColorPickerBase), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, ColorChanged));
+        
+        public static readonly DependencyProperty DefaultColorProperty = DependencyProperty.Register(nameof(DefaultColor), typeof(Color?), typeof(ColorPickerBase), new FrameworkPropertyMetadata(null, ColorChanged));
 
         /// <summary>
         /// Identifies the <see cref="SelectedHSVColor"/> dependency property.
@@ -27,7 +30,7 @@ namespace TimsWpfControls
         public static readonly DependencyProperty SelectedHSVColorProperty = DependencyProperty.Register(nameof(SelectedHSVColor), typeof(HSVColor), typeof(ColorPickerBase), new PropertyMetadata(new HSVColor(Colors.Black)));
 
         /// <summary>Identifies the <see cref="ColorName"/> dependency property.</summary>
-        public static readonly DependencyProperty ColorNameProperty = DependencyProperty.Register(nameof(ColorName), typeof(string), typeof(ColorPickerBase), new FrameworkPropertyMetadata(ColorHelper.GetColorName(Colors.Black), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, ColorNameChanged));
+        public static readonly DependencyProperty ColorNameProperty = DependencyProperty.Register(nameof(ColorName), typeof(string), typeof(ColorPickerBase), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, ColorNameChanged));
         
         /// <summary>Identifies the <see cref="ColorNamesDictionary"/> dependency property.</summary>
         public static readonly DependencyProperty ColorNamesDictionaryProperty = DependencyProperty.Register(nameof(ColorNamesDictionary), typeof(Dictionary<Color?, string>), typeof(ColorPickerBase), new PropertyMetadata(null));
@@ -89,10 +92,19 @@ namespace TimsWpfControls
         /// <summary>
         /// Gets or Sets the selected <see cref="Color"/>
         /// </summary>
-        public Color SelectedColor
+        public Color? SelectedColor
         {
-            get { return (Color)this.GetValue(SelectedColorProperty); }
+            get { return (Color?)this.GetValue(SelectedColorProperty); }
             set { this.SetValue(SelectedColorProperty, value); }
+        }
+        
+        /// <summary>
+        /// Gets or Sets the selected <see cref="Color"/>
+        /// </summary>
+        public Color? DefaultColor
+        {
+            get { return (Color?)this.GetValue(DefaultColorProperty); }
+            set { this.SetValue(DefaultColorProperty, value); }
         }
 
 
@@ -127,40 +139,54 @@ namespace TimsWpfControls
         public static readonly RoutedEvent SelectedColorChangedEvent = EventManager.RegisterRoutedEvent(
                                                                         nameof(SelectedColorChanged),
                                                                         RoutingStrategy.Bubble,
-                                                                        typeof(RoutedPropertyChangedEventHandler<Color>),
+                                                                        typeof(RoutedPropertyChangedEventHandler<Color?>),
                                                                         typeof(ColorPickerBase));
 
         private static void ColorChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
             if (dependencyObject is ColorPickerBase colorPicker)
             {
-                // don't do a second update
-                if (colorPicker.ColorIsUpdating)
-                    return;
+                colorPicker.OnSelectedColorChanged(e.OldValue as Color?, e.NewValue as Color?);
+            }
+        }
 
-                colorPicker.ColorIsUpdating = true;
+        internal virtual void OnSelectedColorChanged(Color? OldValue, Color? NewValue)
+        {
+            // don't do a second update
+            if (ColorIsUpdating)
+                return;
 
-                colorPicker.SetCurrentValue(ColorNameProperty, ColorHelper.GetColorName(colorPicker.SelectedColor, colorPicker.ColorNamesDictionary));
+            ColorIsUpdating = true;
 
-                if (colorPicker.UpdateHsvValues)
+            if (SelectedColor == null && DefaultColor != null)
+            {
+                SetCurrentValue(SelectedColorProperty, DefaultColor);
+            }
+
+            SetCurrentValue(ColorNameProperty, ColorHelper.GetColorName(SelectedColor, ColorNamesDictionary));
+
+            // We just update the following lines if we have a Color.
+            if (SelectedColor != null)
+            {
+                if (UpdateHsvValues)
                 {
-                    var hsv = new HSVColor(colorPicker.SelectedColor);
-                    colorPicker.SetCurrentValue(HueProperty, hsv.Hue);
-                    colorPicker.SetCurrentValue(SaturationProperty, hsv.Saturation);
-                    colorPicker.SetCurrentValue(ValueProperty, hsv.Value);
+                    var hsv = new HSVColor((Color)SelectedColor);
+                    SetCurrentValue(HueProperty, hsv.Hue);
+                    SetCurrentValue(SaturationProperty, hsv.Saturation);
+                    SetCurrentValue(ValueProperty, hsv.Value);
                 }
 
-                colorPicker.SetCurrentValue(SelectedHSVColorProperty, new HSVColor(colorPicker.A / 255d, colorPicker.Hue, colorPicker.Saturation, colorPicker.Value));
+                SetCurrentValue(SelectedHSVColorProperty, new HSVColor(A / 255d, Hue, Saturation, Value));
 
-                colorPicker.SetCurrentValue(AProperty, colorPicker.SelectedColor.A);
-                colorPicker.SetCurrentValue(RProperty, colorPicker.SelectedColor.R);
-                colorPicker.SetCurrentValue(GProperty, colorPicker.SelectedColor.G);
-                colorPicker.SetCurrentValue(BProperty, colorPicker.SelectedColor.B);
-
-                colorPicker.ColorIsUpdating = false;
-
-                colorPicker.RaiseEvent(new RoutedPropertyChangedEventArgs<Color>((Color)e.OldValue, (Color)e.NewValue, SelectedColorChangedEvent));
+                SetCurrentValue(AProperty, (byte)SelectedColor?.A);
+                SetCurrentValue(RProperty, (byte)SelectedColor?.R);
+                SetCurrentValue(GProperty, (byte)SelectedColor?.G);
+                SetCurrentValue(BProperty, (byte)SelectedColor?.B);
             }
+
+            ColorIsUpdating = false;
+
+            RaiseEvent(new RoutedPropertyChangedEventArgs<Color?>(OldValue, NewValue, SelectedColorChangedEvent));
         }
 
 
@@ -170,7 +196,11 @@ namespace TimsWpfControls
             {
                 if (!colorPicker.ColorIsUpdating)
                 {
-                    if (ColorHelper.ColorFromString(e.NewValue?.ToString(), colorPicker.ColorNamesDictionary) is Color color)
+                    if (string.IsNullOrEmpty(e.NewValue?.ToString()))
+                    {
+                        colorPicker.SetCurrentValue(SelectedColorProperty, null);
+                    }
+                    else if (ColorHelper.ColorFromString(e.NewValue?.ToString(), colorPicker.ColorNamesDictionary) is Color color)
                     {
                         colorPicker.SetCurrentValue(SelectedColorProperty, color);
                     }
@@ -185,7 +215,7 @@ namespace TimsWpfControls
         /// <summary>
         ///     Occurs when the <see cref="SelectedColor" /> property is changed.
         /// </summary>
-        public event RoutedPropertyChangedEventHandler<Color> SelectedColorChanged
+        public event RoutedPropertyChangedEventHandler<Color?> SelectedColorChanged
         {
             add { AddHandler(SelectedColorChangedEvent, value); }
             remove { RemoveHandler(SelectedColorChangedEvent, value); }
