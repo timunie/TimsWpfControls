@@ -11,7 +11,6 @@ using TimsWpfControls;
 namespace TimsWpfControls.Converter
 {
 
-
     /// <summary>
     /// Converts a given Color to a new Color with the specified Channel turned to the Min or Max Value
     /// </summary>
@@ -20,7 +19,7 @@ namespace TimsWpfControls.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is null) throw new ArgumentNullException(nameof(value));
+            if (value is null) return Binding.DoNothing;
             if (parameter is null) throw new ArgumentNullException(nameof(parameter));
 
             if (value is Color color && parameter is string channel)

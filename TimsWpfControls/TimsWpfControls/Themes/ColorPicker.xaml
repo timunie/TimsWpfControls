@@ -78,15 +78,16 @@
                                 Content="{TemplateBinding mah:TextBoxHelper.ButtonContent}"
                                 Grid.Column="1"
                                 Width="{TemplateBinding mah:TextBoxHelper.ButtonWidth}"
-                                mah:TextBoxHelper.IsClearTextButtonBehaviorEnabled="{Binding RelativeSource={RelativeSource AncestorType={x:Type timsWpf:ColorPicker}}, Path=(mah:TextBoxHelper.ClearTextButton), Mode=OneWay}"
                                 ContentTemplate="{TemplateBinding mah:TextBoxHelper.ButtonContentTemplate}"
                                 Focusable="False"
                                 FontFamily="{TemplateBinding mah:TextBoxHelper.ButtonFontFamily}"
                                 FontSize="{TemplateBinding mah:TextBoxHelper.ButtonFontSize}"
                                 Foreground="{TemplateBinding Foreground}"
                                 IsTabStop="False"
+                                Command="{x:Static timsWpf:ColorPickerHelper.ClearColorCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=timsWpf:ColorPicker}}"
                                 Style="{DynamicResource MahApps.Styles.Button.Chromeless}"
-                                Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type timsWpf:ColorPicker}}, Path=(mah:TextBoxHelper.ClearTextButton), Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type timsWpf:ColorPicker}}, Path=(timsWpf:ColorPickerHelper.ClearColorButton), Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                         <Grid x:Name="BtnArrowBackground"
                               Grid.Column="2"
@@ -138,7 +139,7 @@
         <Setter Property="mah:ControlsHelper.MouseOverBorderBrush" Value="{DynamicResource MahApps.Brushes.ComboBox.Border.MouseOver}" />
         <Setter Property="mah:TextBoxHelper.ButtonFontSize" Value="{DynamicResource MahApps.Font.Size.Button.ClearText}" />
         <Setter Property="mah:TextBoxHelper.ButtonWidth" Value="22" />
-        <Setter Property="mah:TextBoxHelper.ClearTextButton" Value="False" />
+        <Setter Property="timsWpf:ColorPickerHelper.ClearColorButton" Value="False" />
         <Setter Property="FontFamily" Value="{DynamicResource MahApps.Fonts.Family.Control}" />
         <Setter Property="FontSize" Value="{DynamicResource MahApps.Font.Size.Content}" />
         <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}" />
@@ -209,7 +210,7 @@
                                           mah:TextBoxHelper.ButtonFontFamily="{TemplateBinding mah:TextBoxHelper.ButtonFontFamily}"
                                           mah:TextBoxHelper.ButtonFontSize="{TemplateBinding mah:TextBoxHelper.ButtonFontSize}"
                                           mah:TextBoxHelper.ButtonWidth="{TemplateBinding mah:TextBoxHelper.ButtonWidth}"
-                                          mah:TextBoxHelper.ClearTextButton="{TemplateBinding mah:TextBoxHelper.ClearTextButton}"
+                                          timsWpf:ColorPickerHelper.ClearColorButton="{TemplateBinding timsWpf:ColorPickerHelper.ClearColorButton}"
                                           Background="Transparent"
                                           BorderThickness="0"
                                           Foreground="{TemplateBinding Foreground}"
@@ -385,7 +386,7 @@
                                                                  mah:TextBoxHelper.ButtonTemplate="{TemplateBinding mah:TextBoxHelper.ButtonTemplate}"
                                                                  mah:TextBoxHelper.ButtonWidth="{TemplateBinding mah:TextBoxHelper.ButtonWidth}"
                                                                  mah:TextBoxHelper.ButtonsAlignment="{TemplateBinding mah:TextBoxHelper.ButtonsAlignment}"
-                                                                 mah:TextBoxHelper.ClearTextButton="{TemplateBinding mah:TextBoxHelper.ClearTextButton}"
+                                                                 timsWpf:ColorPickerHelper.ClearColorButton="{TemplateBinding timsWpf:ColorPickerHelper.ClearColorButton}"
                                                                  mah:TextBoxHelper.Watermark="{TemplateBinding mah:TextBoxHelper.Watermark}"
                                                                  mah:TextBoxHelper.WatermarkAlignment="{TemplateBinding mah:TextBoxHelper.WatermarkAlignment}"
                                                                  mah:TextBoxHelper.WatermarkTrimming="{TemplateBinding mah:TextBoxHelper.WatermarkTrimming}"
@@ -475,7 +476,7 @@
                             </MultiDataTrigger.ExitActions>
                         </MultiDataTrigger>
 
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=(mah:TextBoxHelper.ClearTextButton)}" Value="False">
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=(timsWpf:ColorPickerHelper.ClearColorButton)}" Value="False">
                             <Setter TargetName="ContentSite" Property="Grid.ColumnSpan" Value="2" />
                             <Setter TargetName="PART_Message" Property="Grid.ColumnSpan" Value="2" />
                         </DataTrigger>
