@@ -25,15 +25,15 @@ namespace TimsWpfControls
 
         // Using a DependencyProperty as the backing store for ContentAssistSource.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ContentAssistSourceProperty =
-            DependencyProperty.Register("ContentAssistSource", typeof(IEnumerable<string>), typeof(IntellisenseTextBox), new UIPropertyMetadata(new List<string>(), OnContentAssistSourceChanged));
+            DependencyProperty.Register("ContentAssistSource", typeof(IEnumerable<object>), typeof(IntellisenseTextBox), new UIPropertyMetadata(new List<string>(), OnContentAssistSourceChanged));
 
         // Using a DependencyProperty as the backing store for MatchBeginning.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MatchBeginningProperty =
             DependencyProperty.Register("MatchBeginning", typeof(bool), typeof(IntellisenseTextBox), new PropertyMetadata(true));
 
-        public IEnumerable<string> ContentAssistSource
+        public IEnumerable<object> ContentAssistSource
         {
-            get { return (IEnumerable<string>)GetValue(ContentAssistSourceProperty); }
+            get { return (IEnumerable<object>)GetValue(ContentAssistSourceProperty); }
             set { SetValue(ContentAssistSourceProperty, value); }
         }
 
@@ -287,7 +287,8 @@ namespace TimsWpfControls
         {
             var compareTo = sbLastWords.ToString();
             SetValue(ConentAssistSource_ResultViewProperty,
-                    ContentAssistSource?.Where(x => IsMatch(x, compareTo))
+                    ContentAssistSource?.Where(x => IsMatch(x?.ToString(), compareTo))
+                    .Select(x => x.ToString())
                     .OrderBy(x => x));
 
             if (!ConentAssistSource_ResultView.Any())
