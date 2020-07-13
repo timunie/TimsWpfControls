@@ -173,27 +173,52 @@ namespace TimsWpfControls
             PART_ColorPaletteAvailable = this.GetTemplateChild(nameof(PART_ColorPaletteAvailable)) as ColorPalette;
             PART_ColorPaletteCustom01 = this.GetTemplateChild(nameof(PART_ColorPaletteCustom01)) as ColorPalette;
             PART_ColorPaletteCustom02 = this.GetTemplateChild(nameof(PART_ColorPaletteCustom02)) as ColorPalette;
-            PART_ColorPaletteRecent = this.GetTemplateChild(nameof(PART_ColorPaletteCustom02)) as ColorPalette;
+            PART_ColorPaletteRecent = this.GetTemplateChild(nameof(PART_ColorPaletteRecent)) as ColorPalette;
 
             PART_PopupTabControl = this.GetTemplateChild(nameof(PART_PopupTabControl)) as TabControl;
             PART_ColorPalettesTab = this.GetTemplateChild(nameof(PART_ColorPalettesTab)) as TabItem;
             PART_AdvancedTab = this.GetTemplateChild(nameof(PART_AdvancedTab)) as TabItem;
+
+            if (PART_ColorPaletteStandard != null) PART_ColorPaletteStandard.SelectionChanged += ColorPalette_SelectionChanged;
+            if (PART_ColorPaletteAvailable != null) PART_ColorPaletteAvailable.SelectionChanged += ColorPalette_SelectionChanged;
+            if (PART_ColorPaletteCustom01 != null) PART_ColorPaletteCustom01.SelectionChanged += ColorPalette_SelectionChanged;
+            if (PART_ColorPaletteCustom02 != null) PART_ColorPaletteCustom02.SelectionChanged += ColorPalette_SelectionChanged;
+            if (PART_ColorPaletteRecent != null) PART_ColorPaletteRecent.SelectionChanged += ColorPalette_SelectionChanged;
+
 
             base.OnApplyTemplate();
 
             ValidateTabItems();
         }
 
+        private void ColorPalette_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ColorPalette colorPalette && !ColorIsUpdating)
+            {
+                SelectedColor = colorPalette.SelectedItem as Color?;
+            }
+        }
 
         internal override void OnSelectedColorChanged(Color? OldValue, Color? NewValue)
         {
             base.OnSelectedColorChanged(NewValue, OldValue);
+
+            // Set color is Updating again
+            ColorIsUpdating = true;
+
+            if (PART_ColorPaletteAvailable != null) PART_ColorPaletteAvailable.SelectedValue = NewValue;
+            if (PART_ColorPaletteStandard != null) PART_ColorPaletteStandard.SelectedValue = NewValue;
+            if (PART_ColorPaletteCustom01 != null) PART_ColorPaletteCustom01.SelectedValue = NewValue;
+            if (PART_ColorPaletteCustom02 != null) PART_ColorPaletteCustom02.SelectedValue = NewValue;
+            if (PART_ColorPaletteRecent != null) PART_ColorPaletteRecent.SelectedValue = NewValue;
 
             if (this.AddToRecentColorsTrigger == AddToRecentColorsTrigger.SelectedColorChanged && SelectedColor.HasValue)
             {
                 BuildInColorPalettes.AddColorToRecentColors(NewValue, RecentColorPaletteItemsSource);
                 BuildInColorPalettes.ReduceRecentColors(BuildInColorPalettes.GetMaximumRecentColorsCount(this), RecentColorPaletteItemsSource as ObservableCollection<Color?>);
             }
+
+            ColorIsUpdating = false;
         }
 
         private static void OnIsDropDownOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -257,8 +282,11 @@ namespace TimsWpfControls
 
                     if (colorPicker.AddToRecentColorsTrigger == AddToRecentColorsTrigger.ColorPickerClosed && colorPicker.SelectedColor.HasValue)
                     {
+                        // We Update something so we need to flag this
+                        colorPicker.ColorIsUpdating = true;
                         BuildInColorPalettes.AddColorToRecentColors(colorPicker.SelectedColor, colorPicker.RecentColorPaletteItemsSource);
                         BuildInColorPalettes.ReduceRecentColors(BuildInColorPalettes.GetMaximumRecentColorsCount(colorPicker), colorPicker.RecentColorPaletteItemsSource);
+                        colorPicker.ColorIsUpdating = false;
                     }
                 }
             }
@@ -298,8 +326,10 @@ namespace TimsWpfControls
                         colorPicker.Close();
                     }
                 }
+                e.Handled = true;
             }
         }
+
 
         private static void OnMouseButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -319,9 +349,26 @@ namespace TimsWpfControls
             // means the click was off the popup and we should dismiss.
             if (Mouse.Captured == colorPicker && e.OriginalSource == colorPicker)
             {
-                colorPicker.Close();
+                // colorPicker.Close();
             }
         }
+
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            // Ignore the first mouse button up if we haven't gone over the popup yet
+            // And ignore all mouse ups over the items host.
+            if (!PART_Popup.IsMouseOver)
+            {
+                if (IsDropDownOpen)
+                {
+                    Close();
+                    e.Handled = true;
+               }
+            }
+
+            base.OnMouseLeftButtonUp(e);
+        }
+
 
         private void Close()
         {

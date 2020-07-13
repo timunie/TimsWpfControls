@@ -91,7 +91,7 @@ namespace TimsWpfControls
                     result = ColorConverter.ConvertFromString(ColorName) as Color?;
                 }
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
                 if (!result.HasValue && !ColorName.StartsWith("#"))
                 {

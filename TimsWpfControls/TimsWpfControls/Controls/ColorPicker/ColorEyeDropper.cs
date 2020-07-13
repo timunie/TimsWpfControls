@@ -76,7 +76,7 @@ namespace TimsWpfControls
         private void ColorEyeDropper_PreviewMouseDown(object sender, MouseEventArgs e)
         {
             this.PreviewMouseMove += this.ColorEyeDropper_PreviewMouseMove;
-            this.Cursor = this.EyeDropperCursor;
+            this.Cursor = Cursors.Cross;
             Mouse.Capture(this);
 
             if (this.ToolTip is ToolTip toolTip)
