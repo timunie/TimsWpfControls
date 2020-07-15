@@ -25,7 +25,7 @@ namespace TimsWpfControls
 
         // Using a DependencyProperty as the backing store for ContentAssistSource.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ContentAssistSourceProperty =
-            DependencyProperty.Register("ContentAssistSource", typeof(IEnumerable<object>), typeof(IntellisenseTextBox), new UIPropertyMetadata(new List<string>(), OnContentAssistSourceChanged));
+            DependencyProperty.Register("ContentAssistSource", typeof(IEnumerable<object>), typeof(IntellisenseTextBox), new UIPropertyMetadata(null, OnContentAssistSourceChanged));
 
         // Using a DependencyProperty as the backing store for MatchBeginning.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MatchBeginningProperty =
