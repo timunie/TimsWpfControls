@@ -33,7 +33,7 @@ namespace TimsWpfControls
         public static readonly DependencyProperty ColorNameProperty = DependencyProperty.Register(nameof(ColorName), typeof(string), typeof(ColorPickerBase), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, ColorNameChanged));
         
         /// <summary>Identifies the <see cref="ColorNamesDictionary"/> dependency property.</summary>
-        public static readonly DependencyProperty ColorNamesDictionaryProperty = DependencyProperty.Register(nameof(ColorNamesDictionary), typeof(Dictionary<Color?, string>), typeof(ColorPickerBase), new PropertyMetadata(null));
+        public static readonly DependencyProperty ColorNamesDictionaryProperty = DependencyProperty.Register(nameof(ColorNamesDictionary), typeof(Dictionary<Color, string>), typeof(ColorPickerBase), new PropertyMetadata(null));
 
         /// <summary>Identifies the <see cref="A"/> dependency property.</summary>
         public static readonly DependencyProperty AProperty = DependencyProperty.Register(nameof(A), typeof(byte), typeof(ColorPickerBase), new FrameworkPropertyMetadata((byte)255, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, ColorChannelChanged));
@@ -125,9 +125,9 @@ namespace TimsWpfControls
 
 
 
-        public Dictionary<Color?, string> ColorNamesDictionary
+        public Dictionary<Color, string> ColorNamesDictionary
         {
-            get { return (Dictionary<Color?, string>)GetValue(ColorNamesDictionaryProperty); }
+            get { return (Dictionary<Color, string>)GetValue(ColorNamesDictionaryProperty); }
             set { SetValue(ColorNamesDictionaryProperty, value); }
         }
 

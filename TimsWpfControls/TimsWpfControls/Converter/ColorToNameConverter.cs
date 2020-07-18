@@ -28,14 +28,13 @@ namespace TimsWpfControls.Converter
         /// <returns>The name of the color or the Hex-Code if no name is available</returns>
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ColorHelper.GetColorName(value as Color?, parameter as Dictionary<Color?, string>);
-
+            return ColorHelper.GetColorName(value as Color?, parameter as Dictionary<Color, string>);
         }
 
         /// <summary>
         /// Converts a given <see cref="Color"/> to its Name
         /// </summary>
-        /// <param name="values">Needed: The <see cref="Color"/>. Optional: A <see cref="Dictionary{Color?, string}"/></param>
+        /// <param name="values">Needed: The <see cref="Color"/>. Optional: A <see cref="Dictionary{Color, string}"/></param>
         /// <param name="targetType"></param>
         /// <param name="parameter"></param>
         /// <param name="culture"></param>
@@ -43,7 +42,7 @@ namespace TimsWpfControls.Converter
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             Color? color = values.FirstOrDefault(x => x?.GetType() == typeof(Color)) as Color?;
-            Dictionary<Color?, string> colorNamesDictionary = values.FirstOrDefault(x => x?.GetType() == typeof(Dictionary<Color?, string>)) as Dictionary<Color?, string>;
+            Dictionary<Color, string> colorNamesDictionary = values.FirstOrDefault(x => x?.GetType() == typeof(Dictionary<Color, string>)) as Dictionary<Color, string>;
 
             return ColorHelper.GetColorName(color, colorNamesDictionary);
         }
@@ -54,14 +53,14 @@ namespace TimsWpfControls.Converter
         /// </summary>
         /// <param name="value">The name of the <see cref="Color"/></param>
         /// <param name="targetType"></param>
-        /// <param name="parameter">Optional: A <see cref="Dictionary{Color?, string}"/></param>
+        /// <param name="parameter">Optional: A <see cref="Dictionary{Color, string}"/></param>
         /// <param name="culture"></param>
         /// <returns><see cref="Color"/></returns>
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is string text)
             {
-                return ColorHelper.ColorFromString(text, parameter as Dictionary<Color?, string>) ?? Binding.DoNothing;
+                return ColorHelper.ColorFromString(text, parameter as Dictionary<Color, string>) ?? Binding.DoNothing;
             }
             else
             {

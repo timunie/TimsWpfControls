@@ -22,7 +22,7 @@ namespace TimsWpfControls.Lang {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ColorNames {
+    public class ColorNames {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace TimsWpfControls.Lang {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TimsWpfControls.Lang.ColorNames", typeof(ColorNames).Assembly);
@@ -51,7 +51,7 @@ namespace TimsWpfControls.Lang {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,25 +63,16 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Alice Blue.
         /// </summary>
-        internal static string AliceBlue {
+        public static string AliceBlue {
             get {
                 return ResourceManager.GetString("AliceBlue", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Amber.
-        /// </summary>
-        internal static string Amber {
-            get {
-                return ResourceManager.GetString("Amber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Antique White.
         /// </summary>
-        internal static string AntiqueWhite {
+        public static string AntiqueWhite {
             get {
                 return ResourceManager.GetString("AntiqueWhite", resourceCulture);
             }
@@ -90,7 +81,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Aqua.
         /// </summary>
-        internal static string Aqua {
+        public static string Aqua {
             get {
                 return ResourceManager.GetString("Aqua", resourceCulture);
             }
@@ -99,7 +90,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Aquamarine.
         /// </summary>
-        internal static string Aquamarine {
+        public static string Aquamarine {
             get {
                 return ResourceManager.GetString("Aquamarine", resourceCulture);
             }
@@ -108,7 +99,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Azure.
         /// </summary>
-        internal static string Azure {
+        public static string Azure {
             get {
                 return ResourceManager.GetString("Azure", resourceCulture);
             }
@@ -117,7 +108,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Beige.
         /// </summary>
-        internal static string Beige {
+        public static string Beige {
             get {
                 return ResourceManager.GetString("Beige", resourceCulture);
             }
@@ -126,7 +117,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Bisque.
         /// </summary>
-        internal static string Bisque {
+        public static string Bisque {
             get {
                 return ResourceManager.GetString("Bisque", resourceCulture);
             }
@@ -135,7 +126,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Black.
         /// </summary>
-        internal static string Black {
+        public static string Black {
             get {
                 return ResourceManager.GetString("Black", resourceCulture);
             }
@@ -144,7 +135,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Blanched Almond.
         /// </summary>
-        internal static string BlanchedAlmond {
+        public static string BlanchedAlmond {
             get {
                 return ResourceManager.GetString("BlanchedAlmond", resourceCulture);
             }
@@ -153,7 +144,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Blue.
         /// </summary>
-        internal static string Blue {
+        public static string Blue {
             get {
                 return ResourceManager.GetString("Blue", resourceCulture);
             }
@@ -162,7 +153,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Blue Violet.
         /// </summary>
-        internal static string BlueViolet {
+        public static string BlueViolet {
             get {
                 return ResourceManager.GetString("BlueViolet", resourceCulture);
             }
@@ -171,7 +162,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Brown.
         /// </summary>
-        internal static string Brown {
+        public static string Brown {
             get {
                 return ResourceManager.GetString("Brown", resourceCulture);
             }
@@ -180,7 +171,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Burly Wood.
         /// </summary>
-        internal static string BurlyWood {
+        public static string BurlyWood {
             get {
                 return ResourceManager.GetString("BurlyWood", resourceCulture);
             }
@@ -189,7 +180,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Cadet Blue.
         /// </summary>
-        internal static string CadetBlue {
+        public static string CadetBlue {
             get {
                 return ResourceManager.GetString("CadetBlue", resourceCulture);
             }
@@ -198,7 +189,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Chartreuse.
         /// </summary>
-        internal static string Chartreuse {
+        public static string Chartreuse {
             get {
                 return ResourceManager.GetString("Chartreuse", resourceCulture);
             }
@@ -207,25 +198,16 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Chocolate.
         /// </summary>
-        internal static string Chocolate {
+        public static string Chocolate {
             get {
                 return ResourceManager.GetString("Chocolate", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cobalt.
-        /// </summary>
-        internal static string Cobalt {
-            get {
-                return ResourceManager.GetString("Cobalt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Coral.
         /// </summary>
-        internal static string Coral {
+        public static string Coral {
             get {
                 return ResourceManager.GetString("Coral", resourceCulture);
             }
@@ -234,7 +216,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Cornflower Blue.
         /// </summary>
-        internal static string CornflowerBlue {
+        public static string CornflowerBlue {
             get {
                 return ResourceManager.GetString("CornflowerBlue", resourceCulture);
             }
@@ -243,7 +225,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Cornsilk.
         /// </summary>
-        internal static string Cornsilk {
+        public static string Cornsilk {
             get {
                 return ResourceManager.GetString("Cornsilk", resourceCulture);
             }
@@ -252,25 +234,16 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Crimson.
         /// </summary>
-        internal static string Crimson {
+        public static string Crimson {
             get {
                 return ResourceManager.GetString("Crimson", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cyan.
-        /// </summary>
-        internal static string Cyan {
-            get {
-                return ResourceManager.GetString("Cyan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Dark Blue.
         /// </summary>
-        internal static string DarkBlue {
+        public static string DarkBlue {
             get {
                 return ResourceManager.GetString("DarkBlue", resourceCulture);
             }
@@ -279,7 +252,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Cyan.
         /// </summary>
-        internal static string DarkCyan {
+        public static string DarkCyan {
             get {
                 return ResourceManager.GetString("DarkCyan", resourceCulture);
             }
@@ -288,7 +261,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Goldenrod.
         /// </summary>
-        internal static string DarkGoldenrod {
+        public static string DarkGoldenrod {
             get {
                 return ResourceManager.GetString("DarkGoldenrod", resourceCulture);
             }
@@ -297,7 +270,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Gray.
         /// </summary>
-        internal static string DarkGray {
+        public static string DarkGray {
             get {
                 return ResourceManager.GetString("DarkGray", resourceCulture);
             }
@@ -306,7 +279,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Green.
         /// </summary>
-        internal static string DarkGreen {
+        public static string DarkGreen {
             get {
                 return ResourceManager.GetString("DarkGreen", resourceCulture);
             }
@@ -315,7 +288,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Khaki.
         /// </summary>
-        internal static string DarkKhaki {
+        public static string DarkKhaki {
             get {
                 return ResourceManager.GetString("DarkKhaki", resourceCulture);
             }
@@ -324,7 +297,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Magenta.
         /// </summary>
-        internal static string DarkMagenta {
+        public static string DarkMagenta {
             get {
                 return ResourceManager.GetString("DarkMagenta", resourceCulture);
             }
@@ -333,7 +306,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Olive Green.
         /// </summary>
-        internal static string DarkOliveGreen {
+        public static string DarkOliveGreen {
             get {
                 return ResourceManager.GetString("DarkOliveGreen", resourceCulture);
             }
@@ -342,7 +315,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Orange.
         /// </summary>
-        internal static string DarkOrange {
+        public static string DarkOrange {
             get {
                 return ResourceManager.GetString("DarkOrange", resourceCulture);
             }
@@ -351,7 +324,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Orchid.
         /// </summary>
-        internal static string DarkOrchid {
+        public static string DarkOrchid {
             get {
                 return ResourceManager.GetString("DarkOrchid", resourceCulture);
             }
@@ -360,7 +333,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Red.
         /// </summary>
-        internal static string DarkRed {
+        public static string DarkRed {
             get {
                 return ResourceManager.GetString("DarkRed", resourceCulture);
             }
@@ -369,7 +342,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Salmon.
         /// </summary>
-        internal static string DarkSalmon {
+        public static string DarkSalmon {
             get {
                 return ResourceManager.GetString("DarkSalmon", resourceCulture);
             }
@@ -378,7 +351,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Sea Green.
         /// </summary>
-        internal static string DarkSeaGreen {
+        public static string DarkSeaGreen {
             get {
                 return ResourceManager.GetString("DarkSeaGreen", resourceCulture);
             }
@@ -387,7 +360,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Slate Blue.
         /// </summary>
-        internal static string DarkSlateBlue {
+        public static string DarkSlateBlue {
             get {
                 return ResourceManager.GetString("DarkSlateBlue", resourceCulture);
             }
@@ -396,7 +369,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Slate Gray.
         /// </summary>
-        internal static string DarkSlateGray {
+        public static string DarkSlateGray {
             get {
                 return ResourceManager.GetString("DarkSlateGray", resourceCulture);
             }
@@ -405,7 +378,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Turquoise.
         /// </summary>
-        internal static string DarkTurquoise {
+        public static string DarkTurquoise {
             get {
                 return ResourceManager.GetString("DarkTurquoise", resourceCulture);
             }
@@ -414,7 +387,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dark Violet.
         /// </summary>
-        internal static string DarkViolet {
+        public static string DarkViolet {
             get {
                 return ResourceManager.GetString("DarkViolet", resourceCulture);
             }
@@ -423,7 +396,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Deep Pink.
         /// </summary>
-        internal static string DeepPink {
+        public static string DeepPink {
             get {
                 return ResourceManager.GetString("DeepPink", resourceCulture);
             }
@@ -432,7 +405,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Deep Sky Blue.
         /// </summary>
-        internal static string DeepSkyBlue {
+        public static string DeepSkyBlue {
             get {
                 return ResourceManager.GetString("DeepSkyBlue", resourceCulture);
             }
@@ -441,7 +414,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dim Gray.
         /// </summary>
-        internal static string DimGray {
+        public static string DimGray {
             get {
                 return ResourceManager.GetString("DimGray", resourceCulture);
             }
@@ -450,25 +423,16 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Dodger Blue.
         /// </summary>
-        internal static string DodgerBlue {
+        public static string DodgerBlue {
             get {
                 return ResourceManager.GetString("DodgerBlue", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Emerald.
-        /// </summary>
-        internal static string Emerald {
-            get {
-                return ResourceManager.GetString("Emerald", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Firebrick.
         /// </summary>
-        internal static string Firebrick {
+        public static string Firebrick {
             get {
                 return ResourceManager.GetString("Firebrick", resourceCulture);
             }
@@ -477,7 +441,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Floral White.
         /// </summary>
-        internal static string FloralWhite {
+        public static string FloralWhite {
             get {
                 return ResourceManager.GetString("FloralWhite", resourceCulture);
             }
@@ -486,7 +450,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Forest Green.
         /// </summary>
-        internal static string ForestGreen {
+        public static string ForestGreen {
             get {
                 return ResourceManager.GetString("ForestGreen", resourceCulture);
             }
@@ -495,7 +459,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Fuchsia.
         /// </summary>
-        internal static string Fuchsia {
+        public static string Fuchsia {
             get {
                 return ResourceManager.GetString("Fuchsia", resourceCulture);
             }
@@ -504,7 +468,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Gainsboro.
         /// </summary>
-        internal static string Gainsboro {
+        public static string Gainsboro {
             get {
                 return ResourceManager.GetString("Gainsboro", resourceCulture);
             }
@@ -513,7 +477,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Ghost White.
         /// </summary>
-        internal static string GhostWhite {
+        public static string GhostWhite {
             get {
                 return ResourceManager.GetString("GhostWhite", resourceCulture);
             }
@@ -522,7 +486,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Gold.
         /// </summary>
-        internal static string Gold {
+        public static string Gold {
             get {
                 return ResourceManager.GetString("Gold", resourceCulture);
             }
@@ -531,7 +495,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Goldenrod.
         /// </summary>
-        internal static string Goldenrod {
+        public static string Goldenrod {
             get {
                 return ResourceManager.GetString("Goldenrod", resourceCulture);
             }
@@ -540,7 +504,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Gray.
         /// </summary>
-        internal static string Gray {
+        public static string Gray {
             get {
                 return ResourceManager.GetString("Gray", resourceCulture);
             }
@@ -549,7 +513,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Green.
         /// </summary>
-        internal static string Green {
+        public static string Green {
             get {
                 return ResourceManager.GetString("Green", resourceCulture);
             }
@@ -558,7 +522,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Green Yellow.
         /// </summary>
-        internal static string GreenYellow {
+        public static string GreenYellow {
             get {
                 return ResourceManager.GetString("GreenYellow", resourceCulture);
             }
@@ -567,7 +531,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Honeydew.
         /// </summary>
-        internal static string Honeydew {
+        public static string Honeydew {
             get {
                 return ResourceManager.GetString("Honeydew", resourceCulture);
             }
@@ -576,7 +540,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Hot Pink.
         /// </summary>
-        internal static string HotPink {
+        public static string HotPink {
             get {
                 return ResourceManager.GetString("HotPink", resourceCulture);
             }
@@ -585,7 +549,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Indian Red.
         /// </summary>
-        internal static string IndianRed {
+        public static string IndianRed {
             get {
                 return ResourceManager.GetString("IndianRed", resourceCulture);
             }
@@ -594,7 +558,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Indigo.
         /// </summary>
-        internal static string Indigo {
+        public static string Indigo {
             get {
                 return ResourceManager.GetString("Indigo", resourceCulture);
             }
@@ -603,7 +567,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Ivory.
         /// </summary>
-        internal static string Ivory {
+        public static string Ivory {
             get {
                 return ResourceManager.GetString("Ivory", resourceCulture);
             }
@@ -612,7 +576,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Khaki.
         /// </summary>
-        internal static string Khaki {
+        public static string Khaki {
             get {
                 return ResourceManager.GetString("Khaki", resourceCulture);
             }
@@ -621,7 +585,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Lavender.
         /// </summary>
-        internal static string Lavender {
+        public static string Lavender {
             get {
                 return ResourceManager.GetString("Lavender", resourceCulture);
             }
@@ -630,7 +594,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Lavender Blush.
         /// </summary>
-        internal static string LavenderBlush {
+        public static string LavenderBlush {
             get {
                 return ResourceManager.GetString("LavenderBlush", resourceCulture);
             }
@@ -639,7 +603,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Lawn Green.
         /// </summary>
-        internal static string LawnGreen {
+        public static string LawnGreen {
             get {
                 return ResourceManager.GetString("LawnGreen", resourceCulture);
             }
@@ -648,7 +612,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Lemon Chiffon.
         /// </summary>
-        internal static string LemonChiffon {
+        public static string LemonChiffon {
             get {
                 return ResourceManager.GetString("LemonChiffon", resourceCulture);
             }
@@ -657,7 +621,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Blue.
         /// </summary>
-        internal static string LightBlue {
+        public static string LightBlue {
             get {
                 return ResourceManager.GetString("LightBlue", resourceCulture);
             }
@@ -666,7 +630,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to LightCoral.
         /// </summary>
-        internal static string LightCoral {
+        public static string LightCoral {
             get {
                 return ResourceManager.GetString("LightCoral", resourceCulture);
             }
@@ -675,7 +639,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Cyan.
         /// </summary>
-        internal static string LightCyan {
+        public static string LightCyan {
             get {
                 return ResourceManager.GetString("LightCyan", resourceCulture);
             }
@@ -684,7 +648,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Goldenrod Yellow.
         /// </summary>
-        internal static string LightGoldenrodYellow {
+        public static string LightGoldenrodYellow {
             get {
                 return ResourceManager.GetString("LightGoldenrodYellow", resourceCulture);
             }
@@ -693,7 +657,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Gray.
         /// </summary>
-        internal static string LightGray {
+        public static string LightGray {
             get {
                 return ResourceManager.GetString("LightGray", resourceCulture);
             }
@@ -702,7 +666,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Green.
         /// </summary>
-        internal static string LightGreen {
+        public static string LightGreen {
             get {
                 return ResourceManager.GetString("LightGreen", resourceCulture);
             }
@@ -711,7 +675,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Pink.
         /// </summary>
-        internal static string LightPink {
+        public static string LightPink {
             get {
                 return ResourceManager.GetString("LightPink", resourceCulture);
             }
@@ -720,7 +684,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Salmon.
         /// </summary>
-        internal static string LightSalmon {
+        public static string LightSalmon {
             get {
                 return ResourceManager.GetString("LightSalmon", resourceCulture);
             }
@@ -729,7 +693,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Sea Green.
         /// </summary>
-        internal static string LightSeaGreen {
+        public static string LightSeaGreen {
             get {
                 return ResourceManager.GetString("LightSeaGreen", resourceCulture);
             }
@@ -738,7 +702,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Sky Blue.
         /// </summary>
-        internal static string LightSkyBlue {
+        public static string LightSkyBlue {
             get {
                 return ResourceManager.GetString("LightSkyBlue", resourceCulture);
             }
@@ -747,7 +711,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Slate Gray.
         /// </summary>
-        internal static string LightSlateGray {
+        public static string LightSlateGray {
             get {
                 return ResourceManager.GetString("LightSlateGray", resourceCulture);
             }
@@ -756,7 +720,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Steel Blue.
         /// </summary>
-        internal static string LightSteelBlue {
+        public static string LightSteelBlue {
             get {
                 return ResourceManager.GetString("LightSteelBlue", resourceCulture);
             }
@@ -765,7 +729,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Light Yellow.
         /// </summary>
-        internal static string LightYellow {
+        public static string LightYellow {
             get {
                 return ResourceManager.GetString("LightYellow", resourceCulture);
             }
@@ -774,7 +738,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Lime.
         /// </summary>
-        internal static string Lime {
+        public static string Lime {
             get {
                 return ResourceManager.GetString("Lime", resourceCulture);
             }
@@ -783,7 +747,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Lime Green.
         /// </summary>
-        internal static string LimeGreen {
+        public static string LimeGreen {
             get {
                 return ResourceManager.GetString("LimeGreen", resourceCulture);
             }
@@ -792,43 +756,25 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Linen.
         /// </summary>
-        internal static string Linen {
+        public static string Linen {
             get {
                 return ResourceManager.GetString("Linen", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Magenta.
-        /// </summary>
-        internal static string Magenta {
-            get {
-                return ResourceManager.GetString("Magenta", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Maroon.
         /// </summary>
-        internal static string Maroon {
+        public static string Maroon {
             get {
                 return ResourceManager.GetString("Maroon", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mauve.
-        /// </summary>
-        internal static string Mauve {
-            get {
-                return ResourceManager.GetString("Mauve", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Medium Aquamarine.
         /// </summary>
-        internal static string MediumAquamarine {
+        public static string MediumAquamarine {
             get {
                 return ResourceManager.GetString("MediumAquamarine", resourceCulture);
             }
@@ -837,7 +783,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Medium Blue.
         /// </summary>
-        internal static string MediumBlue {
+        public static string MediumBlue {
             get {
                 return ResourceManager.GetString("MediumBlue", resourceCulture);
             }
@@ -846,7 +792,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Medium Orchid.
         /// </summary>
-        internal static string MediumOrchid {
+        public static string MediumOrchid {
             get {
                 return ResourceManager.GetString("MediumOrchid", resourceCulture);
             }
@@ -855,7 +801,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Medium Purple.
         /// </summary>
-        internal static string MediumPurple {
+        public static string MediumPurple {
             get {
                 return ResourceManager.GetString("MediumPurple", resourceCulture);
             }
@@ -864,7 +810,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Medium Sea Green.
         /// </summary>
-        internal static string MediumSeaGreen {
+        public static string MediumSeaGreen {
             get {
                 return ResourceManager.GetString("MediumSeaGreen", resourceCulture);
             }
@@ -873,7 +819,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Medium Slate Blue.
         /// </summary>
-        internal static string MediumSlateBlue {
+        public static string MediumSlateBlue {
             get {
                 return ResourceManager.GetString("MediumSlateBlue", resourceCulture);
             }
@@ -882,7 +828,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Medium Spring Green.
         /// </summary>
-        internal static string MediumSpringGreen {
+        public static string MediumSpringGreen {
             get {
                 return ResourceManager.GetString("MediumSpringGreen", resourceCulture);
             }
@@ -891,7 +837,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Medium Turquoise.
         /// </summary>
-        internal static string MediumTurquoise {
+        public static string MediumTurquoise {
             get {
                 return ResourceManager.GetString("MediumTurquoise", resourceCulture);
             }
@@ -900,7 +846,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Medium Violet Red.
         /// </summary>
-        internal static string MediumVioletRed {
+        public static string MediumVioletRed {
             get {
                 return ResourceManager.GetString("MediumVioletRed", resourceCulture);
             }
@@ -909,7 +855,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Midnight Blue.
         /// </summary>
-        internal static string MidnightBlue {
+        public static string MidnightBlue {
             get {
                 return ResourceManager.GetString("MidnightBlue", resourceCulture);
             }
@@ -918,7 +864,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Mint Cream.
         /// </summary>
-        internal static string MintCream {
+        public static string MintCream {
             get {
                 return ResourceManager.GetString("MintCream", resourceCulture);
             }
@@ -927,7 +873,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Misty Rose.
         /// </summary>
-        internal static string MistyRose {
+        public static string MistyRose {
             get {
                 return ResourceManager.GetString("MistyRose", resourceCulture);
             }
@@ -936,7 +882,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Moccasin.
         /// </summary>
-        internal static string Moccasin {
+        public static string Moccasin {
             get {
                 return ResourceManager.GetString("Moccasin", resourceCulture);
             }
@@ -945,7 +891,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Navajo White.
         /// </summary>
-        internal static string NavajoWhite {
+        public static string NavajoWhite {
             get {
                 return ResourceManager.GetString("NavajoWhite", resourceCulture);
             }
@@ -954,7 +900,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Navy.
         /// </summary>
-        internal static string Navy {
+        public static string Navy {
             get {
                 return ResourceManager.GetString("Navy", resourceCulture);
             }
@@ -963,7 +909,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Old Lace.
         /// </summary>
-        internal static string OldLace {
+        public static string OldLace {
             get {
                 return ResourceManager.GetString("OldLace", resourceCulture);
             }
@@ -972,7 +918,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Olive.
         /// </summary>
-        internal static string Olive {
+        public static string Olive {
             get {
                 return ResourceManager.GetString("Olive", resourceCulture);
             }
@@ -981,7 +927,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Olive Drab.
         /// </summary>
-        internal static string OliveDrab {
+        public static string OliveDrab {
             get {
                 return ResourceManager.GetString("OliveDrab", resourceCulture);
             }
@@ -990,7 +936,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Orange.
         /// </summary>
-        internal static string Orange {
+        public static string Orange {
             get {
                 return ResourceManager.GetString("Orange", resourceCulture);
             }
@@ -999,7 +945,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Orange Red.
         /// </summary>
-        internal static string OrangeRed {
+        public static string OrangeRed {
             get {
                 return ResourceManager.GetString("OrangeRed", resourceCulture);
             }
@@ -1008,7 +954,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Orchid.
         /// </summary>
-        internal static string Orchid {
+        public static string Orchid {
             get {
                 return ResourceManager.GetString("Orchid", resourceCulture);
             }
@@ -1017,7 +963,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Pale Goldenrod.
         /// </summary>
-        internal static string PaleGoldenrod {
+        public static string PaleGoldenrod {
             get {
                 return ResourceManager.GetString("PaleGoldenrod", resourceCulture);
             }
@@ -1026,7 +972,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Pale Green.
         /// </summary>
-        internal static string PaleGreen {
+        public static string PaleGreen {
             get {
                 return ResourceManager.GetString("PaleGreen", resourceCulture);
             }
@@ -1035,7 +981,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Pale Turquoise.
         /// </summary>
-        internal static string PaleTurquoise {
+        public static string PaleTurquoise {
             get {
                 return ResourceManager.GetString("PaleTurquoise", resourceCulture);
             }
@@ -1044,7 +990,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Pale Violet Red.
         /// </summary>
-        internal static string PaleVioletRed {
+        public static string PaleVioletRed {
             get {
                 return ResourceManager.GetString("PaleVioletRed", resourceCulture);
             }
@@ -1053,7 +999,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Papaya Whip.
         /// </summary>
-        internal static string PapayaWhip {
+        public static string PapayaWhip {
             get {
                 return ResourceManager.GetString("PapayaWhip", resourceCulture);
             }
@@ -1062,7 +1008,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Peach Puff.
         /// </summary>
-        internal static string PeachPuff {
+        public static string PeachPuff {
             get {
                 return ResourceManager.GetString("PeachPuff", resourceCulture);
             }
@@ -1071,7 +1017,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Peru.
         /// </summary>
-        internal static string Peru {
+        public static string Peru {
             get {
                 return ResourceManager.GetString("Peru", resourceCulture);
             }
@@ -1080,7 +1026,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Pink.
         /// </summary>
-        internal static string Pink {
+        public static string Pink {
             get {
                 return ResourceManager.GetString("Pink", resourceCulture);
             }
@@ -1089,7 +1035,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Plum.
         /// </summary>
-        internal static string Plum {
+        public static string Plum {
             get {
                 return ResourceManager.GetString("Plum", resourceCulture);
             }
@@ -1098,7 +1044,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Powder Blue.
         /// </summary>
-        internal static string PowderBlue {
+        public static string PowderBlue {
             get {
                 return ResourceManager.GetString("PowderBlue", resourceCulture);
             }
@@ -1107,7 +1053,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Purple.
         /// </summary>
-        internal static string Purple {
+        public static string Purple {
             get {
                 return ResourceManager.GetString("Purple", resourceCulture);
             }
@@ -1116,7 +1062,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Red.
         /// </summary>
-        internal static string Red {
+        public static string Red {
             get {
                 return ResourceManager.GetString("Red", resourceCulture);
             }
@@ -1125,7 +1071,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Rosy Brown.
         /// </summary>
-        internal static string RosyBrown {
+        public static string RosyBrown {
             get {
                 return ResourceManager.GetString("RosyBrown", resourceCulture);
             }
@@ -1134,7 +1080,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Royal Blue.
         /// </summary>
-        internal static string RoyalBlue {
+        public static string RoyalBlue {
             get {
                 return ResourceManager.GetString("RoyalBlue", resourceCulture);
             }
@@ -1143,7 +1089,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Saddle Brown.
         /// </summary>
-        internal static string SaddleBrown {
+        public static string SaddleBrown {
             get {
                 return ResourceManager.GetString("SaddleBrown", resourceCulture);
             }
@@ -1152,7 +1098,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Salmon.
         /// </summary>
-        internal static string Salmon {
+        public static string Salmon {
             get {
                 return ResourceManager.GetString("Salmon", resourceCulture);
             }
@@ -1161,7 +1107,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Sandy Brown.
         /// </summary>
-        internal static string SandyBrown {
+        public static string SandyBrown {
             get {
                 return ResourceManager.GetString("SandyBrown", resourceCulture);
             }
@@ -1170,7 +1116,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Sea Green.
         /// </summary>
-        internal static string SeaGreen {
+        public static string SeaGreen {
             get {
                 return ResourceManager.GetString("SeaGreen", resourceCulture);
             }
@@ -1179,7 +1125,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Sea Shell.
         /// </summary>
-        internal static string SeaShell {
+        public static string SeaShell {
             get {
                 return ResourceManager.GetString("SeaShell", resourceCulture);
             }
@@ -1188,7 +1134,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Sienna.
         /// </summary>
-        internal static string Sienna {
+        public static string Sienna {
             get {
                 return ResourceManager.GetString("Sienna", resourceCulture);
             }
@@ -1197,7 +1143,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Silver.
         /// </summary>
-        internal static string Silver {
+        public static string Silver {
             get {
                 return ResourceManager.GetString("Silver", resourceCulture);
             }
@@ -1206,7 +1152,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Sky Blue.
         /// </summary>
-        internal static string SkyBlue {
+        public static string SkyBlue {
             get {
                 return ResourceManager.GetString("SkyBlue", resourceCulture);
             }
@@ -1215,7 +1161,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Slate Blue.
         /// </summary>
-        internal static string SlateBlue {
+        public static string SlateBlue {
             get {
                 return ResourceManager.GetString("SlateBlue", resourceCulture);
             }
@@ -1224,7 +1170,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Slate Gray.
         /// </summary>
-        internal static string SlateGray {
+        public static string SlateGray {
             get {
                 return ResourceManager.GetString("SlateGray", resourceCulture);
             }
@@ -1233,7 +1179,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Snow.
         /// </summary>
-        internal static string Snow {
+        public static string Snow {
             get {
                 return ResourceManager.GetString("Snow", resourceCulture);
             }
@@ -1242,25 +1188,16 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Spring Green.
         /// </summary>
-        internal static string SpringGreen {
+        public static string SpringGreen {
             get {
                 return ResourceManager.GetString("SpringGreen", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Steel.
-        /// </summary>
-        internal static string Steel {
-            get {
-                return ResourceManager.GetString("Steel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Steel Blue.
         /// </summary>
-        internal static string SteelBlue {
+        public static string SteelBlue {
             get {
                 return ResourceManager.GetString("SteelBlue", resourceCulture);
             }
@@ -1269,25 +1206,16 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Tan.
         /// </summary>
-        internal static string Tan {
+        public static string Tan {
             get {
                 return ResourceManager.GetString("Tan", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Taupe.
-        /// </summary>
-        internal static string Taupe {
-            get {
-                return ResourceManager.GetString("Taupe", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Teal.
         /// </summary>
-        internal static string Teal {
+        public static string Teal {
             get {
                 return ResourceManager.GetString("Teal", resourceCulture);
             }
@@ -1296,7 +1224,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Thistle.
         /// </summary>
-        internal static string Thistle {
+        public static string Thistle {
             get {
                 return ResourceManager.GetString("Thistle", resourceCulture);
             }
@@ -1305,7 +1233,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Tomato.
         /// </summary>
-        internal static string Tomato {
+        public static string Tomato {
             get {
                 return ResourceManager.GetString("Tomato", resourceCulture);
             }
@@ -1314,7 +1242,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Transparent.
         /// </summary>
-        internal static string Transparent {
+        public static string Transparent {
             get {
                 return ResourceManager.GetString("Transparent", resourceCulture);
             }
@@ -1323,7 +1251,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Turquoise.
         /// </summary>
-        internal static string Turquoise {
+        public static string Turquoise {
             get {
                 return ResourceManager.GetString("Turquoise", resourceCulture);
             }
@@ -1332,7 +1260,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Violet.
         /// </summary>
-        internal static string Violet {
+        public static string Violet {
             get {
                 return ResourceManager.GetString("Violet", resourceCulture);
             }
@@ -1341,7 +1269,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Wheat.
         /// </summary>
-        internal static string Wheat {
+        public static string Wheat {
             get {
                 return ResourceManager.GetString("Wheat", resourceCulture);
             }
@@ -1350,7 +1278,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to White.
         /// </summary>
-        internal static string White {
+        public static string White {
             get {
                 return ResourceManager.GetString("White", resourceCulture);
             }
@@ -1359,7 +1287,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to White Smoke.
         /// </summary>
-        internal static string WhiteSmoke {
+        public static string WhiteSmoke {
             get {
                 return ResourceManager.GetString("WhiteSmoke", resourceCulture);
             }
@@ -1368,7 +1296,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Yellow.
         /// </summary>
-        internal static string Yellow {
+        public static string Yellow {
             get {
                 return ResourceManager.GetString("Yellow", resourceCulture);
             }
@@ -1377,7 +1305,7 @@ namespace TimsWpfControls.Lang {
         /// <summary>
         ///   Looks up a localized string similar to Yellow Green.
         /// </summary>
-        internal static string YellowGreen {
+        public static string YellowGreen {
             get {
                 return ResourceManager.GetString("YellowGreen", resourceCulture);
             }

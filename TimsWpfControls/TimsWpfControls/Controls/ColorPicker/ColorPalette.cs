@@ -18,7 +18,7 @@ namespace TimsWpfControls
         }
 
         public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register(nameof(Header), typeof(object), typeof(ColorPalette), new PropertyMetadata(null));
-        public static readonly DependencyProperty ColorNamesDictionaryProperty = DependencyProperty.Register(nameof(ColorNamesDictionary), typeof(Dictionary<Color?, string>), typeof(ColorPalette), new PropertyMetadata(null));
+        public static readonly DependencyProperty ColorNamesDictionaryProperty = DependencyProperty.Register(nameof(ColorNamesDictionary), typeof(Dictionary<Color, string>), typeof(ColorPalette), new PropertyMetadata(null));
 
         /// <summary>
         /// Gets or Sets the Header of this Control
@@ -33,9 +33,9 @@ namespace TimsWpfControls
         /// <summary>
         /// Gets or sets a custom dictionary for color to name. If null, the degault dictionary will be used.
         /// </summary>
-        public Dictionary<Color?, string> ColorNamesDictionary
+        public Dictionary<Color, string> ColorNamesDictionary
         {
-            get { return (Dictionary<Color?, string>)GetValue(ColorNamesDictionaryProperty); }
+            get { return (Dictionary<Color, string>)GetValue(ColorNamesDictionaryProperty); }
             set { SetValue(ColorNamesDictionaryProperty, value); }
         }
 

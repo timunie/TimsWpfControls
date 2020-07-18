@@ -13,7 +13,7 @@ namespace TimsWpfControls
     public static class BuildInColorPalettes
     {
         #region Build in Palettes
-        public static Color[] StandardColorsPalette { get; } = new []
+        public static ObservableCollection<Color> StandardColorsPalette { get; } = new ObservableCollection<Color>(new []
             {
                 Colors.Transparent,
                 Colors.White,
@@ -34,14 +34,21 @@ namespace TimsWpfControls
                 Colors.Indigo,
                 Colors.Purple,
                 Colors.Fuchsia
-            };
+            });
 
-        public static ObservableCollection<Color> WpfColorsPalette { get; } = new ObservableCollection<Color>(
-            typeof(Colors).GetProperties().Where(x => x.PropertyType == typeof(Color))
-                .Select(x => (Color)x.GetValue(null))
+        public static ReadOnlyCollection<Color> WpfColorsPalette { get; } = new ReadOnlyCollection<Color>(
+            ColorHelper.ColorNamesDictionary
+                .Keys
                 .OrderBy(c => new HSVColor(c).Hue)
                 .ThenBy(c => new HSVColor(c).Saturation)
-                .ThenByDescending(c => new HSVColor(c).Value));
+                .ThenByDescending(c => new HSVColor(c).Value).ToList());
+
+        public static ObservableCollection<Color> AccentColorsPalette { get; } = new ObservableCollection<Color>(
+            ColorHelper.AccentColorNamesDictionary
+                .Keys
+                .OrderBy(c => new HSVColor(c).Hue)
+                .ThenBy(c => new HSVColor(c).Saturation)
+                .ThenByDescending(c => new HSVColor(c).Value).ToList());
 
 
         public static ObservableCollection<Color?> RecentColors { get; } = new ObservableCollection<Color?>();

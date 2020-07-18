@@ -22,6 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Lang\AccentColorNames.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AccentColorNames.resx</DependentUpon>
+    </Compile>
     <Compile Update="Lang\ColorNames.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -30,8 +35,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Lang\ColorNames.resx">
+    <EmbeddedResource Update="Lang\AccentColorNames.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AccentColorNames.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Lang\ColorNames.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ColorNames.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

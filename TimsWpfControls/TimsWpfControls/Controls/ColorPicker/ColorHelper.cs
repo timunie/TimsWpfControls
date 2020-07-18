@@ -16,28 +16,6 @@ namespace TimsWpfControls
     /// </summary>
     public static class ColorHelper
     {
-        #region Constructors
-
-        static ColorHelper()
-        {
-            ColorNamesDictionary = new Dictionary<Color?, string>();
-
-            var rm = new ResourceManager(typeof(Lang.ColorNames));
-            ResourceSet resourceSet =rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-            foreach (var entry in resourceSet.OfType<DictionaryEntry>())
-            {
-                try
-                {
-                    var color = (Color)ColorConverter.ConvertFromString(entry.Key.ToString());
-                    ColorNamesDictionary.Add(color, entry.Value.ToString());
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine(entry.Key.ToString() + " is not a valid color-key");
-                }
-            }            
-        }
-        #endregion
 
         /// <summary>
         /// Converts this Color to its Int32-Value
@@ -73,7 +51,7 @@ namespace TimsWpfControls
         /// </summary>
         /// <param name="ColorName">The localized name of the color, the hex-code of the color or the internal colorname</param>
         /// <returns>the Color if successfull, else null</returns>
-        public static Color? ColorFromString(string ColorName, Dictionary<Color?, string> colorNamesDictionary = null)
+        public static Color? ColorFromString(string ColorName, Dictionary<Color, string> colorNamesDictionary = null)
         {
             Color? result = null;
 
@@ -106,15 +84,69 @@ namespace TimsWpfControls
         /// <summary>
         /// A Dictionary with localized Color Names
         /// </summary>
-        public static Dictionary<Color?, string> ColorNamesDictionary { get; set; }
+        public static Dictionary<Color, string> _ColorNamesDictionary { get; set; }
+        public static Dictionary<Color, string> ColorNamesDictionary
+        {
+            get
+            {
+                if (_ColorNamesDictionary == null)
+                {
+                    _ColorNamesDictionary = new Dictionary<Color, string>();
+                    var rm = new ResourceManager(typeof(Lang.ColorNames));
+                    var resourceSet = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+                    foreach (var entry in resourceSet.OfType<DictionaryEntry>())
+                    {
+                        try
+                        {
+                            var color = (Color)ColorConverter.ConvertFromString(entry.Key.ToString());
+                            _ColorNamesDictionary.Add(color, entry.Value.ToString());
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine(entry.Key.ToString() + " is not a valid color-key");
+                        }
+                    }
+                }
+                return _ColorNamesDictionary;
+            }
+            set { _ColorNamesDictionary = value; }
+        }
 
+
+        static Dictionary<Color, string> _AccentColorNamesDictionary;
+        public static Dictionary<Color, string> AccentColorNamesDictionary
+        {
+            get
+            {
+                if (_AccentColorNamesDictionary == null)
+                {
+                    _AccentColorNamesDictionary = new Dictionary<Color, string>();
+                    var rm = new ResourceManager(typeof(Lang.AccentColorNames));
+                    var resourceSet = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+                    foreach (var entry in resourceSet.OfType<DictionaryEntry>())
+                    {
+                        try
+                        {
+                            var color = (Color)ColorConverter.ConvertFromString(entry.Key.ToString());
+                            _AccentColorNamesDictionary.Add(color, entry.Value.ToString());
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine(entry.Key.ToString() + " is not a valid color-key");
+                        }
+                    }
+                }
+                return _AccentColorNamesDictionary;
+            }
+            set { _AccentColorNamesDictionary = value; }
+        }
 
         /// <summary>
         /// Searches for the localized name of a given <paramref name="color"/>
         /// </summary>
         /// <param name="color">color</param>
         /// <returns>the local color name or null if the given color doesn't have a name</returns>
-        public static string GetColorName(Color? color, Dictionary<Color?, string> colorNamesDictionary = null)
+        public static string GetColorName(Color? color, Dictionary<Color, string> colorNamesDictionary = null)
         {
             if (color is null) return null;
 
@@ -123,7 +155,7 @@ namespace TimsWpfControls
                 colorNamesDictionary = ColorNamesDictionary;
             }
 
-            return colorNamesDictionary.TryGetValue(color, out string name) ? $"{name} ({color})" : $"{color}";
+            return colorNamesDictionary.TryGetValue(color.Value, out string name) ? $"{name} ({color})" : $"{color}";
         }
 
     }
