@@ -285,13 +285,15 @@ namespace TimsWpfControls
 
         private void Update_AssistSourceResultView()
         {
+            if (!IsInitialized) return;
+
             var compareTo = sbLastWords.ToString();
             SetValue(ConentAssistSource_ResultViewProperty,
                     ContentAssistSource?.Where(x => IsMatch(x?.ToString(), compareTo))
                     .Select(x => x.ToString())
                     .OrderBy(x => x));
 
-            if (!ConentAssistSource_ResultView.Any())
+            if (ConentAssistSource_ResultView == null || !ConentAssistSource_ResultView.Any() )
             {
                 PART_IntellisensePopup.IsOpen = false;
             }

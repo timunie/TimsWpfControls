@@ -14,8 +14,6 @@ namespace TimsWpfControls
     public class DataGridIntellisenseTextboxColumn : DataGridTextColumn
     {
         private static Style _defaultEditingElementStyle;
-        private static Style _defaultElementStyle;
-
 
         static DataGridIntellisenseTextboxColumn()
         {
