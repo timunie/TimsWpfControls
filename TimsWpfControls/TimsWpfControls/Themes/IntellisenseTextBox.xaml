@@ -132,6 +132,7 @@
                                     Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:TextBoxHelper.ClearTextButton), Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <controlzex:PopupEx x:Name="PART_IntellisensePopup"
+                                                IsOpen="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsIntellisensePopupOpen, Mode=TwoWay}"
                                                 MinWidth="200"
                                                 MinHeight="100"
                                                 MaxHeight="300"

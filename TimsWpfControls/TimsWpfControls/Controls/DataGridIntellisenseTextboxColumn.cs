@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace TimsWpfControls
 {
@@ -75,16 +76,26 @@ namespace TimsWpfControls
         /// <returns>The unedited value of the cell.</returns>
         protected override object PrepareCellForEdit(FrameworkElement editingElement, RoutedEventArgs editingEventArgs)
         {
-            IntellisenseTextBox textBox = editingElement as IntellisenseTextBox;
-            if (textBox != null)
+            if (editingElement is IntellisenseTextBox textBox)
             {
                 textBox.Focus();
                 Keyboard.Focus(textBox);
 
+                // For now this does not work
+
+                //textBox.Dispatcher.BeginInvoke(
+                //    DispatcherPriority.ContextIdle,
+                //    (DispatcherOperationCallback)delegate (object arg)
+                //    {
+                //        var intellisenseTB = (IntellisenseTextBox)arg;
+                //        intellisenseTB.SetCurrentValue(IntellisenseTextBox.IsIntellisensePopupOpenProperty, true);
+                //        return null;
+                //    },
+                //    textBox);
+
                 string originalValue = textBox.Text;
 
-                TextCompositionEventArgs textArgs = editingEventArgs as TextCompositionEventArgs;
-                if (textArgs != null)
+                if (editingEventArgs is TextCompositionEventArgs textArgs)
                 {
                     // If text input started the edit, then replace the text with what was typed.
                     string inputText = ConvertTextForEdit(textArgs.Text);
@@ -96,8 +107,7 @@ namespace TimsWpfControls
                 else
                 {
                     // If a mouse click started the edit, then place the caret under the mouse.
-                    MouseButtonEventArgs mouseArgs = editingEventArgs as MouseButtonEventArgs;
-                    if ((mouseArgs == null) || !PlaceCaretOnTextBox(textBox, Mouse.GetPosition(textBox)))
+                    if ((editingEventArgs is MouseButtonEventArgs) || !PlaceCaretOnTextBox(textBox, Mouse.GetPosition(textBox)))
                     {
                         // If the mouse isn't over the textbox or something else started the edit, then select the text.
                         textBox.SelectAll();
@@ -159,6 +169,7 @@ namespace TimsWpfControls
             SyncColumnProperty(this, e, IntellisenseTextBox.ContentAssistSourceProperty, ContentAssistSourceProperty);
             SyncColumnProperty(this, e, IntellisenseTextBox.MatchBeginningProperty, MatchBeginningProperty);
             SyncColumnProperty(this, e, IntellisenseTextBox.SuffixAfterInsertProperty, SuffixAfterInsertProperty);
+            SyncColumnProperty(this, e, IntellisenseTextBox.DelimiterProperty, DelimiterProperty);
         }
 
         internal static void SyncColumnProperty(DependencyObject column, DependencyObject content, DependencyProperty contentProperty, DependencyProperty columnProperty)
@@ -256,6 +267,20 @@ namespace TimsWpfControls
         // Using a DependencyProperty as the backing store for SuffixAfterInsert.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SuffixAfterInsertProperty =
             DependencyProperty.Register("SuffixAfterInsert", typeof(string), typeof(DataGridIntellisenseTextboxColumn), new PropertyMetadata(null));
+
+
+
+
+        public object Delimiter
+        {
+            get { return (object)GetValue(DelimiterProperty); }
+            set { SetValue(DelimiterProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Delimiter.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DelimiterProperty =
+            DependencyProperty.Register("Delimiter", typeof(object), typeof(DataGridIntellisenseTextboxColumn), new PropertyMetadata(".,; \n\r"));
+
 
 
         #endregion

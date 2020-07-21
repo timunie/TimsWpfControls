@@ -13,6 +13,7 @@
         <ctrls:IntellisenseTextBox x:Name="IntellisenseTextBox" 
                                    AcceptsReturn="True"  
                                    ContentAssistSource="{x:Static model:MainViewModel.IntellisenseSource}" 
-                                   SuffixAfterInsert=" " />
+                                   SuffixAfterInsert=" " 
+                                   Delimiter=";/|"/>
     </local:ExampleView_Base>
 </UserControl>
