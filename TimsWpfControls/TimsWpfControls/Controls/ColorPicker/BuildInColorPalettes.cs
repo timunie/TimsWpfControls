@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +14,7 @@ namespace TimsWpfControls
 {
     public static class BuildInColorPalettes
     {
+     
         #region Build in Palettes
         public static ObservableCollection<Color> StandardColorsPalette { get; } = new ObservableCollection<Color>(new []
             {
@@ -43,12 +46,25 @@ namespace TimsWpfControls
                 .ThenBy(c => new HSVColor(c).Saturation)
                 .ThenByDescending(c => new HSVColor(c).Value).ToList());
 
-        public static ObservableCollection<Color> AccentColorsPalette { get; } = new ObservableCollection<Color>(
-            ColorHelper.AccentColorNamesDictionary
-                .Keys
-                .OrderBy(c => new HSVColor(c).Hue)
-                .ThenBy(c => new HSVColor(c).Saturation)
-                .ThenByDescending(c => new HSVColor(c).Value).ToList());
+        
+        
+        static ObservableCollection<Color> _AccentColorsPalette;
+        public static ObservableCollection<Color> AccentColorsPalette
+        {
+            get
+            {
+                if (_AccentColorsPalette == null)
+                {
+                    _AccentColorsPalette = new ObservableCollection<Color>(
+                        ColorHelper.AccentColorNamesDictionary
+                        .OrderBy(x => x.Value)
+                        .Select(x => x.Key));
+                    
+                    return _AccentColorsPalette;
+                }
+                return _AccentColorsPalette;
+            }
+        }
 
 
         public static ObservableCollection<Color?> RecentColors { get; } = new ObservableCollection<Color?>();

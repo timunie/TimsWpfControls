@@ -351,6 +351,7 @@
                                                                           Header="{TemplateBinding StandardColorPaletteHeader}"
                                                                           Margin="0,0,4,4"
                                                                           ItemsSource="{TemplateBinding StandardColorPaletteItemsSource}"
+                                                                          ColorNamesDictionary="{TemplateBinding ColorNamesDictionary}"
                                                                           Style="{TemplateBinding StandardColorPaletteStyle}"
                                                                           Visibility="{TemplateBinding IsStandardColorPaletteVisible,
                                                                                                        Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -358,6 +359,7 @@
                                                     <timsWpf:ColorPalette x:Name="PART_ColorPaletteAvailable"
                                                                           Header="{TemplateBinding AvailableColorPaletteHeader}"
                                                                           Margin="0,0,4,4"
+                                                                          ColorNamesDictionary="{TemplateBinding ColorNamesDictionary}"
                                                                           ItemsSource="{TemplateBinding AvailableColorPaletteItemsSource}"
                                                                           Style="{TemplateBinding AvailableColorPaletteStyle}"
                                                                           Visibility="{TemplateBinding IsAvailableColorPaletteVisible,
@@ -366,6 +368,7 @@
                                                     <timsWpf:ColorPalette x:Name="PART_ColorPaletteCustom01"
                                                                           Header="{TemplateBinding CustomColorPalette01Header}"
                                                                           Margin="0,0,4,4"
+                                                                          ColorNamesDictionary="{TemplateBinding ColorNamesDictionary}"
                                                                           ItemsSource="{TemplateBinding CustomColorPalette01ItemsSource}"
                                                                           Style="{TemplateBinding CustomColorPalette01Style}"
                                                                           Visibility="{TemplateBinding IsCustomColorPalette01Visible,
@@ -374,6 +377,7 @@
                                                     <timsWpf:ColorPalette x:Name="PART_ColorPaletteCustom02"
                                                                           Header="{TemplateBinding CustomColorPalette02Header}"
                                                                           Margin="0,0,4,4"
+                                                                          ColorNamesDictionary="{TemplateBinding ColorNamesDictionary}"
                                                                           ItemsSource="{TemplateBinding CustomColorPalette02ItemsSource}"
                                                                           Style="{TemplateBinding CustomColorPalette02Style}"
                                                                           Visibility="{TemplateBinding IsCustomColorPalette02Visible,
@@ -382,6 +386,7 @@
                                                     <timsWpf:ColorPalette x:Name="PART_ColorPaletteRecent"
                                                                           Header="{TemplateBinding RecentColorPaletteHeader}"
                                                                           Margin="0,0,4,4"
+                                                                          ColorNamesDictionary="{TemplateBinding ColorNamesDictionary}"
                                                                           ItemsSource="{TemplateBinding RecentColorPaletteItemsSource}"
                                                                           Style="{TemplateBinding RecentColorPaletteStyle}"
                                                                           Visibility="{TemplateBinding IsRecentColorPaletteVisible,

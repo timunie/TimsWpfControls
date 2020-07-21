@@ -117,73 +117,73 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="#FF0050EF" xml:space="preserve">
+    <value>Kobalt</value>
+  </data>
   <data name="#FF0078D7" xml:space="preserve">
     <value>Blau</value>
-  </data>
-  <data name="#FF825A2C" xml:space="preserve">
-    <value>Braun</value>
-  </data>
-  <data name="#FF6D8764" xml:space="preserve">
-    <value>Olivgrün</value>
-  </data>
-  <data name="#FFFEDE06" xml:space="preserve">
-    <value>Gelb</value>
-  </data>
-  <data name="#FFAA00FF" xml:space="preserve">
-    <value>Violett</value>
-  </data>
-  <data name="#FF00ABA9" xml:space="preserve">
-    <value>Blaugrün</value>
-  </data>
-  <data name="#FF87794E" xml:space="preserve">
-    <value>Braungrau</value>
-  </data>
-  <data name="#FF647687" xml:space="preserve">
-    <value>Stahl</value>
-  </data>
-  <data name="#FFA0522D" xml:space="preserve">
-    <value>Ockergelb</value>
-  </data>
-  <data name="#FFE51400" xml:space="preserve">
-    <value>Rot</value>
-  </data>
-  <data name="#FF6459DF" xml:space="preserve">
-    <value>Lila</value>
-  </data>
-  <data name="#FFFA6800" xml:space="preserve">
-    <value>Orange</value>
-  </data>
-  <data name="#FFD80073" xml:space="preserve">
-    <value>Magenta</value>
-  </data>
-  <data name="#FFA4C400" xml:space="preserve">
-    <value>Limone</value>
-  </data>
-  <data name="#FF6A00FF" xml:space="preserve">
-    <value>Indigo</value>
-  </data>
-  <data name="#FF60A917" xml:space="preserve">
-    <value>Grün</value>
   </data>
   <data name="#FF008A00" xml:space="preserve">
     <value>Smaragdgrün</value>
   </data>
-  <data name="#FFA20025" xml:space="preserve">
-    <value>Karmesinrot</value>
-  </data>
-  <data name="#FFF0A30A" xml:space="preserve">
-    <value>Bernstein</value>
-  </data>
-  <data name="#FF0050EF" xml:space="preserve">
-    <value>Kobalt</value>
+  <data name="#FF00ABA9" xml:space="preserve">
+    <value>Blaugrün</value>
   </data>
   <data name="#FF1BA1E2" xml:space="preserve">
     <value>Cyanblau</value>
   </data>
+  <data name="#FF60A917" xml:space="preserve">
+    <value>Grün</value>
+  </data>
+  <data name="#FF6459DF" xml:space="preserve">
+    <value>Lila</value>
+  </data>
+  <data name="#FF647687" xml:space="preserve">
+    <value>Stahl</value>
+  </data>
+  <data name="#FF6A00FF" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="#FF6D8764" xml:space="preserve">
+    <value>Olivgrün</value>
+  </data>
   <data name="#FF76608A" xml:space="preserve">
     <value>Malvenfarbe</value>
   </data>
+  <data name="#FF825A2C" xml:space="preserve">
+    <value>Braun</value>
+  </data>
+  <data name="#FF87794E" xml:space="preserve">
+    <value>Braungrau</value>
+  </data>
+  <data name="#FFA0522D" xml:space="preserve">
+    <value>Ockergelb</value>
+  </data>
+  <data name="#FFA20025" xml:space="preserve">
+    <value>Karmesinrot</value>
+  </data>
+  <data name="#FFA4C400" xml:space="preserve">
+    <value>Limone</value>
+  </data>
+  <data name="#FFAA00FF" xml:space="preserve">
+    <value>Violett</value>
+  </data>
+  <data name="#FFD80073" xml:space="preserve">
+    <value>Magenta</value>
+  </data>
+  <data name="#FFE51400" xml:space="preserve">
+    <value>Rot</value>
+  </data>
+  <data name="#FFF0A30A" xml:space="preserve">
+    <value>Bernstein</value>
+  </data>
   <data name="#FFF472D0" xml:space="preserve">
     <value>Rosa</value>
+  </data>
+  <data name="#FFFA6800" xml:space="preserve">
+    <value>Orange</value>
+  </data>
+  <data name="#FFFEDE06" xml:space="preserve">
+    <value>Gelb</value>
   </data>
 </root>

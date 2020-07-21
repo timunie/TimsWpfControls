@@ -60,7 +60,7 @@ namespace TimsWpfControls
                 // if we don't have a string, we cannot have any Color
                 if (string.IsNullOrWhiteSpace(ColorName)) return null;
 
-                if (! ColorName.StartsWith("#"))
+                if (! ColorName.StartsWith("#", StringComparison.Ordinal))
                 {
                     result = ColorNamesDictionary.FirstOrDefault(x => string.Equals(x.Value, ColorName, StringComparison.OrdinalIgnoreCase)).Key as Color?;
                 }
@@ -71,7 +71,7 @@ namespace TimsWpfControls
             }
             catch (FormatException)
             {
-                if (!result.HasValue && !ColorName.StartsWith("#"))
+                if (!result.HasValue && !ColorName.StartsWith("#", StringComparison.Ordinal))
                 {
                     result = ColorFromString("#" + ColorName);
                 }
@@ -84,7 +84,7 @@ namespace TimsWpfControls
         /// <summary>
         /// A Dictionary with localized Color Names
         /// </summary>
-        public static Dictionary<Color, string> _ColorNamesDictionary { get; set; }
+        static Dictionary<Color, string> _ColorNamesDictionary;
         public static Dictionary<Color, string> ColorNamesDictionary
         {
             get
@@ -93,7 +93,7 @@ namespace TimsWpfControls
                 {
                     _ColorNamesDictionary = new Dictionary<Color, string>();
                     var rm = new ResourceManager(typeof(Lang.ColorNames));
-                    var resourceSet = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+                    var resourceSet = rm.GetResourceSet(CultureInfo.CurrentCulture, true, true);
                     foreach (var entry in resourceSet.OfType<DictionaryEntry>())
                     {
                         try
@@ -122,7 +122,7 @@ namespace TimsWpfControls
                 {
                     _AccentColorNamesDictionary = new Dictionary<Color, string>();
                     var rm = new ResourceManager(typeof(Lang.AccentColorNames));
-                    var resourceSet = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+                    var resourceSet = rm.GetResourceSet(CultureInfo.CurrentCulture, true, true);
                     foreach (var entry in resourceSet.OfType<DictionaryEntry>())
                     {
                         try
