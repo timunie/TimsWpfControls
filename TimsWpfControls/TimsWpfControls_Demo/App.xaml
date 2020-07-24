@@ -4,7 +4,7 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:local="clr-namespace:TimsWpfControls_Demo" 
-             xmlns:mahappshelper="clr-namespace:TimsWpfControls.MahAppsHelper;assembly=TimsWpfControls" 
+             xmlns:mahappshelper="clr-namespace:TimsWpfControls.Helper;assembly=TimsWpfControls" 
              xmlns:converters="http://metro.mahapps.com/winfx/xaml/shared"
              StartupUri="MainWindow.xaml">
     <Application.Resources>

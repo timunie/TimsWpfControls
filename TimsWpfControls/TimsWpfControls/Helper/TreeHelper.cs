@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 
-namespace TimsWpfControls.MahAppsHelper
+namespace TimsWpfControls.Helper
 {
     public static class TreeHelper
     {

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace TimsWpfControls.MahAppsHelper
+namespace TimsWpfControls.Helper
 {
     public class SolidAccentsLibaryThemeProvider : LibraryThemeProvider
 
