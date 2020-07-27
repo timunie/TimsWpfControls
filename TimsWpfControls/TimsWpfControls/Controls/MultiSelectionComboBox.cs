@@ -180,12 +180,18 @@ namespace TimsWpfControls
         {
             if (sender is MultiSelectionComboBox multiSelectionCombo)
             {
+                
                 if (multiSelectionCombo.Text != null)
                 {
                     multiSelectionCombo.SetCurrentValue(TextProperty, null);
                 }
                 else
                 {
+                    if (SelectionMode == SelectionMode.Single)
+                    {
+                        multiSelectionCombo.SelectedItem = null;
+                        return;
+                    }
                     multiSelectionCombo.SelectedItems.Clear();
                 }
             }
@@ -207,6 +213,11 @@ namespace TimsWpfControls
         {
             if (sender is MultiSelectionComboBox multiSelectionCombo && multiSelectionCombo.SelectedItems.Contains(e.Parameter))
             {
+                if (multiSelectionCombo.SelectionMode == SelectionMode.Single)
+                {
+                    multiSelectionCombo.SelectedItem = null;
+                    return;
+                }
                 multiSelectionCombo.SelectedItems.Remove(e.Parameter);
             }
         }
