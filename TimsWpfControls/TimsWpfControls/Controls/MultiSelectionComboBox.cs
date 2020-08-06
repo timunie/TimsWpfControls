@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -20,8 +22,6 @@ namespace TimsWpfControls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(typeof(MultiSelectionComboBox)));
         }
-
-
         // Using a DependencyProperty as the backing store for IsReadOnly.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(MultiSelectionComboBox), new PropertyMetadata(true));
 
@@ -31,15 +31,11 @@ namespace TimsWpfControls
         // Using a DependencyProperty as the backing store for IsDropDownOpen.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsDropDownOpenProperty = DependencyProperty.Register("IsDropDownOpen", typeof(bool), typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIsDropDownOpenChanged));
 
-
-
         // Using a DependencyProperty as the backing store for MaxDropDownHeight.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MaxDropDownHeightProperty = DependencyProperty.Register("MaxDropDownHeight", typeof(double), typeof(MultiSelectionComboBox), new PropertyMetadata(SystemParameters.PrimaryScreenHeight / 3));
 
-
-
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TextProperty = 
+        public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(MultiSelectionComboBox), 
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnTextChanged));
 
@@ -47,21 +43,16 @@ namespace TimsWpfControls
         // Using a DependencyProperty as the backing store for HasCustomText.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HasCustomTextProperty = DependencyProperty.Register("HasCustomText", typeof(bool), typeof(MultiSelectionComboBox), new PropertyMetadata(false));
 
-
         // Using a DependencyProperty as the backing store for TextSeparator.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextSeparatorProperty = DependencyProperty.Register("TextSeparator", typeof(string), typeof(MultiSelectionComboBox), new PropertyMetadata(", "));
-
 
         // Using a DependencyProperty as the backing store for DisabledPopupOverlayConent.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DisabledPopupOverlayContentProperty =
             DependencyProperty.Register("DisabledPopupOverlayContent", typeof(object), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
 
-
         // Using a DependencyProperty as the backing store for DisabledPopupOverlayConentTemplate.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DisabledPopupOverlayContentTemplateProperty =
             DependencyProperty.Register("DisabledPopupOverlayContentTemplate", typeof(DataTemplate), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
-
-
 
         public bool IsReadOnly
         {
@@ -95,7 +86,7 @@ namespace TimsWpfControls
                             if (item != null)
                             {
                                 var listBoxItem = multiSelectionComboBox.ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement;
-                                listBoxItem.Focus();
+                                listBoxItem?.Focus();
                                 ControlzEx.KeyboardNavigationEx.Focus(listBoxItem);
                             }
                         }), System.Windows.Threading.DispatcherPriority.Send);
@@ -132,16 +123,25 @@ namespace TimsWpfControls
         }
 
 
-        private void UpdateEditableText()
+        /// <summary>
+        /// Updates the Text of the editable Textbox.
+        /// Sets the custom Text if any otherwise the concatenated string.
+        /// </summary>
+        public void UpdateEditableText()
         {
             if (PART_EditableTextBox is null)
                 return;
 
             isUpdatingText = true;
-            if (string.IsNullOrEmpty(Text))
+            if (string.IsNullOrEmpty(Text) && SelectionMode != SelectionMode.Single)
             {
-                PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, string.Join(TextSeparator, (IEnumerable<object>)SelectedItems));
+                var items = ((IEnumerable<object>)SelectedItems).OrderBy(o => Items.IndexOf(o));
+                PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, string.Join(TextSeparator, items));
                 SetCurrentValue(HasCustomTextProperty, false);
+            }
+            else if ((string.IsNullOrEmpty(Text) && SelectionMode == SelectionMode.Single))
+            {
+                PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, SelectedItem);
             }
             else
             {
@@ -267,6 +267,7 @@ namespace TimsWpfControls
 
             PART_EditableTextBox = GetTemplateChild(nameof(PART_EditableTextBox)) as TextBox;
             PART_EditableTextBox.TextChanged += PART_EditableTextBox_TextChanged;
+
             UpdateEditableText();
 
             PART_Popup = GetTemplateChild(nameof(PART_Popup)) as Popup;
@@ -316,6 +317,11 @@ namespace TimsWpfControls
             SetCurrentValue(IsDropDownOpenProperty, false);
         }
 
+        protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+        {
+            base.OnItemsSourceChanged(oldValue, newValue);
+            UpdateEditableText();
+        }
         #endregion
     }
 }
