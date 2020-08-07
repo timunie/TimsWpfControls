@@ -12,7 +12,7 @@ namespace TimsWpfControls.Model
         // This event tells the UI to update
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void RaisePropertyChanged(string PropertyName)
+        public void OnPropertyChanged(string PropertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
         }
