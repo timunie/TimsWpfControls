@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Threading;
+using TimsWpfControls.Helper;
 
 namespace TimsWpfControls
 {
@@ -21,6 +23,8 @@ namespace TimsWpfControls
         static MultiSelectionComboBox()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(typeof(MultiSelectionComboBox)));
+            EventManager.RegisterClassHandler(typeof(MultiSelectionComboBox), Mouse.LostMouseCaptureEvent, new MouseEventHandler(OnLostMouseCapture));
+            EventManager.RegisterClassHandler(typeof(MultiSelectionComboBox), Mouse.MouseDownEvent, new MouseButtonEventHandler(OnMouseButtonDown), true); // call us even if the transparent button in the style gets the click.
         }
         // Using a DependencyProperty as the backing store for IsReadOnly.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(MultiSelectionComboBox), new PropertyMetadata(true));
@@ -79,18 +83,91 @@ namespace TimsWpfControls
             {
                 if ((bool)e.NewValue)
                 {
+                    multiSelectionComboBox.RaiseEvent(new RoutedEventArgs(DropDownOpenedEvent));
+
+                    multiSelectionComboBox.Focus();
+
+                    Mouse.Capture(multiSelectionComboBox, CaptureMode.SubTree);
+
                     multiSelectionComboBox.Dispatcher.BeginInvoke(
-                        new Action(() => 
-                        {
-                            var item = multiSelectionComboBox.SelectedItem ?? (multiSelectionComboBox.HasItems ? multiSelectionComboBox.Items[0] : null);
-                            if (item != null)
-                            {
-                                var listBoxItem = multiSelectionComboBox.ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement;
-                                listBoxItem?.Focus();
-                                ControlzEx.KeyboardNavigationEx.Focus(listBoxItem);
-                            }
-                        }), System.Windows.Threading.DispatcherPriority.Send);
+                       DispatcherPriority.Send,
+                       (DispatcherOperationCallback)delegate (object arg)
+                       {
+                           MultiSelectionComboBox mscb = (MultiSelectionComboBox)arg;
+
+                           var item = multiSelectionComboBox.SelectedItem ?? (mscb.HasItems ? mscb.Items[0] : null);
+                           if (item != null)
+                           {
+                               var listBoxItem = mscb.ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement;
+                               listBoxItem?.Focus();
+                               ControlzEx.KeyboardNavigationEx.Focus(listBoxItem);
+                           }
+
+                           return null;
+                       }, multiSelectionComboBox);
                 }
+                else
+                {
+                    multiSelectionComboBox.RaiseEvent(new RoutedEventArgs(DropDownClosedEvent));
+                    if (Mouse.Captured == multiSelectionComboBox)
+                    {
+                        Mouse.Capture(null);
+                    }
+                }
+            }
+        }
+
+        /// <summary>Identifies the <see cref="DropDownOpened"/> routed event.</summary>
+        public static readonly RoutedEvent DropDownOpenedEvent = EventManager.RegisterRoutedEvent(
+                                                                        nameof(DropDownOpened),
+                                                                        RoutingStrategy.Bubble,
+                                                                        typeof(EventHandler<EventArgs>),
+                                                                        typeof(MultiSelectionComboBox));
+
+        /// <summary>Identifies the <see cref="DropDownClosed"/> routed event.</summary>
+        public static readonly RoutedEvent DropDownClosedEvent = EventManager.RegisterRoutedEvent(
+                                                                nameof(DropDownClosed),
+                                                                RoutingStrategy.Bubble,
+                                                                typeof(EventHandler<EventArgs>),
+                                                                typeof(MultiSelectionComboBox));
+
+        /// <summary>
+        ///     Occurs when the DropDown is closed.
+        /// </summary>
+        public event EventHandler<EventArgs> DropDownClosed
+        {
+            add { AddHandler(DropDownClosedEvent, value); }
+            remove { RemoveHandler(DropDownClosedEvent, value); }
+        }
+
+        /// <summary>
+        ///     Occurs when the DropDown is opened.
+        /// </summary>
+        public event EventHandler<EventArgs> DropDownOpened
+        {
+            add { AddHandler(DropDownOpenedEvent, value); }
+            remove { RemoveHandler(DropDownOpenedEvent, value); }
+        }
+
+        private static void OnMouseButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MultiSelectionComboBox multiSelectionComboBox = (MultiSelectionComboBox)sender;
+
+            // If we (or one of our children) are clicked, claim the focus (don't steal focus if our context menu is clicked)
+            if ((!multiSelectionComboBox.ContextMenu?.IsOpen ?? true) && !multiSelectionComboBox.IsKeyboardFocusWithin)
+            {
+                multiSelectionComboBox.Focus();
+            }
+
+            e.Handled = true;   // Always handle so that parents won't take focus away
+
+            // Note: This half should be moved into OnMouseDownOutsideCapturedElement
+            // When we have capture, all clicks off the popup will have the combobox as
+            // the OriginalSource.  So when the original source is the combobox, that
+            // means the click was off the popup and we should dismiss.
+            if (Mouse.Captured == multiSelectionComboBox && e.OriginalSource == multiSelectionComboBox)
+            {
+                // multiSelectionComboBox.Close();
             }
         }
 
@@ -272,18 +349,9 @@ namespace TimsWpfControls
 
             PART_Popup = GetTemplateChild(nameof(PART_Popup)) as Popup;
             PART_PopupItemsPresenter = GetTemplateChild(nameof(PART_PopupItemsPresenter)) as ItemsPresenter;
-            PART_Popup.LostFocus += PART_Popup_LostFocus;
 
             CommandBindings.Add(new CommandBinding(ClearContentCommand, ExecutedClearContentCommand, CanExecuteClearContentCommand));
             CommandBindings.Add(new CommandBinding(RemoveItemCommand, RemoveItemCommand_Executed, RemoveItemCommand_CanExecute));
-        }
-
-        private void PART_Popup_LostFocus(object sender, RoutedEventArgs e)
-        {
-           if (!PART_Popup.IsKeyboardFocusWithin)
-            {
-                SetCurrentValue(IsDropDownOpenProperty, false);
-            }
         }
 
         bool isUpdatingText = false;
@@ -311,16 +379,73 @@ namespace TimsWpfControls
             UpdateEditableText();
         }
 
-        protected override void OnLostFocus(RoutedEventArgs e)
-        {
-            base.OnLostFocus(e);
-            SetCurrentValue(IsDropDownOpenProperty, false);
-        }
 
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
         {
             base.OnItemsSourceChanged(oldValue, newValue);
             UpdateEditableText();
+        }
+
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            // Ignore the first mouse button up if we haven't gone over the popup yet
+            // And ignore all mouse ups over the items host.
+            if (!PART_Popup.IsMouseOver)
+            {
+                if (IsDropDownOpen)
+                {
+                    Close();
+                    e.Handled = true;
+                }
+            }
+
+            base.OnMouseLeftButtonUp(e);
+        }
+
+        private void Close()
+        {
+            if (IsDropDownOpen)
+            {
+                SetCurrentValue(IsDropDownOpenProperty, false);
+            }
+        }
+
+        private static void OnLostMouseCapture(object sender, MouseEventArgs e)
+        {
+            MultiSelectionComboBox multiSelectionComboBox = (MultiSelectionComboBox)sender;
+
+            // ISSUE (jevansa) -- task 22022:
+            //        We need a general mechanism to do this, or at the very least we should
+            //        share it amongst the controls which need it (Popup, MenuBase, ComboBox).
+            if (Mouse.Captured != multiSelectionComboBox)
+            {
+                if (e.OriginalSource == multiSelectionComboBox)
+                {
+                    // If capture is null or it's not below the combobox, close.
+                    // More workaround for task 22022 -- check if it's a descendant (following Logical links too)
+                    if (Mouse.Captured == null || !(Mouse.Captured as DependencyObject).IsDescendantOf(multiSelectionComboBox))
+                    {
+                        multiSelectionComboBox.Close();
+                    }
+                }
+                else
+                {
+                    if ((e.OriginalSource as DependencyObject).IsDescendantOf(multiSelectionComboBox))
+                    {
+                        // Take capture if one of our children gave up capture (by closing their drop down)
+                        if (multiSelectionComboBox.IsDropDownOpen && Mouse.Captured == null)
+                        {
+                            Mouse.Capture(multiSelectionComboBox, CaptureMode.SubTree);
+                            e.Handled = true;
+                        }
+                    }
+                    else
+                    {
+                        multiSelectionComboBox.Close();
+                    }
+                }
+                e.Handled = true;
+            }
         }
         #endregion
     }

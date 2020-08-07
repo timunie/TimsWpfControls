@@ -338,6 +338,7 @@
         <Setter Property="SelectionMode" Value="Multiple" />
         <Setter Property="MinHeight" Value="26" />
         <Setter Property="Padding" Value="4" />
+        <Setter Property="IsDropDownOpen" Value="True" />
         <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled" />
         <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
@@ -507,7 +508,7 @@
                                      Grid.Column="0"
                                      Margin="0"
                                      Padding="{TemplateBinding Padding}"
-                                     HorizontalAlignment="Stretch"
+                                      HorizontalAlignment="Stretch"
                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                      mah:TextBoxHelper.ButtonContent="{TemplateBinding mah:TextBoxHelper.ButtonContent}"
@@ -600,14 +601,13 @@
                                 Visibility="Collapsed" />
 
                         <!--  AllowsTransparency="true" fixes the redraw problem under windows vista/7 with a selected non aero theme  -->
-                        <controlzEx:PopupEx x:Name="PART_Popup"
-                                            AllowsTransparency="True"
-                                            Focusable="False"
-                                            IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                            Placement="Bottom"
-                                            PlacementTarget="{Binding ElementName=PART_DropDownToggle}"
-                                            PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}"
-                                            StaysOpen="False">
+                        <Popup x:Name="PART_Popup"
+                                AllowsTransparency="True"
+                                Focusable="False"
+                                IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                Placement="Bottom"
+                                PlacementTarget="{Binding ElementName=PART_DropDownToggle}"
+                                PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" >
                             <Grid MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}" MaxHeight="{Binding MaxDropDownHeight, RelativeSource={RelativeSource TemplatedParent}}">
                                 <Border x:Name="PopupBorder"
                                         Height="200"
@@ -633,7 +633,7 @@
                                     </Grid>
                                 </Border>
                             </Grid>
-                        </controlzEx:PopupEx>
+                        </Popup>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="FocusStates">
                                 <VisualState x:Name="Focused" />
