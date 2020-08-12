@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,177 +13,130 @@ using TimsWpfControls.Helper;
 
 namespace TimsWpfControls
 {
-    [TemplatePart (Name = nameof(PART_EditableTextBox), Type = typeof(TextBox))]
-    [TemplatePart (Name = nameof(PART_Popup), Type = typeof(Popup))]
-    [TemplatePart (Name = nameof(PART_PopupItemsPresenter), Type = typeof(ItemsPresenter))]
-    public class MultiSelectionComboBox : ListBox
+    [TemplatePart(Name = nameof(PART_PopupListBox), Type = typeof(ListBox))]
+    public class MultiSelectionComboBox : ComboBox
     {
+        //-------------------------------------------------------------------
+        //
+        //  Private Members
+        // 
+        //-------------------------------------------------------------------
+
+        #region private Members
+
+        private ListBox PART_PopupListBox;
         private TextBox PART_EditableTextBox;
-        private Popup PART_Popup;
-        private ItemsPresenter PART_PopupItemsPresenter;
+        private bool isUpdatingText = false;
 
-        static MultiSelectionComboBox()
+        #endregion
+
+        //-------------------------------------------------------------------
+        //
+        //  Public Properties
+        // 
+        //-------------------------------------------------------------------
+
+        #region Public Properties
+
+        /// <summary>
+        ///     SelectionMode DependencyProperty
+        /// </summary>
+        public static readonly DependencyProperty SelectionModeProperty =
+                DependencyProperty.Register(
+                        "SelectionMode",
+                        typeof(SelectionMode),
+                        typeof(MultiSelectionComboBox),
+                        new FrameworkPropertyMetadata(
+                                SelectionMode.Single,
+                                new PropertyChangedCallback(OnSelectionModeChanged)),
+                        new ValidateValueCallback(IsValidSelectionMode));
+
+        /// <summary>
+        ///     Indicates the selection behavior for the ListBox.
+        /// </summary>
+        public SelectionMode SelectionMode
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(typeof(MultiSelectionComboBox)));
-            EventManager.RegisterClassHandler(typeof(MultiSelectionComboBox), Mouse.LostMouseCaptureEvent, new MouseEventHandler(OnLostMouseCapture));
-            EventManager.RegisterClassHandler(typeof(MultiSelectionComboBox), Mouse.MouseDownEvent, new MouseButtonEventHandler(OnMouseButtonDown), true); // call us even if the transparent button in the style gets the click.
+            get { return (SelectionMode)GetValue(SelectionModeProperty); }
+            set { SetValue(SelectionModeProperty, value); }
         }
-        // Using a DependencyProperty as the backing store for IsReadOnly.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(MultiSelectionComboBox), new PropertyMetadata(true));
 
-        // Using a DependencyProperty as the backing store for IsEditable.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsEditableProperty = DependencyProperty.Register("IsEditable", typeof(bool), typeof(MultiSelectionComboBox), new PropertyMetadata(false));
+        private static void OnSelectionModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            MultiSelectionComboBox multiSelectionComboBox = (MultiSelectionComboBox)d;
+            multiSelectionComboBox.ValidateSelectionMode(multiSelectionComboBox.SelectionMode);
+        }
 
-        // Using a DependencyProperty as the backing store for IsDropDownOpen.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsDropDownOpenProperty = DependencyProperty.Register("IsDropDownOpen", typeof(bool), typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIsDropDownOpenChanged));
-
-        // Using a DependencyProperty as the backing store for MaxDropDownHeight.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MaxDropDownHeightProperty = DependencyProperty.Register("MaxDropDownHeight", typeof(double), typeof(MultiSelectionComboBox), new PropertyMetadata(SystemParameters.PrimaryScreenHeight / 3));
-
-        // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(MultiSelectionComboBox), 
-                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnTextChanged));
+        private static object OnGetSelectionMode(DependencyObject d)
+        {
+            return ((MultiSelectionComboBox)d).SelectionMode;
+        }
 
 
-        // Using a DependencyProperty as the backing store for HasCustomText.  This enables animation, styling, binding, etc...
+        private static bool IsValidSelectionMode(object o)
+        {
+            SelectionMode value = (SelectionMode)o;
+            return value == SelectionMode.Single
+                || value == SelectionMode.Multiple
+                || value == SelectionMode.Extended;
+        }
+
+
+        private bool CanSelectMultiple;
+        private void ValidateSelectionMode(SelectionMode mode)
+        {
+            CanSelectMultiple = (mode != SelectionMode.Single);
+        }
+
+
+        public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register("SelectedItems", typeof(IList), typeof(MultiSelectionComboBox), new PropertyMetadata((IList)null));
+
+        /// <summary>
+        /// The currently selected items.
+        /// </summary>
+        [Bindable(true), Category("Appearance"), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IList SelectedItems
+        {
+            get
+            {
+                return PART_PopupListBox?.SelectedItems;
+            }
+        }
+
+
+        /// <summary>
+        /// Separator DependencyProperty
+        /// </summary>
+        public static readonly DependencyProperty SeparatorProperty = DependencyProperty.Register("Separator", typeof(object), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or Sets the Separator Content. ToString() will be used if the ComboBox is editable.
+        /// </summary>
+        public object Separator
+        {
+            get { return (object)GetValue(SeparatorProperty); }
+            set { SetValue(SeparatorProperty, value); }
+        }
+
+
+        /// <summary>
+        /// SeparatorTemplate DependencyProperty
+        /// </summary>
+        public static readonly DependencyProperty SeparatorTemplateProperty = DependencyProperty.Register("SeparatorTemplate", typeof(DataTemplate), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or Sets the SeparatorTemplate. Gets only applied if the MultiselectionComboBox is not editable
+        /// </summary>
+        public DataTemplate SeparatorTemplate
+        {
+            get { return (DataTemplate)GetValue(SeparatorTemplateProperty); }
+            set { SetValue(SeparatorTemplateProperty, value); }
+        }
+
+
+        /// <summary>
+        ///     HasCustomText DependencyProperty
+        /// </summary>
         public static readonly DependencyProperty HasCustomTextProperty = DependencyProperty.Register("HasCustomText", typeof(bool), typeof(MultiSelectionComboBox), new PropertyMetadata(false));
-
-        // Using a DependencyProperty as the backing store for TextSeparator.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TextSeparatorProperty = DependencyProperty.Register("TextSeparator", typeof(string), typeof(MultiSelectionComboBox), new PropertyMetadata(", "));
-
-        // Using a DependencyProperty as the backing store for DisabledPopupOverlayConent.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DisabledPopupOverlayContentProperty =
-            DependencyProperty.Register("DisabledPopupOverlayContent", typeof(object), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
-
-        // Using a DependencyProperty as the backing store for DisabledPopupOverlayConentTemplate.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DisabledPopupOverlayContentTemplateProperty =
-            DependencyProperty.Register("DisabledPopupOverlayContentTemplate", typeof(DataTemplate), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
-
-        public bool IsReadOnly
-        {
-            get { return (bool)GetValue(IsReadOnlyProperty); }
-            set { SetValue(IsReadOnlyProperty, value); }
-        }
-
-
-        public bool IsEditable
-        {
-            get { return (bool)GetValue(IsEditableProperty); }
-            set { SetValue(IsEditableProperty, value); }
-        }
-
-        public bool IsDropDownOpen
-        {
-            get { return (bool)GetValue(IsDropDownOpenProperty); }
-            set { SetValue(IsDropDownOpenProperty, value); }
-        }
-
-        private static void OnIsDropDownOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is MultiSelectionComboBox multiSelectionComboBox)
-            {
-                if ((bool)e.NewValue)
-                {
-                    multiSelectionComboBox.RaiseEvent(new RoutedEventArgs(DropDownOpenedEvent));
-
-                    multiSelectionComboBox.Focus();
-
-                    Mouse.Capture(multiSelectionComboBox, CaptureMode.SubTree);
-
-                    multiSelectionComboBox.Dispatcher.BeginInvoke(
-                       DispatcherPriority.Send,
-                       (DispatcherOperationCallback)delegate (object arg)
-                       {
-                           MultiSelectionComboBox mscb = (MultiSelectionComboBox)arg;
-
-                           var item = multiSelectionComboBox.SelectedItem ?? (mscb.HasItems ? mscb.Items[0] : null);
-                           if (item != null)
-                           {
-                               var listBoxItem = mscb.ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement;
-                               listBoxItem?.Focus();
-                               ControlzEx.KeyboardNavigationEx.Focus(listBoxItem);
-                           }
-
-                           return null;
-                       }, multiSelectionComboBox);
-                }
-                else
-                {
-                    multiSelectionComboBox.RaiseEvent(new RoutedEventArgs(DropDownClosedEvent));
-                    if (Mouse.Captured == multiSelectionComboBox)
-                    {
-                        Mouse.Capture(null);
-                    }
-                }
-            }
-        }
-
-        /// <summary>Identifies the <see cref="DropDownOpened"/> routed event.</summary>
-        public static readonly RoutedEvent DropDownOpenedEvent = EventManager.RegisterRoutedEvent(
-                                                                        nameof(DropDownOpened),
-                                                                        RoutingStrategy.Bubble,
-                                                                        typeof(EventHandler<EventArgs>),
-                                                                        typeof(MultiSelectionComboBox));
-
-        /// <summary>Identifies the <see cref="DropDownClosed"/> routed event.</summary>
-        public static readonly RoutedEvent DropDownClosedEvent = EventManager.RegisterRoutedEvent(
-                                                                nameof(DropDownClosed),
-                                                                RoutingStrategy.Bubble,
-                                                                typeof(EventHandler<EventArgs>),
-                                                                typeof(MultiSelectionComboBox));
-
-        /// <summary>
-        ///     Occurs when the DropDown is closed.
-        /// </summary>
-        public event EventHandler<EventArgs> DropDownClosed
-        {
-            add { AddHandler(DropDownClosedEvent, value); }
-            remove { RemoveHandler(DropDownClosedEvent, value); }
-        }
-
-        /// <summary>
-        ///     Occurs when the DropDown is opened.
-        /// </summary>
-        public event EventHandler<EventArgs> DropDownOpened
-        {
-            add { AddHandler(DropDownOpenedEvent, value); }
-            remove { RemoveHandler(DropDownOpenedEvent, value); }
-        }
-
-        private static void OnMouseButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            MultiSelectionComboBox multiSelectionComboBox = (MultiSelectionComboBox)sender;
-
-            // If we (or one of our children) are clicked, claim the focus (don't steal focus if our context menu is clicked)
-            if ((!multiSelectionComboBox.ContextMenu?.IsOpen ?? true) && !multiSelectionComboBox.IsKeyboardFocusWithin)
-            {
-                multiSelectionComboBox.Focus();
-            }
-
-            e.Handled = true;   // Always handle so that parents won't take focus away
-
-            // Note: This half should be moved into OnMouseDownOutsideCapturedElement
-            // When we have capture, all clicks off the popup will have the combobox as
-            // the OriginalSource.  So when the original source is the combobox, that
-            // means the click was off the popup and we should dismiss.
-            if (Mouse.Captured == multiSelectionComboBox && e.OriginalSource == multiSelectionComboBox)
-            {
-                // multiSelectionComboBox.Close();
-            }
-        }
-
-        public double MaxDropDownHeight
-        {
-            get { return (double)GetValue(MaxDropDownHeightProperty); }
-            set { SetValue(MaxDropDownHeightProperty, value); }
-        }
-
-        public string Text
-        {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
-        }
 
         /// <summary>
         /// Indicates if the text is userdefined
@@ -190,15 +145,6 @@ namespace TimsWpfControls
         {
             get { return (bool)GetValue(HasCustomTextProperty); }
         }
-
-        private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is MultiSelectionComboBox multiSelectionComboBox)
-            {
-                multiSelectionComboBox.UpdateEditableText();
-            }
-        }
-
 
         /// <summary>
         /// Updates the Text of the editable Textbox.
@@ -210,10 +156,10 @@ namespace TimsWpfControls
                 return;
 
             isUpdatingText = true;
-            if (string.IsNullOrEmpty(Text) && SelectionMode != SelectionMode.Single)
+            if (string.IsNullOrEmpty(Text) && SelectionMode != SelectionMode.Single && !(SelectedItems is null))
             {
                 var items = ((IEnumerable<object>)SelectedItems).OrderBy(o => Items.IndexOf(o));
-                PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, string.Join(TextSeparator, items));
+                PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, string.Join(Separator.ToString(), items));
                 SetCurrentValue(HasCustomTextProperty, false);
             }
             else if ((string.IsNullOrEmpty(Text) && SelectionMode == SelectionMode.Single))
@@ -228,25 +174,67 @@ namespace TimsWpfControls
             isUpdatingText = false;
         }
 
+        /// <summary>
+        /// DisabledPopupOverlayContent DependencyProperty
+        /// </summary>
+        public static readonly DependencyProperty DisabledPopupOverlayContentProperty = DependencyProperty.Register("DisabledPopupOverlayContent", typeof(object), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
 
-        public string TextSeparator
-        {
-            get { return (string)GetValue(TextSeparatorProperty); }
-            set { SetValue(TextSeparatorProperty, value); }
-        }
-
-
+        /// <summary>
+        /// Gets or Sets the DisabledPopupOverlayContent
+        /// </summary>
         public object DisabledPopupOverlayContent
         {
             get { return (object)GetValue(DisabledPopupOverlayContentProperty); }
             set { SetValue(DisabledPopupOverlayContentProperty, value); }
         }
 
+
+        /// <summary>
+        /// DisabledPopupOverlayContentTemplate DependencyProperty
+        /// </summary>
+        public static readonly DependencyProperty DisabledPopupOverlayContentTemplateProperty = DependencyProperty.Register("DisabledPopupOverlayContentTemplate", typeof(DataTemplate), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or Sets the DisabledPopupOverlayContentTemplate
+        /// </summary>
         public DataTemplate DisabledPopupOverlayContentTemplate
         {
             get { return (DataTemplate)GetValue(DisabledPopupOverlayContentTemplateProperty); }
             set { SetValue(DisabledPopupOverlayContentTemplateProperty, value); }
         }
+
+        /// <summary>
+        /// SelectedItemsTemplate DependencyProperty
+        /// </summary>
+        public static readonly DependencyProperty SelectedItemsTemplateProperty = DependencyProperty.Register(nameof(SelectedItemsTemplate), typeof(DataTemplate), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or Sets the SelectedItemsTemplate
+        /// </summary>
+        public DataTemplate SelectedItemsTemplate
+        {
+            get { return (DataTemplate)GetValue(SelectedItemsTemplateProperty); }
+            set { SetValue(SelectedItemsTemplateProperty, value); }
+        }
+
+        /// <summary>
+        /// SelectedItemsTemplateSelector DependencyProperty
+        /// </summary>
+        public static readonly DependencyProperty SelectedItemsTemplateSelectorProperty = DependencyProperty.Register(nameof(SelectedItemsTemplateSelector), typeof(DataTemplateSelector), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
+
+
+        
+
+        /// <summary>
+        /// Gets or Sets the SelectedItemsTemplateSelector
+        /// </summary>
+        public DataTemplateSelector SelectedItemsTemplateSelector
+        {
+            get { return (DataTemplateSelector)GetValue(SelectedItemsTemplateSelectorProperty); }
+            set { SetValue(SelectedItemsTemplateSelectorProperty, value); }
+        }
+
+        #endregion
 
         #region Commands
 
@@ -257,7 +245,7 @@ namespace TimsWpfControls
         {
             if (sender is MultiSelectionComboBox multiSelectionCombo)
             {
-                
+
                 if (multiSelectionCombo.Text != null)
                 {
                     multiSelectionCombo.SetCurrentValue(TextProperty, null);
@@ -279,7 +267,7 @@ namespace TimsWpfControls
             e.CanExecute = false;
             if (sender is MultiSelectionComboBox multiSelectionComboBox)
             {
-                e.CanExecute = multiSelectionComboBox.Text != null || multiSelectionComboBox.SelectedItems.Count > 0;
+                e.CanExecute = multiSelectionComboBox.Text != null || multiSelectionComboBox.SelectedItems?.Count > 0;
             }
         }
 
@@ -310,33 +298,7 @@ namespace TimsWpfControls
 
         #endregion
 
-        #region DataTemplates
-
-        // Using a DependencyProperty as the backing store for SeletedItemTemplate.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectedItemsTemplateProperty =
-            DependencyProperty.Register(nameof(SelectedItemsTemplate), typeof(DataTemplate), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
-
-        // Using a DependencyProperty as the backing store for Selector.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectedItemsTemplateSelectorProperty =
-            DependencyProperty.Register(nameof(SelectedItemsTemplateSelector), typeof(DataTemplateSelector), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
-        
-        
-        public DataTemplate SelectedItemsTemplate
-        {
-            get { return (DataTemplate)GetValue(SelectedItemsTemplateProperty); }
-            set { SetValue(SelectedItemsTemplateProperty, value); }
-        }
-
-
-        public DataTemplateSelector SelectedItemsTemplateSelector
-        {
-            get { return (DataTemplateSelector)GetValue(SelectedItemsTemplateSelectorProperty); }
-            set { SetValue(SelectedItemsTemplateSelectorProperty, value); }
-        }
-
-        #endregion
-
-        #region Override
+        #region Overrides
 
         public override void OnApplyTemplate()
         {
@@ -347,21 +309,20 @@ namespace TimsWpfControls
 
             UpdateEditableText();
 
-            PART_Popup = GetTemplateChild(nameof(PART_Popup)) as Popup;
-            PART_PopupItemsPresenter = GetTemplateChild(nameof(PART_PopupItemsPresenter)) as ItemsPresenter;
+            PART_PopupListBox = GetTemplateChild(nameof(PART_PopupListBox)) as ListBox;
 
             CommandBindings.Add(new CommandBinding(ClearContentCommand, ExecutedClearContentCommand, CanExecuteClearContentCommand));
             CommandBindings.Add(new CommandBinding(RemoveItemCommand, RemoveItemCommand_Executed, RemoveItemCommand_CanExecute));
         }
 
-        bool isUpdatingText = false;
-        private void PART_EditableTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        protected override void OnTextInput(TextCompositionEventArgs e)
         {
+            base.OnTextInput(e);
             if (!isUpdatingText)
             {
                 var text = PART_EditableTextBox?.Text;
 
-                if (text == string.Join(TextSeparator, (IEnumerable<object>)SelectedItems))
+                if (text == string.Join(Separator.ToString(), (IEnumerable<object>)SelectedItems))
                 {
                     Text = null;
                 }
@@ -372,7 +333,6 @@ namespace TimsWpfControls
             }
         }
 
-
         protected override void OnSelectionChanged(SelectionChangedEventArgs e)
         {
             base.OnSelectionChanged(e);
@@ -380,73 +340,242 @@ namespace TimsWpfControls
         }
 
 
-        protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+        protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
         {
-            base.OnItemsSourceChanged(oldValue, newValue);
-            UpdateEditableText();
-        }
+            base.OnItemsChanged(e);
 
-        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
-        {
-            // Ignore the first mouse button up if we haven't gone over the popup yet
-            // And ignore all mouse ups over the items host.
-            if (!PART_Popup.IsMouseOver)
+            if (!IsLoaded)
             {
-                if (IsDropDownOpen)
-                {
-                    Close();
-                    e.Handled = true;
-                }
+                Loaded += MultiSelectionComboBox_Loaded;
+                return; 
             }
 
-            base.OnMouseLeftButtonUp(e);
-        }
-
-        private void Close()
-        {
-            if (IsDropDownOpen)
+            switch (e.Action)
             {
-                SetCurrentValue(IsDropDownOpenProperty, false);
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in e.NewItems)
+                    {
+                        PART_PopupListBox.Items.Add(item);
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in e.OldItems)
+                    {
+                        PART_PopupListBox.Items.Remove(item);
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Replace:
+                    // TODO Add Handler
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    // TODO Add Handler
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    PART_PopupListBox.Items.Clear();
+                    foreach (var item in Items)
+                    {
+                        PART_PopupListBox.Items.Add(item);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 
-        private static void OnLostMouseCapture(object sender, MouseEventArgs e)
+        private void MultiSelectionComboBox_Loaded(object sender, EventArgs e)
         {
-            MultiSelectionComboBox multiSelectionComboBox = (MultiSelectionComboBox)sender;
+            Initialized -= MultiSelectionComboBox_Loaded;
 
-            // ISSUE (jevansa) -- task 22022:
-            //        We need a general mechanism to do this, or at the very least we should
-            //        share it amongst the controls which need it (Popup, MenuBase, ComboBox).
-            if (Mouse.Captured != multiSelectionComboBox)
+            PART_PopupListBox.Items.Clear();
+            foreach (var item in Items)
             {
-                if (e.OriginalSource == multiSelectionComboBox)
-                {
-                    // If capture is null or it's not below the combobox, close.
-                    // More workaround for task 22022 -- check if it's a descendant (following Logical links too)
-                    if (Mouse.Captured == null || !(Mouse.Captured as DependencyObject).IsDescendantOf(multiSelectionComboBox))
-                    {
-                        multiSelectionComboBox.Close();
-                    }
-                }
-                else
-                {
-                    if ((e.OriginalSource as DependencyObject).IsDescendantOf(multiSelectionComboBox))
-                    {
-                        // Take capture if one of our children gave up capture (by closing their drop down)
-                        if (multiSelectionComboBox.IsDropDownOpen && Mouse.Captured == null)
-                        {
-                            Mouse.Capture(multiSelectionComboBox, CaptureMode.SubTree);
-                            e.Handled = true;
-                        }
-                    }
-                    else
-                    {
-                        multiSelectionComboBox.Close();
-                    }
-                }
-                e.Handled = true;
+                PART_PopupListBox.Items.Add(item);
             }
         }
         #endregion
+
+        #region Events
+
+        private void PART_EditableTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!isUpdatingText)
+            {
+                var text = PART_EditableTextBox?.Text;
+
+                if (text == string.Join(Separator.ToString(), (IEnumerable<object>)SelectedItems))
+                {
+                    Text = null;
+                }
+                else
+                {
+                    Text = text;
+                }
+            }
+        }
+
+        #endregion
     }
+
+
+    /// <summary>
+    /// THE BACKUP
+    /// </summary>
+    //[TemplatePart (Name = nameof(PART_EditableTextBox), Type = typeof(TextBox))]
+    //[TemplatePart (Name = nameof(PART_Popup), Type = typeof(Popup))]
+    //[TemplatePart (Name = nameof(PART_PopupItemsPresenter), Type = typeof(ItemsPresenter))]
+    //public class MultiSelectionComboBox : ListBox
+    //{
+    //    private TextBox PART_EditableTextBox;
+    //    private Popup PART_Popup;
+    //    private ItemsPresenter PART_PopupItemsPresenter;
+
+    //    static MultiSelectionComboBox()
+    //    {
+    //        DefaultStyleKeyProperty.OverrideMetadata(typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(typeof(MultiSelectionComboBox)));
+    //        EventManager.RegisterClassHandler(typeof(MultiSelectionComboBox), Mouse.LostMouseCaptureEvent, new MouseEventHandler(OnLostMouseCapture));
+    //        EventManager.RegisterClassHandler(typeof(MultiSelectionComboBox), Mouse.MouseDownEvent, new MouseButtonEventHandler(OnMouseButtonDown), true); // call us even if the transparent button in the style gets the click.
+    //    }
+
+    //    // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
+    //    public static readonly DependencyProperty TextProperty =
+    //        DependencyProperty.Register("Text", typeof(string), typeof(MultiSelectionComboBox), 
+    //            new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnTextChanged));
+
+
+
+
+    //    private static void OnIsDropDownOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    //    {
+    //        if (d is MultiSelectionComboBox multiSelectionComboBox)
+    //        {
+    //            if ((bool)e.NewValue)
+    //            {
+    //                multiSelectionComboBox.RaiseEvent(new RoutedEventArgs(DropDownOpenedEvent));
+
+    //                multiSelectionComboBox.Focus();
+
+    //                Mouse.Capture(multiSelectionComboBox, CaptureMode.SubTree);
+
+    //                multiSelectionComboBox.Dispatcher.BeginInvoke(
+    //                   DispatcherPriority.Send,
+    //                   (DispatcherOperationCallback)delegate (object arg)
+    //                   {
+    //                       MultiSelectionComboBox mscb = (MultiSelectionComboBox)arg;
+
+    //                       var item = multiSelectionComboBox.SelectedItem ?? (mscb.HasItems ? mscb.Items[0] : null);
+    //                       if (item != null)
+    //                       {
+    //                           var listBoxItem = mscb.ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement;
+    //                           listBoxItem?.Focus();
+    //                           ControlzEx.KeyboardNavigationEx.Focus(listBoxItem);
+    //                       }
+
+    //                       return null;
+    //                   }, multiSelectionComboBox);
+    //            }
+    //            else
+    //            {
+    //                multiSelectionComboBox.RaiseEvent(new RoutedEventArgs(DropDownClosedEvent));
+    //                if (Mouse.Captured == multiSelectionComboBox)
+    //                {
+    //                    Mouse.Capture(null);
+    //                }
+    //            }
+    //        }
+    //    }
+
+
+
+
+    //    private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    //    {
+    //        if (d is MultiSelectionComboBox multiSelectionComboBox)
+    //        {
+    //            multiSelectionComboBox.UpdateEditableText();
+    //        }
+    //    }
+
+
+
+
+    //    #region DataTemplates
+
+
+
+    //    #endregion
+
+    //    #region Override
+
+
+    //    protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+    //    {
+    //        base.OnItemsSourceChanged(oldValue, newValue);
+    //        UpdateEditableText();
+    //    }
+
+    //    protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+    //    {
+    //        // Ignore the first mouse button up if we haven't gone over the popup yet
+    //        // And ignore all mouse ups over the items host.
+    //        if (!PART_Popup.IsMouseOver)
+    //        {
+    //            if (IsDropDownOpen)
+    //            {
+    //                Close();
+    //                e.Handled = true;
+    //            }
+    //        }
+
+    //        base.OnMouseLeftButtonUp(e);
+    //    }
+
+    //    private void Close()
+    //    {
+    //        if (IsDropDownOpen)
+    //        {
+    //            SetCurrentValue(IsDropDownOpenProperty, false);
+    //        }
+    //    }
+
+    //    private static void OnLostMouseCapture(object sender, MouseEventArgs e)
+    //    {
+    //        MultiSelectionComboBox multiSelectionComboBox = (MultiSelectionComboBox)sender;
+
+    //        // ISSUE (jevansa) -- task 22022:
+    //        //        We need a general mechanism to do this, or at the very least we should
+    //        //        share it amongst the controls which need it (Popup, MenuBase, ComboBox).
+    //        if (Mouse.Captured != multiSelectionComboBox)
+    //        {
+    //            if (e.OriginalSource == multiSelectionComboBox)
+    //            {
+    //                // If capture is null or it's not below the combobox, close.
+    //                // More workaround for task 22022 -- check if it's a descendant (following Logical links too)
+    //                if (Mouse.Captured == null || !(Mouse.Captured as DependencyObject).IsDescendantOf(multiSelectionComboBox))
+    //                {
+    //                    multiSelectionComboBox.Close();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                if ((e.OriginalSource as DependencyObject).IsDescendantOf(multiSelectionComboBox))
+    //                {
+    //                    // Take capture if one of our children gave up capture (by closing their drop down)
+    //                    if (multiSelectionComboBox.IsDropDownOpen && Mouse.Captured == null)
+    //                    {
+    //                        Mouse.Capture(multiSelectionComboBox, CaptureMode.SubTree);
+    //                        e.Handled = true;
+    //                    }
+    //                }
+    //                else
+    //                {
+    //                    multiSelectionComboBox.Close();
+    //                }
+    //            }
+    //            e.Handled = true;
+    //        }
+    //    }
+    //    #endregion
+    //}
 }

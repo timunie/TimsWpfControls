@@ -617,13 +617,9 @@
                                         BorderThickness="{DynamicResource ComboBoxPopupBorderThemeThickness}"
                                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                                     <Grid>
-                                        <ScrollViewer CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
-                                                      Focusable="False"
-                                                      HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                      VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
-                                            <ItemsPresenter x:Name="PART_PopupItemsPresenter" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                        </ScrollViewer>
+                                        <ListBox x:Name="PART_PopupListBox"
+                                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                 ItemsSource ="{TemplateBinding ItemsSource}" />
                                         <ContentControl x:Name="PART_PopupOverlay"
                                                         Content="{TemplateBinding DisabledPopupOverlayContent}"
                                                         HorizontalAlignment="Stretch"
@@ -763,7 +759,7 @@
 
                         <Trigger Property="HasCustomText" Value="True">
                             <Setter TargetName="PART_PopupOverlay" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="PART_PopupItemsPresenter" Property="IsEnabled" Value="False" />
+                            <Setter TargetName="PART_PopupListBox" Property="IsEnabled" Value="False" />
                         </Trigger>
 
                     </ControlTemplate.Triggers>

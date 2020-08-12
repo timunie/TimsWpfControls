@@ -1,4 +1,4 @@
-﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,7 +25,7 @@ namespace TimsWpfControls_Demo.Views
             InitializeComponent();
 
             demoView.AddDemoProperty(MultiSelectionComboBox.TextProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(MultiSelectionComboBox.TextSeparatorProperty, multiSelectionComboBox);
+            demoView.AddDemoProperty(MultiSelectionComboBox.SeparatorProperty, multiSelectionComboBox);
             demoView.AddDemoProperty(TextBoxHelper.ClearTextButtonProperty, multiSelectionComboBox);
             demoView.AddDemoProperty(MultiSelectionComboBox.SelectionModeProperty, multiSelectionComboBox);
             demoView.AddDemoProperty(MultiSelectionComboBox.IsEditableProperty, multiSelectionComboBox);
