@@ -16,6 +16,16 @@ namespace TimsWpfControls
     [TemplatePart(Name = nameof(PART_PopupListBox), Type = typeof(ListBox))]
     public class MultiSelectionComboBox : ComboBox
     {
+
+        #region Constructors
+
+        static MultiSelectionComboBox()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(typeof(MultiSelectionComboBox)));
+        }
+
+        #endregion
+
         //-------------------------------------------------------------------
         //
         //  Private Members
@@ -152,11 +162,11 @@ namespace TimsWpfControls
         /// </summary>
         public void UpdateEditableText()
         {
-            if (PART_EditableTextBox is null)
+            if (PART_EditableTextBox is null || SelectedItems is null)
                 return;
 
             isUpdatingText = true;
-            if (string.IsNullOrEmpty(Text) && SelectionMode != SelectionMode.Single && !(SelectedItems is null))
+            if (string.IsNullOrEmpty(Text) && SelectionMode != SelectionMode.Single)
             {
                 var items = ((IEnumerable<object>)SelectedItems).OrderBy(o => Items.IndexOf(o));
                 PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, string.Join(Separator.ToString(), items));
@@ -165,6 +175,7 @@ namespace TimsWpfControls
             else if ((string.IsNullOrEmpty(Text) && SelectionMode == SelectionMode.Single))
             {
                 PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, SelectedItem);
+                SetCurrentValue(HasCustomTextProperty, false);
             }
             else
             {
@@ -307,12 +318,20 @@ namespace TimsWpfControls
             PART_EditableTextBox = GetTemplateChild(nameof(PART_EditableTextBox)) as TextBox;
             PART_EditableTextBox.TextChanged += PART_EditableTextBox_TextChanged;
 
-            UpdateEditableText();
-
             PART_PopupListBox = GetTemplateChild(nameof(PART_PopupListBox)) as ListBox;
+            PART_PopupListBox.SelectionChanged += PART_PopupListBox_SelectionChanged;
 
             CommandBindings.Add(new CommandBinding(ClearContentCommand, ExecutedClearContentCommand, CanExecuteClearContentCommand));
             CommandBindings.Add(new CommandBinding(RemoveItemCommand, RemoveItemCommand_Executed, RemoveItemCommand_CanExecute));
+
+            // Do update the text 
+            UpdateEditableText();
+        }
+
+        private void PART_PopupListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateEditableText();
+            SetCurrentValue(SelectedItemsProperty, PART_PopupListBox.SelectedItems);
         }
 
         protected override void OnTextInput(TextCompositionEventArgs e)
@@ -406,12 +425,14 @@ namespace TimsWpfControls
 
                 if (text == string.Join(Separator.ToString(), (IEnumerable<object>)SelectedItems))
                 {
-                    Text = null;
+                    SetCurrentValue(TextProperty, null);
                 }
                 else
                 {
-                    Text = text;
+                    SetCurrentValue(TextProperty, text);
                 }
+
+                UpdateEditableText();
             }
         }
 

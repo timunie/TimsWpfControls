@@ -376,7 +376,7 @@
                 </DataTemplate>
             </Setter.Value>
         </Setter>
-        <!--  change SnapsToDevicePixels to true to view a better border and validation error  -->
+        <!--change SnapsToDevicePixels to true to view a better border and validation error-->  
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
@@ -618,6 +618,9 @@
                                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                                     <Grid>
                                         <ListBox x:Name="PART_PopupListBox"
+                                                 SelectionMode="{TemplateBinding SelectionMode}"
+                                                 ItemContainerStyle="{TemplateBinding ItemContainerStyle}"
+                                                 ItemContainerStyleSelector="{TemplateBinding ItemContainerStyleSelector}"
                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                                  ItemsSource ="{TemplateBinding ItemsSource}" />
                                         <ContentControl x:Name="PART_PopupOverlay"
