@@ -1,3 +1,4 @@
+﻿using MahApps.Metro.ValueBoxes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,12 @@ using TimsWpfControls.Helper;
 
 namespace TimsWpfControls
 {
+    public enum OrderSelectedItemsBy
+    {
+        SelectedOrder,
+        ItemsSourceOrder
+    }
+
     [TemplatePart(Name = nameof(PART_PopupListBox), Type = typeof(ListBox))]
     public class MultiSelectionComboBox : ComboBox
     {
@@ -36,7 +43,6 @@ namespace TimsWpfControls
 
         private ListBox PART_PopupListBox;
         private TextBox PART_EditableTextBox;
-        private bool isUpdatingText = false;
 
         #endregion
 
@@ -56,9 +62,7 @@ namespace TimsWpfControls
                         "SelectionMode",
                         typeof(SelectionMode),
                         typeof(MultiSelectionComboBox),
-                        new FrameworkPropertyMetadata(
-                                SelectionMode.Single,
-                                new PropertyChangedCallback(OnSelectionModeChanged)),
+                        new PropertyMetadata(SelectionMode.Single),
                         new ValidateValueCallback(IsValidSelectionMode));
 
         /// <summary>
@@ -68,12 +72,6 @@ namespace TimsWpfControls
         {
             get { return (SelectionMode)GetValue(SelectionModeProperty); }
             set { SetValue(SelectionModeProperty, value); }
-        }
-
-        private static void OnSelectionModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            MultiSelectionComboBox multiSelectionComboBox = (MultiSelectionComboBox)d;
-            multiSelectionComboBox.ValidateSelectionMode(multiSelectionComboBox.SelectionMode);
         }
 
         private static object OnGetSelectionMode(DependencyObject d)
@@ -90,14 +88,6 @@ namespace TimsWpfControls
                 || value == SelectionMode.Extended;
         }
 
-
-        private bool CanSelectMultiple;
-        private void ValidateSelectionMode(SelectionMode mode)
-        {
-            CanSelectMultiple = (mode != SelectionMode.Single);
-        }
-
-
         public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register("SelectedItems", typeof(IList), typeof(MultiSelectionComboBox), new PropertyMetadata((IList)null));
 
         /// <summary>
@@ -112,6 +102,48 @@ namespace TimsWpfControls
             }
         }
 
+        // Using a DependencyProperty as the backing store for DisplaySelectedItems.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DisplaySelectedItemsProperty =
+            DependencyProperty.Register("DisplaySelectedItems", typeof(IEnumerable), typeof(MultiSelectionComboBox), new PropertyMetadata((IEnumerable)null));
+
+        public IEnumerable DisplaySelectedItems
+        {
+            get { return (IEnumerable)GetValue(DisplaySelectedItemsProperty); }
+        }
+
+
+        private void UpdateDisplaySelectedItems()
+        {
+            switch (OrderSelectedItemsBy)
+            {
+                case OrderSelectedItemsBy.SelectedOrder:
+                    SetCurrentValue(DisplaySelectedItemsProperty, SelectedItems);
+                    break;
+                case OrderSelectedItemsBy.ItemsSourceOrder:
+                    SetCurrentValue(DisplaySelectedItemsProperty, ((IEnumerable<object>)PART_PopupListBox.SelectedItems).OrderBy(o => Items.IndexOf(o)));
+                    break;
+            }
+        }
+
+
+        // Using a DependencyProperty as the backing store for OrderSelectedItemsBy.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OrderSelectedItemsByProperty =
+            DependencyProperty.Register("OrderSelectedItemsBy", typeof(OrderSelectedItemsBy), typeof(MultiSelectionComboBox), new PropertyMetadata(OrderSelectedItemsBy.SelectedOrder, new PropertyChangedCallback(OnOrderSelectedItemsByChanged)));
+
+        public OrderSelectedItemsBy OrderSelectedItemsBy
+        {
+            get { return (OrderSelectedItemsBy)GetValue(OrderSelectedItemsByProperty); }
+            set { SetValue(OrderSelectedItemsByProperty, value); }
+        }
+
+        private static void OnOrderSelectedItemsByChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is MultiSelectionComboBox multiSelectionComboBox && !multiSelectionComboBox.HasCustomText)
+            {
+                multiSelectionComboBox.UpdateDisplaySelectedItems();
+                multiSelectionComboBox.UpdateEditableText();
+            }
+        }
 
         /// <summary>
         /// Separator DependencyProperty
@@ -197,24 +229,42 @@ namespace TimsWpfControls
             if (PART_EditableTextBox is null || SelectedItems is null)
                 return;
 
-            isUpdatingText = true;
-            if (string.IsNullOrEmpty(Text) && SelectionMode != SelectionMode.Single)
+            switch (SelectionMode)
             {
-                var items = ((IEnumerable<object>)SelectedItems).OrderBy(o => Items.IndexOf(o));
-                PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, string.Join(Separator.ToString(), items));
-                SetCurrentValue(HasCustomTextProperty, false);
+                case SelectionMode.Single:
+                    SetCurrentValue(TextProperty, SelectedItem);
+                    break;
+                case SelectionMode.Multiple:
+                case SelectionMode.Extended:
+                    SetCurrentValue(TextProperty, DisplaySelectedItems is null ? null : string.Join(Separator.ToString(), (IEnumerable<object>)DisplaySelectedItems));
+                    break;
+                default:
+                    break;
             }
-            else if ((string.IsNullOrEmpty(Text) && SelectionMode == SelectionMode.Single))
+
+            UpdateHasCustomText();
+        }
+
+        private void UpdateHasCustomText()
+        {
+            string selectedItemsText = null;
+
+            switch (SelectionMode)
             {
-                PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, SelectedItem);
-                SetCurrentValue(HasCustomTextProperty, false);
+                case SelectionMode.Single:
+                    selectedItemsText = SelectedItem?.ToString();
+                    break;
+                case SelectionMode.Multiple:
+                case SelectionMode.Extended:
+                    selectedItemsText = DisplaySelectedItems is null ? null : string.Join(Separator.ToString(), (IEnumerable<object>)DisplaySelectedItems);
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                PART_EditableTextBox.SetCurrentValue(TextBox.TextProperty, Text);
-                SetCurrentValue(HasCustomTextProperty, true);
-            }
-            isUpdatingText = false;
+
+            bool hasCustomText = !((string.IsNullOrEmpty(selectedItemsText) && string.IsNullOrEmpty(Text)) || string.Equals(Text, selectedItemsText, StringComparison.Ordinal));
+
+            SetCurrentValue(HasCustomTextProperty, BooleanBoxes.Box(hasCustomText));
         }
 
         /// <summary>
@@ -230,7 +280,6 @@ namespace TimsWpfControls
             get { return (object)GetValue(DisabledPopupOverlayContentProperty); }
             set { SetValue(DisabledPopupOverlayContentProperty, value); }
         }
-
 
         /// <summary>
         /// DisabledPopupOverlayContentTemplate DependencyProperty
@@ -265,9 +314,6 @@ namespace TimsWpfControls
         /// </summary>
         public static readonly DependencyProperty SelectedItemsTemplateSelectorProperty = DependencyProperty.Register(nameof(SelectedItemsTemplateSelector), typeof(DataTemplateSelector), typeof(MultiSelectionComboBox), new PropertyMetadata(null));
 
-
-        
-
         /// <summary>
         /// Gets or Sets the SelectedItemsTemplateSelector
         /// </summary>
@@ -288,19 +334,22 @@ namespace TimsWpfControls
         {
             if (sender is MultiSelectionComboBox multiSelectionCombo)
             {
-
-                if (multiSelectionCombo.Text != null)
+                if (multiSelectionCombo.HasCustomText)
                 {
-                    multiSelectionCombo.SetCurrentValue(TextProperty, null);
+                    multiSelectionCombo.UpdateEditableText();
                 }
                 else
                 {
-                    if (SelectionMode == SelectionMode.Single)
+                    switch (multiSelectionCombo.SelectionMode)
                     {
-                        multiSelectionCombo.SelectedItem = null;
-                        return;
+                        case SelectionMode.Single:
+                            multiSelectionCombo.SelectedItem = null;
+                            break;
+                        case SelectionMode.Multiple:
+                        case SelectionMode.Extended:
+                            multiSelectionCombo.SelectedItems.Clear();
+                            break;
                     }
-                    multiSelectionCombo.SelectedItems.Clear();
                 }
             }
         }
@@ -358,31 +407,9 @@ namespace TimsWpfControls
 
             // Do update the text 
             UpdateEditableText();
+            UpdateDisplaySelectedItems();
         }
 
-        private void PART_PopupListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdateEditableText();
-            SetCurrentValue(SelectedItemsProperty, PART_PopupListBox.SelectedItems);
-        }
-
-        protected override void OnTextInput(TextCompositionEventArgs e)
-        {
-            base.OnTextInput(e);
-            if (!isUpdatingText)
-            {
-                var text = PART_EditableTextBox?.Text;
-
-                if (text == string.Join(Separator.ToString(), (IEnumerable<object>)SelectedItems))
-                {
-                    Text = null;
-                }
-                else
-                {
-                    Text = text;
-                }
-            }
-        }
 
         protected override void OnSelectionChanged(SelectionChangedEventArgs e)
         {
@@ -451,21 +478,13 @@ namespace TimsWpfControls
 
         private void PART_EditableTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!isUpdatingText)
-            {
-                var text = PART_EditableTextBox?.Text;
+            UpdateHasCustomText();
+        }
 
-                if (text == string.Join(Separator.ToString(), (IEnumerable<object>)SelectedItems))
-                {
-                    SetCurrentValue(TextProperty, null);
-                }
-                else
-                {
-                    SetCurrentValue(TextProperty, text);
-                }
-
-                UpdateEditableText();
-            }
+        private void PART_PopupListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateEditableText();
+            UpdateDisplaySelectedItems();
         }
 
         #endregion
