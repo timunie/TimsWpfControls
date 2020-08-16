@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:Converters="http://metro.mahapps.com/winfx/xaml/shared"
                     xmlns:controlzEx="urn:controlzex"
@@ -521,6 +521,7 @@
                                      mah:TextBoxHelper.Watermark="{TemplateBinding mah:TextBoxHelper.Watermark}"
                                      mah:TextBoxHelper.WatermarkAlignment="{TemplateBinding mah:TextBoxHelper.WatermarkAlignment}"
                                      mah:TextBoxHelper.WatermarkTrimming="{TemplateBinding mah:TextBoxHelper.WatermarkTrimming}"
+                                     AcceptsReturn="{TemplateBinding AcceptsReturn}"
                                      Background="{x:Null}"
                                      BorderThickness="0"
                                      CharacterCasing="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:ComboBoxHelper.CharacterCasing), Mode=OneWay}"
@@ -532,6 +533,7 @@
                                      MaxLength="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:ComboBoxHelper.MaxLength), Mode=OneWay}"
                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                      Style="{StaticResource Tims.Styles.TextBox.MultiSelectionComboBox.Editable}"
+                                     TextWrapping="{TemplateBinding TextWrapping}"
                                      Visibility="Collapsed" />
 
                             <TextBlock x:Name="PART_Message"

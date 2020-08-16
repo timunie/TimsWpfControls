@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -154,6 +154,38 @@ namespace TimsWpfControls
         public bool HasCustomText
         {
             get { return (bool)GetValue(HasCustomTextProperty); }
+        }
+
+
+        /// <summary>
+        /// DependencyProperty for <see cref="TextWrapping" /> property.
+        /// </summary>
+        public static readonly DependencyProperty TextWrappingProperty = TextBlock.TextWrappingProperty.AddOwner(typeof(MultiSelectionComboBox),
+                        new FrameworkPropertyMetadata(TextWrapping.NoWrap, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        /// <summary>
+        /// The TextWrapping property controls whether or not text wraps
+        /// when it reaches the flow edge of its containing block box.
+        /// </summary>
+        public TextWrapping TextWrapping
+        {
+            get { return (TextWrapping)GetValue(TextWrappingProperty); }
+            set { SetValue(TextWrappingProperty, value); }
+        }
+
+        /// <summary>
+        /// DependencyProperty for <see cref="TextWrapping" /> property.
+        /// </summary>
+        public static readonly DependencyProperty AcceptsReturnProperty = TextBoxBase.AcceptsReturnProperty.AddOwner(typeof(MultiSelectionComboBox));
+
+        /// <summary>
+        /// The TextWrapping property controls whether or not text wraps
+        /// when it reaches the flow edge of its containing block box.
+        /// </summary>
+        public bool AcceptsReturn
+        {
+            get { return (bool)GetValue(AcceptsReturnProperty); }
+            set { SetValue(AcceptsReturnProperty, value); }
         }
 
         /// <summary>

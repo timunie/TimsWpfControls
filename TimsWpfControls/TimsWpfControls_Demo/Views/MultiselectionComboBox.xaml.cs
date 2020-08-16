@@ -30,6 +30,8 @@ namespace TimsWpfControls_Demo.Views
             demoView.AddDemoProperty(MultiSelectionComboBox.SelectionModeProperty, multiSelectionComboBox);
             demoView.AddDemoProperty(MultiSelectionComboBox.IsEditableProperty, multiSelectionComboBox);
             demoView.AddDemoProperty(MultiSelectionComboBox.IsReadOnlyProperty, multiSelectionComboBox);
+            demoView.AddDemoProperty(MultiSelectionComboBox.TextWrappingProperty, multiSelectionComboBox);
+            demoView.AddDemoProperty(MultiSelectionComboBox.AcceptsReturnProperty, multiSelectionComboBox);
         }
     }
 }
