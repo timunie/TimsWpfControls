@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.ValueBoxes;
+﻿using ControlzEx.Standard;
+using MahApps.Metro.ValueBoxes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace TimsWpfControls
     }
 
     [TemplatePart(Name = nameof(PART_PopupListBox), Type = typeof(ListBox))]
+    [TemplatePart(Name = nameof(PART_Popup), Type = typeof(Popup))]
     public class MultiSelectionComboBox : ComboBox
     {
 
@@ -41,6 +43,7 @@ namespace TimsWpfControls
 
         #region private Members
 
+        private Popup PART_Popup;
         private ListBox PART_PopupListBox;
         private TextBox PART_EditableTextBox;
 
@@ -399,6 +402,8 @@ namespace TimsWpfControls
             PART_EditableTextBox = GetTemplateChild(nameof(PART_EditableTextBox)) as TextBox;
             PART_EditableTextBox.TextChanged += PART_EditableTextBox_TextChanged;
 
+            PART_Popup = GetTemplateChild(nameof(PART_Popup)) as Popup;
+
             PART_PopupListBox = GetTemplateChild(nameof(PART_PopupListBox)) as ListBox;
             PART_PopupListBox.SelectionChanged += PART_PopupListBox_SelectionChanged;
 
@@ -415,6 +420,7 @@ namespace TimsWpfControls
         {
             base.OnSelectionChanged(e);
             UpdateEditableText();
+            UpdateDisplaySelectedItems();
         }
 
 
@@ -472,6 +478,18 @@ namespace TimsWpfControls
                 PART_PopupListBox.Items.Add(item);
             }
         }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            if (IsDropDownOpen && !(PART_Popup is null))
+            {
+                // Reposition the Popup
+                PART_Popup.HorizontalOffset += 1;
+                PART_Popup.HorizontalOffset -= 1;
+            }
+        }
+
         #endregion
 
         #region Events
@@ -483,8 +501,8 @@ namespace TimsWpfControls
 
         private void PART_PopupListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateEditableText();
             UpdateDisplaySelectedItems();
+            UpdateEditableText();
         }
 
         #endregion
