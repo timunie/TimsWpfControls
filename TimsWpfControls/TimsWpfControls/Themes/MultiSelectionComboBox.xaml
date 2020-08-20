@@ -624,6 +624,10 @@
                                                  ItemContainerStyleSelector="{TemplateBinding ItemContainerStyleSelector}"
                                                  ItemsSource="{TemplateBinding ItemsSource}"
                                                  SelectionMode="{TemplateBinding SelectionMode}"
+                                                 SelectedItem="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedItem, Mode=TwoWay}"
+                                                 SelectedIndex="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedIndex, Mode=TwoWay}"
+                                                 SelectedValue="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedValue, Mode=TwoWay}"
+                                                 SelectedValuePath="{TemplateBinding SelectedValuePath}"
                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                         <ContentControl x:Name="PART_PopupOverlay"
                                                         HorizontalAlignment="Stretch"
