@@ -270,7 +270,7 @@ namespace TimsWpfControls
                     break;
                 case SelectionMode.Multiple:
                 case SelectionMode.Extended:
-                    SetCurrentValue(TextProperty, DisplaySelectedItems is null ? null : string.Join(Separator.ToString(), (IEnumerable<object>)DisplaySelectedItems));
+                    SetCurrentValue(TextProperty, DisplaySelectedItems is null ? null : string.Join(Separator?.ToString(), (IEnumerable<object>)DisplaySelectedItems));
                     break;
                 default:
                     break;
@@ -290,7 +290,7 @@ namespace TimsWpfControls
                     break;
                 case SelectionMode.Multiple:
                 case SelectionMode.Extended:
-                    selectedItemsText = DisplaySelectedItems is null ? null : string.Join(Separator.ToString(), (IEnumerable<object>)DisplaySelectedItems);
+                    selectedItemsText = DisplaySelectedItems is null ? null : string.Join(Separator?.ToString(), (IEnumerable<object>)DisplaySelectedItems);
                     break;
                 default:
                     break;
@@ -465,6 +465,9 @@ namespace TimsWpfControls
                 return; 
             }
 
+            // If we have the ItemsSource set, we need to exit here. 
+            if (ReadLocalValue(ItemsSourceProperty) != DependencyProperty.UnsetValue) return;
+
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -501,7 +504,10 @@ namespace TimsWpfControls
 
         private void MultiSelectionComboBox_Loaded(object sender, EventArgs e)
         {
-            Initialized -= MultiSelectionComboBox_Loaded;
+            Loaded -= MultiSelectionComboBox_Loaded;
+
+            // If we have the ItemsSource set, we need to exit here. 
+            if (ReadLocalValue(ItemsSourceProperty) != DependencyProperty.UnsetValue) return;
 
             PART_PopupListBox.Items.Clear();
             foreach (var item in Items)
@@ -513,11 +519,23 @@ namespace TimsWpfControls
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            if (IsDropDownOpen && !(PART_Popup is null))
+
+            // For now we only want to update our poition if the height changed. Else we will get a flickering in SharedGridColumns
+            if (IsDropDownOpen && sizeInfo.HeightChanged && !(PART_Popup is null))
             {
-                // Reposition the Popup
-                PART_Popup.HorizontalOffset += 1;
-                PART_Popup.HorizontalOffset -= 1;
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                       (DispatcherOperationCallback)delegate (object arg)
+                       {
+                           MultiSelectionComboBox mscb = (MultiSelectionComboBox)arg;
+                           mscb.PART_Popup.HorizontalOffset++;
+                           mscb.PART_Popup.HorizontalOffset--;
+
+                           return null;
+                       }, this);
+
+                //// Reposition the Popup
+                //PART_Popup.HorizontalOffset += 1;
+                //PART_Popup.HorizontalOffset -= 1;
             }
         }
 
