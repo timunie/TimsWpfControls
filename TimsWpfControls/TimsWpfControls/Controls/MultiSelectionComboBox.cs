@@ -251,38 +251,48 @@ namespace TimsWpfControls
             if (PART_EditableTextBox is null || SelectedItems is null)
                 return;
 
-            switch (SelectionMode)
-            {
-                case SelectionMode.Single:
-                    SetCurrentValue(TextProperty, SelectedItem);
-                    break;
-                case SelectionMode.Multiple:
-                case SelectionMode.Extended:
-                    SetCurrentValue(TextProperty, DisplaySelectedItems is null ? null : string.Join(Separator?.ToString(), (IEnumerable<object>)DisplaySelectedItems));
-                    break;
-                default:
-                    break;
-            }
+            SetCurrentValue(TextProperty, GetSelectedItemsText());
 
             UpdateHasCustomText();
         }
 
-        private void UpdateHasCustomText()
+        public string GetSelectedItemsText()
         {
-            string selectedItemsText = null;
-
             switch (SelectionMode)
             {
                 case SelectionMode.Single:
-                    selectedItemsText = SelectedItem?.ToString();
-                    break;
+                    if (ReadLocalValue(DisplayMemberPathProperty) != DependencyProperty.UnsetValue || ReadLocalValue(ItemStringFormatProperty) != DependencyProperty.UnsetValue)
+                    {
+                        return BindingHelper.Eval(SelectedItem, DisplayMemberPath ?? "", ItemStringFormat)?.ToString();
+                    }
+                    else
+                    {
+                        return SelectedItem?.ToString();
+                    }
+
                 case SelectionMode.Multiple:
                 case SelectionMode.Extended:
-                    selectedItemsText = DisplaySelectedItems is null ? null : string.Join(Separator?.ToString(), (IEnumerable<object>)DisplaySelectedItems);
-                    break;
+                    IEnumerable<object> values;
+
+                    if (ReadLocalValue(DisplayMemberPathProperty) != DependencyProperty.UnsetValue || ReadLocalValue(ItemStringFormatProperty) != DependencyProperty.UnsetValue)
+                    {
+                        values = ((IEnumerable<object>)DisplaySelectedItems)?.Select(o => BindingHelper.Eval(o, DisplayMemberPath ?? "", ItemStringFormat));
+                    }
+                    else
+                    {
+                        values = (IEnumerable<object>)DisplaySelectedItems;
+                    }
+
+                    return values is null ? null : string.Join(Separator?.ToString(), values);
+
                 default:
-                    break;
+                    return null;
             }
+        }
+
+        private void UpdateHasCustomText()
+        {
+            string selectedItemsText = GetSelectedItemsText();
 
             bool hasCustomText = !((string.IsNullOrEmpty(selectedItemsText) && string.IsNullOrEmpty(Text)) || string.Equals(Text, selectedItemsText, StringComparison.Ordinal));
 

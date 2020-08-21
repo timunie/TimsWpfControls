@@ -623,6 +623,7 @@
                                                  ItemContainerStyle="{TemplateBinding ItemContainerStyle}"
                                                  ItemContainerStyleSelector="{TemplateBinding ItemContainerStyleSelector}"
                                                  ItemsSource="{TemplateBinding ItemsSource}"
+                                                 ItemStringFormat="{TemplateBinding ItemStringFormat}"
                                                  SelectionMode="{TemplateBinding SelectionMode}"
                                                  SelectedItem="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedItem, Mode=TwoWay}"
                                                  SelectedIndex="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=SelectedIndex, Mode=TwoWay}"
