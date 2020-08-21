@@ -33,6 +33,7 @@ namespace TimsWpfControls_Demo.Views
             demoView.AddDemoProperty(MultiSelectionComboBox.TextWrappingProperty, multiSelectionComboBox);
             demoView.AddDemoProperty(MultiSelectionComboBox.AcceptsReturnProperty, multiSelectionComboBox);
             demoView.AddDemoProperty(MultiSelectionComboBox.OrderSelectedItemsByProperty, multiSelectionComboBox);
+            demoView.AddDemoProperty(MultiSelectionComboBox.SelectedItemProperty, multiSelectionComboBox);
         }
     }
 }
