@@ -31,6 +31,15 @@ namespace TimsWpfControls_Demo.Model
         };
 
 
+        public static List<Person> People { get; } = new List<Person>()
+        {
+            new Person(){ FirstName="Donald", LastName="Duck", Age=-1 },
+            new Person(){ FirstName="Tim", LastName="U", Age=32 },
+            new Person(){ FirstName="Person 1", LastName="Person A", Age=5 },
+        };
+
+
+
         #region ColorPicker
         public List<Color> TintedColors
         {
@@ -75,7 +84,7 @@ namespace TimsWpfControls_Demo.Model
         public Color AccentColor
         {
             get { return _AccentColor; }
-            set { _AccentColor = value; RaisePropertyChanged(nameof(AccentColor)); }
+            set { _AccentColor = value; OnPropertyChanged(nameof(AccentColor)); }
         }
 
 
@@ -84,7 +93,7 @@ namespace TimsWpfControls_Demo.Model
         public Color HighlightColor
         {
             get { return _HighlightColor; }
-            set { _HighlightColor = value; RaisePropertyChanged(nameof(HighlightColor)); }
+            set { _HighlightColor = value; OnPropertyChanged(nameof(HighlightColor)); }
         }
 
 
@@ -94,14 +103,14 @@ namespace TimsWpfControls_Demo.Model
         public string BaseTheme
         {
             get { return _BaseTheme; }
-            set { _BaseTheme = value; RaisePropertyChanged(nameof(BaseTheme)); ChangeAppTheme(); }
+            set { _BaseTheme = value; OnPropertyChanged(nameof(BaseTheme)); ChangeAppTheme(); }
         }
 
         private bool _UseSolidAccent;
         public bool UseSolidAccent
         {
             get { return _UseSolidAccent; }
-            set { _UseSolidAccent = value; RaisePropertyChanged(nameof(UseSolidAccent)); ChangeAppTheme(); }
+            set { _UseSolidAccent = value; OnPropertyChanged(nameof(UseSolidAccent)); ChangeAppTheme(); }
         }
 
 

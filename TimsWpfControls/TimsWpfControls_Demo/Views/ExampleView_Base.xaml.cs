@@ -115,11 +115,22 @@ namespace TimsWpfControls_Demo.Views
 
         DataTemplate GetBuildInTemplate (Type type)
         {
-            if (type.IsAssignableFrom(typeof(double)) || type.IsAssignableFrom(typeof(int)))
+            if (type == typeof(object))
+            {
+                return App.Current.Resources["StringDataTemplate"] as DataTemplate;
+            }
+            else if (type == typeof(double) || 
+                type == typeof(int) ||
+                type == typeof(float) ||
+                type == typeof(byte) ||
+                type == typeof(double?) ||
+                type == typeof(int?) ||
+                type == typeof(float?) ||
+                type == typeof(byte?))
             {
                return App.Current.Resources["NumericDataTemplate"] as DataTemplate;
             }
-            else if (type.IsAssignableFrom(typeof(Boolean)))
+            else if (type == typeof(bool) || type == typeof(bool?))
             {
                 return App.Current.Resources["BooleanDataTemplate"] as DataTemplate;
             }
@@ -127,13 +138,17 @@ namespace TimsWpfControls_Demo.Views
             {
                 return App.Current.Resources["BrushDataTemplate"] as DataTemplate;
             }
+            else if (type.IsAssignableFrom(typeof(string)))
+            {
+                return App.Current.Resources["StringDataTemplate"] as DataTemplate;
+            }
             else if (type.IsEnum)
             {
                 return App.Current.Resources["EnumDataTemplate"] as DataTemplate;
             }
 
             // Fallback
-            return null;
+            return App.Current.Resources["StringDataTemplate"] as DataTemplate; ;
         }
 
         private string GetGroupName(string PropertyName)

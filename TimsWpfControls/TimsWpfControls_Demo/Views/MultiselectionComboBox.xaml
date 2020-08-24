@@ -21,7 +21,7 @@
                                       ItemTemplate="{DynamicResource Tims.DataTemplates.MultiSelectionComboBox.CheckBox}"
                                       SelectedItemsTemplate="{DynamicResource Tims.DataTemplates.MultiSelectionComboBox.Removeable}"
                                       SelectionMode="Multiple"
-                                      TextSeparator=", ">
+                                      Separator=", ">
             <sys:String>Test1</sys:String>
             <sys:String>Test2</sys:String>
             <sys:String>Test3</sys:String>
