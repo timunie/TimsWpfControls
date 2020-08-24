@@ -31,6 +31,15 @@ namespace TimsWpfControls_Demo.Model
         };
 
 
+        public static List<Person> People { get; } = new List<Person>()
+        {
+            new Person(){ FirstName="Donald", LastName="Duck", Age=-1 },
+            new Person(){ FirstName="Tim", LastName="U", Age=32 },
+            new Person(){ FirstName="Person 1", LastName="Person A", Age=5 },
+        };
+
+
+
         #region ColorPicker
         public List<Color> TintedColors
         {
