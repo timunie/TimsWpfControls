@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Threading;
 using TimsWpfControls.ExtensionMethods;
 
 namespace TimsWpfControls
@@ -73,12 +74,9 @@ namespace TimsWpfControls
             set { SetValue(SuffixAfterInsertProperty, value); }
         }
 
-
-
         // Using a DependencyProperty as the backing store for Delimiter.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DelimiterProperty =
             DependencyProperty.Register("Delimiter", typeof(object), typeof(IntellisenseTextBox), new PropertyMetadata(" ,.;\n\r"), new ValidateValueCallback(IsValidDelimiter));
-
 
         /// <summary>
         /// Gets or Sets the Delimiter for getting the previous typed text and reset the Assist Source.
@@ -100,9 +98,6 @@ namespace TimsWpfControls
                 _ => false
             };
         }
-
-
-
 
         public bool IsIntellisensePopupOpen
         {
@@ -143,15 +138,18 @@ namespace TimsWpfControls
             this.PART_IntellisenseListBox.PreviewKeyDown += PART_IntellisenseListBox_PreviewKeyDown;
         }
 
-
         private void UpdatePopupPosition()
         {
-            if (!IsInitialized) return;
-            var pos = GetRectFromCharacterIndex(this.CaretIndex);
-            PART_IntellisensePopup.Placement = PlacementMode.RelativePoint;
-            PART_IntellisensePopup.PlacementTarget = this;
-            PART_IntellisensePopup.HorizontalOffset = pos.Left;
-            PART_IntellisensePopup.VerticalOffset = pos.Top + pos.Height;
+            var action = new Action(() =>
+            {
+                if (!IsInitialized) return;
+                var pos = GetRectFromCharacterIndex(this.CaretIndex);
+                PART_IntellisensePopup.Placement = PlacementMode.RelativePoint;
+                PART_IntellisensePopup.PlacementTarget = this;
+                PART_IntellisensePopup.HorizontalOffset = pos.Left;
+                PART_IntellisensePopup.VerticalOffset = pos.Top + pos.Height;
+            });
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
         }
 
         private void PART_IntellisenseListBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -240,7 +238,6 @@ namespace TimsWpfControls
                 return;
             }
 
-
             Update_AssistSourceResultView();
 
             switch (e.Key)
@@ -267,13 +264,13 @@ namespace TimsWpfControls
 
                 case Key.Down:
                     if (PART_IntellisenseListBox.SelectedIndex < PART_IntellisenseListBox.Items.Count - 1)
-                        PART_IntellisenseListBox.SelectedIndex += 1;
+                        PART_IntellisenseListBox.SelectedIndex++;
                     e.Handled = true;
                     break;
 
                 case Key.Up:
                     if (PART_IntellisenseListBox.SelectedIndex > -1)
-                        PART_IntellisenseListBox.SelectedIndex -= 1;
+                        PART_IntellisenseListBox.SelectedIndex--;
                     e.Handled = true;
                     break;
 
@@ -290,12 +287,14 @@ namespace TimsWpfControls
 
         protected override void OnTextInput(System.Windows.Input.TextCompositionEventArgs e)
         {
+            var idx = e.Text.Length - 1;
+
             base.OnTextInput(e);
 
             switch (Delimiter)
             {
                 case char[] charArray:
-                    if (charArray.Contains(e.Text[e.Text.Length - 1]))
+                    if (charArray.Contains(e.Text[idx]))
                     {
                         SetCurrentValue(IsIntellisensePopupOpenProperty, false);
                     }
@@ -310,7 +309,7 @@ namespace TimsWpfControls
                     break;
 
                 case string str:
-                    if (str.Contains(e.Text[e.Text.Length - 1]))
+                    if (str.Contains(e.Text[idx]))
                     {
                         SetCurrentValue(IsIntellisensePopupOpenProperty, false);
                     }
@@ -348,18 +347,22 @@ namespace TimsWpfControls
 
         private void Update_AssistSourceResultView()
         {
-            if (!IsInitialized) return;
-
-            var compareTo = sbLastWords.ToString();
-            SetValue(ConentAssistSource_ResultViewProperty,
-                    ContentAssistSource?.Where(x => IsMatch(x?.ToString(), compareTo))
-                    .Select(x => x.ToString())
-                    .OrderBy(x => x));
-
-            if (ConentAssistSource_ResultView == null || !ConentAssistSource_ResultView.Any() )
+            var action = new Action(() =>
             {
-                SetCurrentValue(IsIntellisensePopupOpenProperty, false);
-            }
+                if (!IsInitialized) return;
+
+                var compareTo = sbLastWords.ToString();
+                SetValue(ConentAssistSource_ResultViewProperty,
+                        ContentAssistSource?.Where(x => IsMatch(x?.ToString(), compareTo))
+                        .Select(x => x.ToString())
+                        .OrderBy(x => x));
+
+                if (ConentAssistSource_ResultView?.Any() != true)
+                {
+                    SetCurrentValue(IsIntellisensePopupOpenProperty, false);
+                }
+            });
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
         }
 
         private bool IsMatch(string str, string compareTo)
@@ -372,7 +375,7 @@ namespace TimsWpfControls
             }
             else
             {
-                return str?.IndexOf(compareTo.ToString(), StringComparison.OrdinalIgnoreCase) >= 0;
+                return str?.IndexOf(compareTo, StringComparison.OrdinalIgnoreCase) >= 0;
             }
         }
 
