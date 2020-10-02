@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controlzEx="urn:controlzex"
                     xmlns:conv="http://metro.mahapps.com/winfx/xaml/shared"
-                    xmlns:timsWpf="clr-namespace:TimsWpfControls"
-                    xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+                    xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+                    xmlns:timsWpf="clr-namespace:TimsWpfControls">
 
     <Cursor x:Key="MahApps.Cursors.EyeDropper">../Controls/ColorPicker/Eyedropper.cur</Cursor>
 
@@ -16,21 +16,79 @@
                 <ControlTemplate TargetType="{x:Type timsWpf:ColorEyeDropper}">
 
 
-                    <Button Content="{TemplateBinding Content}"
-                            Width="{TemplateBinding Width}"
+                    <Button Width="{TemplateBinding Width}"
                             Height="{TemplateBinding Height}"
                             HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalAlignment}"
                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}">
+                        <Button.ToolTip>
+                            <ToolTip x:Name="PART_PreviewToolTip"
+                                     MinWidth="110"
+                                     Placement="Relative"
+                                     PlacementTarget="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                     StaysOpen="True"
+                                     Visibility="Collapsed">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+
+                                    <Border Grid.Row="0"
+                                            Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Center"
+                                            BorderBrush="{DynamicResource MahApps.Brushes.Gray}"
+                                            BorderThickness="1">
+                                        <Grid>
+                                            <Image x:Name="PART_PreviewImage"
+                                                   Width="50"
+                                                   Height="50"
+                                                   RenderOptions.BitmapScalingMode="NearestNeighbor" />
+
+                                            <Path Stroke="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=PreviewBrush, Converter={x:Static conv:BackgroundToForegroundConverter.Instance}}" StrokeThickness="1">
+                                                <Path.Data>
+                                                    <PathGeometry options:Freeze="true" Figures=" m 0 25 20 0  m 5 5 0 20  m 5 -25 20 0  m -25 -25 0 20 m -5 0 H20 H30 V30 H20 z" />
+                                                </Path.Data>
+                                            </Path>
+
+                                        </Grid>
+                                    </Border>
+
+                                    <Ellipse x:Name="PART_EllipsePreviewBrush"
+                                             Grid.Row="1"
+                                             Grid.Column="0"
+                                             Width="{DynamicResource MahApps.Font.Size.Content}"
+                                             Height="{DynamicResource MahApps.Font.Size.Content}"
+                                             Margin="5"
+                                             Fill="{TemplateBinding PreviewBrush}"
+                                             Stroke="{DynamicResource MahApps.Brushes.Gray}"
+                                             StrokeThickness="1" />
+
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="1"
+                                               Margin="5"
+                                               Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=PreviewBrush}" />
+                                </Grid>
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="Content" Value="{x:Null}">
                             <Setter Property="ContentTemplate">
                                 <Setter.Value>
                                     <DataTemplate>
-                                        <Viewbox Stretch="Uniform" Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=FontSize}" Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=FontSize}">
+                                        <Viewbox Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=FontSize}"
+                                                 Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=FontSize}"
+                                                 Stretch="Uniform">
                                             <Canvas Width="24" Height="24">
                                                 <Path Data="M19.35,11.72L17.22,13.85L15.81,12.43L8.1,20.14L3.5,22L2,20.5L3.86,15.9L11.57,8.19L10.15,6.78L12.28,4.65L19.35,11.72M16.76,3C17.93,1.83 19.83,1.83 21,3C22.17,4.17 22.17,6.07 21,7.24L19.08,9.16L14.84,4.92L16.76,3M5.56,17.03L4.5,19.5L6.97,18.44L14.4,11L13,9.6L5.56,17.03Z" Fill="{DynamicResource MahApps.Brushes.ThemeForeground}" />
                                             </Canvas>
@@ -43,65 +101,6 @@
                     </ControlTemplate.Triggers>
 
                 </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-        <Setter Property="ToolTip">
-            <Setter.Value>
-                <ToolTip controlzEx:ToolTipAssist.AutoMove="True"
-                         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget}"
-                         Placement="Mouse"
-                         StaysOpen="True">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <Border Grid.Row="0"
-                                Grid.ColumnSpan="2"
-                                HorizontalAlignment="Center"
-                                BorderBrush="{DynamicResource MahApps.Brushes.GrayNormal}"
-                                BorderThickness="1">
-                            <Grid>
-                                <Image Width="50"
-                                       Height="50"
-                                       RenderOptions.BitmapScalingMode="NearestNeighbor"
-                                       Source="{Binding PreviewImageSource, IsAsync=True}" />
-
-                                <Path StrokeThickness="1">
-                                    <Path.Stroke>
-                                        <MultiBinding Converter="{x:Static conv:BackgroundToForegroundConverter.Instance}">
-                                            <Binding Mode="OneWay" Path="PreviewBrush" />
-                                        </MultiBinding>
-                                    </Path.Stroke>
-                                    <Path.Data>
-                                        <PathGeometry options:Freeze="true" Figures=" m 0 25 20 0  m 5 5 0 20  m 5 -25 20 0  m -25 -25 0 20 m -5 0 H20 H30 V30 H20 z" />
-                                    </Path.Data>
-                                </Path>
-
-                            </Grid>
-                        </Border>
-
-                        <Ellipse Grid.Row="1"
-                                 Grid.Column="0"
-                                 Width="{DynamicResource MahApps.Font.Size.Content}"
-                                 Height="{DynamicResource MahApps.Font.Size.Content}"
-                                 Margin="5"
-                                 Fill="{Binding PreviewBrush}"
-                                 Stroke="{DynamicResource MahApps.Brushes.GrayNormal}"
-                                 StrokeThickness="1" />
-
-                        <TextBlock Text="{Binding PreviewBrush}"
-                                   Grid.Row="1"
-                                   Grid.Column="1"
-                                   Margin="5" />
-                    </Grid>
-                </ToolTip>
             </Setter.Value>
         </Setter>
 
