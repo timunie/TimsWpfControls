@@ -115,9 +115,9 @@ namespace TimsWpfControls
             {
                 if ((bool)e.NewValue)
                 {
+                    intellisenseTextBox.Update_AssistSourceResultView();
                     intellisenseTextBox.UpdatePopupPosition();
                     intellisenseTextBox.IsAssistKeyPressed = true;
-                    intellisenseTextBox.Update_AssistSourceResultView();
                 }
                 else
                 {
@@ -183,6 +183,7 @@ namespace TimsWpfControls
 
         private bool IsAssistKeyPressed = false;
         private readonly StringBuilder sbLastWords = new StringBuilder();
+        private DispatcherOperation updateAssistSourceOperation;
 
         private bool InsertAssistWord()
         {
@@ -316,7 +317,7 @@ namespace TimsWpfControls
                     break;
             }
 
-            if (!IsIntellisensePopupOpen && e.Text.Length == 1 && e.Text != "\u001B")
+            if (!IsIntellisensePopupOpen && e.Text.Length == 1 && e.Text != "\u001B" && ConentAssistSource_ResultView?.Any() == true)
             {
                 SetCurrentValue(IsIntellisensePopupOpenProperty, true);
             }
@@ -347,6 +348,11 @@ namespace TimsWpfControls
 
         private void Update_AssistSourceResultView()
         {
+            if (updateAssistSourceOperation?.Status == DispatcherOperationStatus.Executing || updateAssistSourceOperation?.Status == DispatcherOperationStatus.Pending)
+            {
+                updateAssistSourceOperation.Abort();
+            }
+
             var action = new Action(() =>
             {
                 if (!IsInitialized) return;
@@ -355,14 +361,14 @@ namespace TimsWpfControls
                 SetValue(ConentAssistSource_ResultViewProperty,
                         ContentAssistSource?.Where(x => IsMatch(x?.ToString(), compareTo))
                         .Select(x => x.ToString())
-                        .OrderBy(x => x));
+                        .OrderBy(x => x).ToList());
 
                 if (ConentAssistSource_ResultView?.Any() != true)
                 {
                     SetCurrentValue(IsIntellisensePopupOpenProperty, false);
                 }
             });
-            Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
+            updateAssistSourceOperation = Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
         }
 
         private bool IsMatch(string str, string compareTo)
