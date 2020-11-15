@@ -360,7 +360,7 @@ namespace TimsWpfControls
                 var compareTo = sbLastWords.ToString();
                 SetValue(ConentAssistSource_ResultViewProperty,
                         ContentAssistSource?.Where(x => IsMatch(x?.ToString(), compareTo))
-                        .Select(x => x.ToString())
+                        .Select(x => x?.ToString())
                         .OrderBy(x => x).ToList());
 
                 if (ConentAssistSource_ResultView?.Any() != true)
