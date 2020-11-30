@@ -43,13 +43,6 @@
                 </mah:HamburgerMenuIconItem>
 
                 <!--  ColorPicker  -->
-                <mah:HamburgerMenuIconItem Icon="{iconPacks:EvaIcons Kind=ColorPaletteOutline}" Label="ColorPicker">
-                    <mah:HamburgerMenuIconItem.Tag>
-                        <views:ColorPickerSample />
-                    </mah:HamburgerMenuIconItem.Tag>
-                </mah:HamburgerMenuIconItem>
-
-                <!--  ColorPicker  -->
                 <mah:HamburgerMenuIconItem Icon="{iconPacks:Modern Kind=InterfaceDropdown}" Label="MultiselectionComboBox">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:MultiselectionComboBox />
@@ -90,24 +83,4 @@
 
     </mah:HamburgerMenu>
 
-    <!--<TabControl>
-        <TabItem Header="IntellisenseTextBox">
-            <ctrls:IntellisenseTextBox AcceptsReturn="True"  ContentAssistSource="{x:Static model:MainViewModel.IntellisenseSource}" SuffixAfterInsert=" " />
-        </TabItem>
-
-        <TabItem Header="CircularProgressBar">
-            <views:RadialProgressExample />
-        </TabItem>
-
-        <TabItem Header="FileSelectionTextBox">
-            <StackPanel>
-                <ctrls:FileSelectionTextbox />
-                <ctrls:FileSelectionTextbox />
-            </StackPanel>
-        </TabItem>
-
-        <TabItem Header="Dynamic Themes">
-            <views:ThemeManger />
-        </TabItem>
-    </TabControl>-->
 </mah:MetroWindow>

@@ -29,8 +29,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="BrushDataTemplate">
-        <ctrls:ColorPicker SelectedColor="{Binding Value, Converter={conv:SolidColorBrushToColorConverter}}">
-        </ctrls:ColorPicker>
+        <mah:ColorPicker SelectedColor="{Binding Value}" />
     </DataTemplate>
     
     <Style TargetType="views:ExampleView_Base">

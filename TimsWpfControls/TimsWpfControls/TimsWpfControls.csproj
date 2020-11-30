@@ -8,17 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Controls\ColorPicker\Eyedropper.cur" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MahApps.Metro" Version="2.3.4" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.0" />
     <PackageReference Include="MaterialDesignThemes" Version="3.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Controls\ColorPicker\Eyedropper.cur" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,21 +19,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AccentColorNames.resx</DependentUpon>
     </Compile>
-    <Compile Update="Lang\ColorNames.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ColorNames.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Lang\AccentColorNames.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AccentColorNames.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Lang\ColorNames.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ColorNames.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

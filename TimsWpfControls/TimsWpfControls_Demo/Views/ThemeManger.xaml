@@ -18,12 +18,12 @@
         </metro:MetroHeader>
 
         <metro:MetroHeader Header="Accent Color" Margin="5,2">
-            <ctrls:ColorPicker SelectedColor="{Binding AccentColor}" 
+            <metro:ColorPicker SelectedColor="{Binding AccentColor}" 
                                DropDownClosed="ColorPicker_DropDownClosed"/>
         </metro:MetroHeader>
 
         <metro:MetroHeader Header="Highlight Color" Margin="5,2">
-            <ctrls:ColorPicker SelectedColor="{Binding HighlightColor}"
+            <metro:ColorPicker SelectedColor="{Binding HighlightColor}"
                                DropDownClosed="ColorPicker_DropDownClosed" />
         </metro:MetroHeader>
 
