@@ -29,7 +29,7 @@ namespace TimsWpfControls.Converter
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return _Instance ?? (_Instance = new EnumToItemSourceConverter());
+            return _Instance ??= new EnumToItemSourceConverter();
         }
     }
 }
