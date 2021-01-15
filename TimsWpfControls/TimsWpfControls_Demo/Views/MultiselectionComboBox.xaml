@@ -11,32 +11,68 @@
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="Styles">
+            <ComboBox SelectedValue="{Binding Value}"
+                      SelectedValuePath="Tag"
+                                      IsEditable="True"
+                                      IsReadOnly="True"
+                                      SelectedIndex="0"
+                                      ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Text}">
+                <ComboBoxItem Content="Default: Tims.Styles.MultiSelectionComboBox" Tag="{DynamicResource Tims.Styles.MultiSelectionComboBox}" />
+                <ComboBoxItem Content="Horizontal: Tims.Styles.MultiSelectionComboBox.Horizontal" Tag="{DynamicResource Tims.Styles.MultiSelectionComboBox.Horizontal}" />
+            </ComboBox>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ItemContainerStyles">
+            <ComboBox SelectedValue="{Binding Value}"
+                      SelectedValuePath="Tag"
+                                      IsEditable="True"
+                                      IsReadOnly="True"
+                                      SelectedIndex="0"
+                                      ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Text}">
+                <ComboBoxItem Content="Default: Tims.Styles.MultiSelectionComboBoxItem" Tag="{DynamicResource Tims.Styles.MultiSelectionComboBoxItem}" />
+                <ComboBoxItem Content="Checkbox: Tims.Styles.MultiSelectionComboBoxItem.CheckBox" Tag="{DynamicResource Tims.Styles.MultiSelectionComboBoxItem.CheckBox}" />
+            </ComboBox>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SelectedItemContainerStyles">
+            <ComboBox SelectedValue="{Binding Value}"
+                      SelectedValuePath="Tag"
+                                      IsEditable="True"
+                                      IsReadOnly="True"
+                                      SelectedIndex="0"
+                                      ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Text}">
+                <ComboBoxItem Content="Default: Tims.Styles.MulitselectionComboBoxSelectedItem" Tag="{DynamicResource Tims.Styles.MulitselectionComboBoxSelectedItem}" />
+                <ComboBoxItem Content="Horizontal: Tims.Styles.MulitselectionComboBoxSelectedItem.Removeable" Tag="{DynamicResource Tims.Styles.MulitselectionComboBoxSelectedItem.Removeable}" />
+            </ComboBox>
+        </DataTemplate>
+    </UserControl.Resources>
+    
     <local:ExampleView_Base x:Name="demoView">
-        <ctrls:MultiSelectionComboBox x:Name="multiSelectionComboBox"
+        <StackPanel>
+            <ctrls:MultiSelectionComboBox x:Name="multiSelectionComboBox"
                                       VerticalAlignment="Center"
                                       Margin="5"
                                       IsEditable="False"
                                       IsReadOnly="False"
+                                      ObjectToStringComparer="{ctrls:DefaultObjectToStringComparer}"
                                       mah:TextBoxHelper.ClearTextButton="True"
-                                      ItemTemplate="{DynamicResource Tims.DataTemplates.MultiSelectionComboBox.CheckBox}"
-                                      SelectedItemsTemplate="{DynamicResource Tims.DataTemplates.MultiSelectionComboBox.Removeable}"
                                       SelectionMode="Multiple"
-                                      Separator=", ">
-            <sys:String>Test1</sys:String>
-            <sys:String>Test2</sys:String>
-            <sys:String>Test3</sys:String>
-            <sys:String>Test4</sys:String>            
-            <sys:String>Test5</sys:String>
-            <sys:String>Test6</sys:String>
-            <sys:String>Test7</sys:String>
-            <sys:String>Test8</sys:String>            
-            <sys:String>Test9</sys:String>
-            <sys:String>Test10</sys:String>
-            <sys:String>Test11</sys:String>
-            <sys:String>Test12</sys:String>
-            <sys:String>Test13</sys:String>
-            <sys:String>Test14</sys:String>
-            <sys:String>Test15</sys:String>
-        </ctrls:MultiSelectionComboBox>
+                                          VirtualizingPanel.IsVirtualizing="False"
+                                      Separator=", " 
+                                      ItemsSource="{x:Static model:SelectableProperty.Test}">
+                <ctrls:MultiSelectionComboBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource Tims.Styles.MultiSelectionComboBoxItem.CheckBox}">
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    </Style>
+                </ctrls:MultiSelectionComboBox.ItemContainerStyle>
+            </ctrls:MultiSelectionComboBox>
+
+            <Button Click="Button_Click" Content="hit me " />
+
+        </StackPanel>
+
     </local:ExampleView_Base>
 </UserControl>

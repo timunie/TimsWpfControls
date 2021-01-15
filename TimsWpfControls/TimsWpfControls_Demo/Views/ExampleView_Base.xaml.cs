@@ -95,7 +95,7 @@ namespace TimsWpfControls_Demo.Views
 
             var property = new DemoProperty()
             {
-                GroupName = groupName ?? GetGroupName(dependencyProperty.Name),
+                GroupName = groupName ?? GetGroupName(bindingTarget, dependencyProperty),
                 PropertyName = dependencyProperty.Name,
                 MinValue = MinValue,
                 MaxValue = MaxValue,
@@ -151,23 +151,13 @@ namespace TimsWpfControls_Demo.Views
             return App.Current.Resources["StringDataTemplate"] as DataTemplate; ;
         }
 
-        private string GetGroupName(string PropertyName)
+        private string GetGroupName(DependencyObject target, DependencyProperty Property)
         {
+            var attr = target.GetType().GetProperty(Property.Name)?.GetCustomAttribute(typeof(CategoryAttribute)) as CategoryAttribute;
+            
 
+            return attr?.Category ?? "Misc";
 
-            switch (PropertyName)
-            {
-                case "Width":
-                case "Height":
-                case string _ when PropertyName.EndsWith("Alignment"):
-                    return "Layout";
-
-                case string _ when PropertyName.StartsWith("Content"):
-                    return "Content";
-
-                default:
-                    return "Misc";
-            }
         }
 
         public override void OnApplyTemplate()
