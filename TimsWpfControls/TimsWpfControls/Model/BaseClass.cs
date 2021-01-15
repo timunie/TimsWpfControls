@@ -667,7 +667,7 @@ namespace TimsWpfControls.Model
         /// <param name="value">The value to test for the specified property.</param>
         /// <param name="propertyName">The name of the property to validate.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="propertyName"/> is <see langword="null"/>.</exception>
-        public void AutoValidateProperty(object? value, [CallerMemberName] string propertyName = null)
+        protected void AutoValidateProperty(object? value, [CallerMemberName] string propertyName = null)
         {
             if (propertyName is null)
             {
@@ -737,6 +737,7 @@ namespace TimsWpfControls.Model
                 ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
             }
         }
+
 
         /// <summary>
         /// Tries to validate a property with a specified name and a given input value, and returns
