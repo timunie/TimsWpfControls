@@ -14,9 +14,10 @@ namespace TimsWpfControls.Model
     public abstract class BaseClass : INotifyPropertyChanged, INotifyPropertyChanging, INotifyDataErrorInfo
     {
         #region INotifyPropertyChanged
+        #nullable enable
 
         // This event tells the UI to update
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <inheritdoc cref="INotifyPropertyChanging.PropertyChanging"/>
         public event PropertyChangingEventHandler? PropertyChanging;
@@ -599,7 +600,7 @@ namespace TimsWpfControls.Model
 
         private readonly Dictionary<string, List<ValidationResult>> errors = new Dictionary<string, List<ValidationResult>>();
 
-        public IEnumerable GetErrors(string propertyName)
+        public IEnumerable? GetErrors(string propertyName)
         {
             if (string.IsNullOrEmpty(propertyName))
             {
