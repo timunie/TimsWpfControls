@@ -13,7 +13,7 @@
             BorderThickness="[BorderThickness]"/>]]>
         </local:ExampleView_Base.ExampleXaml>
         
-        <ctrls:FileSelectionTextbox x:Name="fileSelectionTextBox" 
+        <ctrls:FileSelectionTextBox x:Name="fileSelectionTextBox" 
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center" 
                                     Margin="5"/>

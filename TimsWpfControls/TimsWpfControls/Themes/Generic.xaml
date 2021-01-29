@@ -13,7 +13,7 @@
 
     <Style BasedOn="{StaticResource Tims.Styles.IntellisenseTextBox}" TargetType="{x:Type ctrls:IntellisenseTextBox}" />
     <Style BasedOn="{StaticResource Tims.Styles.CircularProgressBar}" TargetType="{x:Type ctrls:CircularProgressBar}" />
-    <Style BasedOn="{StaticResource Tims.Styles.FileSelectionTextBox}" TargetType="{x:Type ctrls:FileSelectionTextbox}" />
+    <Style BasedOn="{StaticResource Tims.Styles.FileSelectionTextBox}" TargetType="{x:Type ctrls:FileSelectionTextBox}" />
     <Style BasedOn="{StaticResource Tims.Styles.MultiSelectionComboBox}" TargetType="{x:Type ctrls:MultiSelectionComboBox}" />
 
 
