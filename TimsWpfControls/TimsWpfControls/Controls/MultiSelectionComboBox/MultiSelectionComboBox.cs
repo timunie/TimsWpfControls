@@ -243,13 +243,17 @@ namespace TimsWpfControls
             set { SetValue(SeparatorProperty, value); }
         }
 
-        /// <summary>Identifies the <see cref="HasCustomText"/> dependency property.</summary>
-        public static readonly DependencyProperty HasCustomTextProperty =
-            DependencyProperty.Register(
+
+        // We need this as this property is readonly
+        internal static readonly DependencyPropertyKey HasCustomTextPropertyKey =
+            DependencyProperty.RegisterReadOnly(
                 nameof(HasCustomText),
                 typeof(bool),
                 typeof(MultiSelectionComboBox),
-                new PropertyMetadata(false));
+                new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        /// <summary>Identifies the <see cref="HasCustomText"/> dependency property.</summary>
+        public static readonly DependencyProperty HasCustomTextProperty = HasCustomTextPropertyKey.DependencyProperty;
 
         /// <summary>
         /// Indicates if the text is userdefined
@@ -257,6 +261,7 @@ namespace TimsWpfControls
         public bool HasCustomText
         {
             get { return (bool)GetValue(HasCustomTextProperty); }
+            protected set { SetValue(HasCustomTextPropertyKey, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="TextWrapping"/> dependency property.</summary>
@@ -348,7 +353,7 @@ namespace TimsWpfControls
         /// </summary>
         public void ResetEditableText()
         {
-            SetCurrentValue(HasCustomTextProperty, BooleanBoxes.FalseBox);
+            HasCustomText = false;
             UpdateEditableText();
         }
 
@@ -575,9 +580,7 @@ namespace TimsWpfControls
             // if the parameter was null lets get the text on our own.
             selectedItemsText ??= GetSelectedItemsText();
 
-            bool hasCustomText = !((string.IsNullOrEmpty(selectedItemsText) && string.IsNullOrEmpty(Text)) || string.Equals(Text, selectedItemsText, EditableTextStringComparision));
-
-            SetCurrentValue(HasCustomTextProperty, BooleanBoxes.Box(hasCustomText));
+            HasCustomText = !((string.IsNullOrEmpty(selectedItemsText) && string.IsNullOrEmpty(Text)) || string.Equals(Text, selectedItemsText, EditableTextStringComparision));
         }
 
         private void UpdateDisplaySelectedItems(OrderSelectedItemsBy orderBy)
