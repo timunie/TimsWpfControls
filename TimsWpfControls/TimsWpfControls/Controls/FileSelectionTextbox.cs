@@ -1,6 +1,9 @@
 ﻿using MahApps.Metro.ValueBoxes;
 using Microsoft.Win32;
+using Ookii.Dialogs.Wpf;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -48,18 +51,380 @@ namespace TimsWpfControls
         }
 
 
+        /// <summary>Identifies the <see cref="DialogAddExtension"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogAddExtensionProperty =
+            DependencyProperty.Register(nameof(DialogAddExtension), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        /// <summary>
+        /// true if the dialog box adds an extension to a file name if the user omits the extension; otherwise, false. The default value is true.
+        /// </summary>
+        public bool DialogAddExtension
+        {
+            get { return (bool)GetValue(DialogAddExtensionProperty); }
+            set { SetValue(DialogAddExtensionProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="DialogCheckPathExists"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogCheckPathExistsProperty =
+            DependencyProperty.Register(nameof(DialogCheckPathExists), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        /// <summary>
+        /// true if the dialog box displays a warning when the user specifies a path that does not exist; otherwise, false. The default value is true.
+        /// </summary>
+        public bool DialogCheckPathExists
+        {
+            get { return (bool)GetValue(DialogCheckPathExistsProperty); }
+            set { SetValue(DialogCheckPathExistsProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="DialogCustomPlaces"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogCustomPlacesProperty =
+            DependencyProperty.Register(nameof(DialogCustomPlaces), typeof(IEnumerable<string>), typeof(FileSelectionTextBox), new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or Sets a list of custom places. You can either define the GUID or the path of the custom place
+        /// </summary>
+        public IEnumerable<string> DialogCustomPlaces
+        {
+            get { return (IEnumerable<string>)GetValue(DialogCustomPlacesProperty); }
+            set { SetValue(DialogCustomPlacesProperty, value); }
+        }
+
+
+        /// <summary>Identifies the <see cref="DialogDefaultExt"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogDefaultExtProperty =
+            DependencyProperty.Register(nameof(DialogDefaultExt), typeof(string), typeof(FileSelectionTextBox), new PropertyMetadata(string.Empty));
+
+        /// <summary>
+        /// The default file name extension. The returned string does not include the period. The default value is an empty string ("").
+        /// </summary>
+        public string DialogDefaultExt
+        {
+            get { return (string)GetValue(DialogDefaultExtProperty); }
+            set { SetValue(DialogDefaultExtProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="DialogDereferenceLinks"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogDereferenceLinksProperty =
+            DependencyProperty.Register(nameof(DialogDereferenceLinks), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        /// <summary>
+        /// true if the dialog box returns the location of the file referenced by the shortcut; otherwise, false. The default value is true.
+        /// </summary>
+        public bool DialogDereferenceLinks
+        {
+            get { return (bool)GetValue(DialogDereferenceLinksProperty); }
+            set { SetValue(DialogDereferenceLinksProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="DialogFilterIndex"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogFilterIndexProperty =
+            DependencyProperty.Register(nameof(DialogFilterIndex), typeof(int), typeof(FileSelectionTextBox), new PropertyMetadata(1));
+
+        /// <summary>
+        /// A value containing the index of the filter currently selected in the file dialog box. The default value is 1
+        /// </summary>
+        public int DialogFilterIndex
+        {
+            get { return (int)GetValue(DialogFilterIndexProperty); }
+            set { SetValue(DialogFilterIndexProperty, value); }
+        }
+
+
+
+
+        /// <summary>Identifies the <see cref="DialogInitialDirectory"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogInitialDirectoryProperty =
+            DependencyProperty.Register(nameof(DialogInitialDirectory), typeof(string), typeof(FileSelectionTextBox), new PropertyMetadata(string.Empty));
+
+        /// <summary>
+        /// The initial directory displayed by the file dialog box. The default is an empty string ("").
+        /// </summary>
+        public string DialogInitialDirectory
+        {
+            get { return (string)GetValue(DialogInitialDirectoryProperty); }
+            set { SetValue(DialogInitialDirectoryProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="DialogRestoreDirectory"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogRestoreDirectoryProperty =
+            DependencyProperty.Register(nameof(DialogRestoreDirectory), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+
+        /// <summary>
+        /// true if the dialog box restores the current directory to the previously selected directory if the user changed the directory while searching for files; otherwise, false. The default value is false.
+        /// </summary>
+        public bool DialogRestoreDirectory
+        {
+            get { return (bool)GetValue(DialogRestoreDirectoryProperty); }
+            set { SetValue(DialogRestoreDirectoryProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="DialogSupportMultiDottedExtensions"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogSupportMultiDottedExtensionsProperty =
+            DependencyProperty.Register(nameof(DialogSupportMultiDottedExtensions), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+
+        /// <summary>
+        /// true if the dialog box supports multiple file name extensions; otherwise, false. The default is false.
+        /// </summary>
+        public FileSelectionTextBox DialogSupportMultiDottedExtensions
+        {
+            get { return (FileSelectionTextBox)GetValue(DialogSupportMultiDottedExtensionsProperty); }
+            set { SetValue(DialogSupportMultiDottedExtensionsProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="DialogValidateNames"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogValidateNamesProperty =
+            DependencyProperty.Register(nameof(DialogValidateNames), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        /// <summary>
+        /// true if the dialog box accepts only valid Win32 file names; otherwise, false. The default value is true.
+        /// </summary>
+        public bool DialogValidateNames
+        {
+            get { return (bool)GetValue(DialogValidateNamesProperty); }
+            set { SetValue(DialogValidateNamesProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="DialogSetInitialDirectoryFromSelectedFile"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogSetInitialDirectoryFromSelectedFileProperty =
+            DependencyProperty.Register(nameof(DialogSetInitialDirectoryFromSelectedFile), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+        /// <summary>
+        /// If this property is set to true, the initial directory will be set from the selected file if any. The default is false.
+        /// </summary>
+        public bool DialogSetInitialDirectoryFromSelectedFile
+        {
+            get { return (bool)GetValue(DialogSetInitialDirectoryFromSelectedFileProperty); }
+            set { SetValue(DialogSetInitialDirectoryFromSelectedFileProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="DialogInitialFilename"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogInitialFilenameProperty =
+            DependencyProperty.Register(nameof(DialogInitialFilename), typeof(string), typeof(FileSelectionTextBox), new PropertyMetadata(null));
+
+        /// <summary>
+        /// The initial filename when the dialog opens
+        /// </summary>
+        public string DialogInitialFilename
+        {
+            get { return (string)GetValue(DialogInitialFilenameProperty); }
+            set { SetValue(DialogInitialFilenameProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="DialogSetInitialFilenameFromSelectedFile"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogSetInitialFilenameFromSelectedFileProperty =
+            DependencyProperty.Register(nameof(DialogSetInitialFilenameFromSelectedFile), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+        /// <summary>
+        /// If <see langword="true"/> the initial filename will be set from current selected filename. The default is <see langword="false"/>
+        /// </summary>
+        public bool DialogSetInitialFilenameFromSelectedFile
+        {
+            get { return (bool)GetValue(DialogSetInitialFilenameFromSelectedFileProperty); }
+            set { SetValue(DialogSetInitialFilenameFromSelectedFileProperty, value); }
+        }
+
+
+
+
+        #region OpenFileDialog Properties
+
+        /// <summary>Identifies the <see cref="DialogCheckFileExists"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogCheckFileExistsProperty =
+            DependencyProperty.Register(nameof(DialogCheckFileExists), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+
+        /// <summary>
+        /// true if the dialog box displays a warning when the user specifies a file name that does not exist; otherwise, false. The default value is true.
+        /// </summary>
+        public bool DialogCheckFileExists
+        {
+            get { return (bool)GetValue(DialogCheckFileExistsProperty); }
+            set { SetValue(DialogCheckFileExistsProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="DialogShowReadOnly"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogShowReadOnlyProperty =
+            DependencyProperty.Register(nameof(DialogShowReadOnly), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+        /// <summary>
+        /// true if the dialog box contains a read-only check box; otherwise, false. The default value is false.
+        /// </summary>
+        public bool DialogShowReadOnly
+        {
+            get { return (bool)GetValue(DialogShowReadOnlyProperty); }
+            set { SetValue(DialogShowReadOnlyProperty, value); }
+        }
+
+
+        /// <summary>Identifies the <see cref="DialogReadOnlyChecked"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogReadOnlyCheckedProperty =
+            DependencyProperty.Register(nameof(DialogReadOnlyChecked), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+        /// <summary>
+        /// true if the read-only check box is selected; otherwise, false. The default value is false.
+        /// </summary>
+        public bool DialogReadOnlyChecked
+        {
+            get { return (bool)GetValue(DialogReadOnlyCheckedProperty); }
+            set { SetValue(DialogReadOnlyCheckedProperty, value); }
+        }
+
+
+
+        #endregion
+
+
+        #region SaveFileDialog Properties
+
+
+        /// <summary>Identifies the <see cref="DialogCreatePrompt"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogCreatePromptProperty =
+            DependencyProperty.Register(nameof(DialogCreatePrompt), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+        /// <summary>
+        /// true if the dialog box prompts the user before creating a file if the user specifies a file name that does not exist; false if the dialog box automatically creates the new file without prompting the user for permission. The default value is false.
+        /// </summary>
+        public bool DialogCreatePrompt
+        {
+            get { return (bool)GetValue(DialogCreatePromptProperty); }
+            set { SetValue(DialogCreatePromptProperty, value); }
+        }
+
+
+        /// <summary>Identifies the <see cref="DialogOverwritePrompt"/> dependency property.</summary>
+        public static readonly DependencyProperty DialogOverwritePromptProperty =
+            DependencyProperty.Register(nameof(DialogOverwritePrompt), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        /// <summary>
+        /// true if the dialog box prompts the user before overwriting an existing file if the user specifies a file name that already exists; false if the dialog box automatically overwrites the existing file without prompting the user for permission. The default value is true.
+        /// </summary>
+        public bool DialogOverwritePrompt
+        {
+            get { return (bool)GetValue(DialogOverwritePromptProperty); }
+            set { SetValue(DialogOverwritePromptProperty, value); }
+        }
+
+        #endregion
+
+        #region FolderBrowser
+
+        /// <summary>Identifies the <see cref="FolderDialogDescription"/> dependency property.</summary>
+        public static readonly DependencyProperty FolderDialogDescriptionProperty =
+            DependencyProperty.Register(nameof(FolderDialogDescription), typeof(string), typeof(FileSelectionTextBox), new PropertyMetadata(string.Empty));
+
+        /// <summary>
+        /// The description to display. The default is an empty string ("").
+        /// </summary>
+        public string FolderDialogDescription
+        {
+            get { return (string)GetValue(FolderDialogDescriptionProperty); }
+            set { SetValue(FolderDialogDescriptionProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="FolderDialogRootFolder"/> dependency property.</summary>
+        public static readonly DependencyProperty FolderDialogRootFolderProperty =
+            DependencyProperty.Register(nameof(FolderDialogRootFolder), typeof(Environment.SpecialFolder), typeof(FileSelectionTextBox), new PropertyMetadata(Environment.SpecialFolder.Desktop));
+
+
+        /// <summary>
+        /// One of the <see cref="Environment.SpecialFolder"/> values. The default is Desktop.
+        /// </summary>
+        public Environment.SpecialFolder FolderDialogRootFolder
+        {
+            get { return (Environment.SpecialFolder)GetValue(FolderDialogRootFolderProperty); }
+            set { SetValue(FolderDialogRootFolderProperty, value); }
+        }
+
+
+        /// <summary>Identifies the <see cref="FolderDialogSelectedPath"/> dependency property.</summary>
+        public static readonly DependencyProperty FolderDialogSelectedPathProperty =
+            DependencyProperty.Register(nameof(FolderDialogSelectedPath), typeof(string), typeof(FileSelectionTextBox), new PropertyMetadata(string.Empty));
+
+        /// <summary>
+        /// The path of the folder first selected in the dialog box or the last folder selected by the user. The default is an empty string ("").
+        /// </summary>
+        public string FolderDialogSelectedPath
+        {
+            get { return (string)GetValue(FolderDialogSelectedPathProperty); }
+            set { SetValue(FolderDialogSelectedPathProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="FolderDialogShowNewFolderButton"/> dependency property.</summary>
+        public static readonly DependencyProperty FolderDialogShowNewFolderButtonProperty =
+            DependencyProperty.Register(nameof(FolderDialogShowNewFolderButton), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        /// <summary>
+        /// true if the New Folder button is shown in the dialog box; otherwise, false. The default is true.
+        /// </summary>
+        public bool FolderDialogShowNewFolderButton
+        {
+            get { return (bool)GetValue(FolderDialogShowNewFolderButtonProperty); }
+            set { SetValue(FolderDialogShowNewFolderButtonProperty, value); }
+        }
+
+
+
+        /// <summary>Identifies the <see cref="FolderDialogUseDescriptionForTitle"/> dependency property.</summary>
+        public static readonly DependencyProperty FolderDialogUseDescriptionForTitleProperty =
+            DependencyProperty.Register(nameof(FolderDialogUseDescriptionForTitle), typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+        /// <summary>
+        /// true if the value of the Description property is used as the dialog title; false if the value is added as additional text to the dialog. The default is false.
+        /// </summary>
+        public bool FolderDialogUseDescriptionForTitle
+        {
+            get { return (bool)GetValue(FolderDialogUseDescriptionForTitleProperty); }
+            set { SetValue(FolderDialogUseDescriptionForTitleProperty, value); }
+        }
+
+
+        #endregion
+
+        #region Dialog Type
 
         // Using a DependencyProperty as the backing store for FileDialogType.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FileDialogTypeProperty =
             DependencyProperty.Register("FileDialogType", typeof(FileDialogType), typeof(FileSelectionTextBox), new PropertyMetadata(FileDialogType.OpenFileDialog));
 
-
+        
         public FileDialogType FileDialogType
         {
             get { return (FileDialogType)GetValue(FileDialogTypeProperty); }
             set { SetValue(FileDialogTypeProperty, value); }
         }
+        
+        #endregion
 
+        #region SelectFileButton
 
         // Using a DependencyProperty as the backing store for ButtonWidth.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ButtonWidthProperty =
@@ -111,6 +476,22 @@ namespace TimsWpfControls
         }
 
 
+        /// <summary>Identifies the <see cref="ButtonTooltip"/> dependency property.</summary>
+        public static readonly DependencyProperty ButtonTooltipProperty =
+            DependencyProperty.Register(nameof(ButtonTooltip), typeof(object), typeof(FileSelectionTextBox), new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or sets the <see cref="ToolTip"/> for the button that is used to select the file.
+        /// </summary>
+        public object ButtonTooltip
+        {
+            get { return (object)GetValue(ButtonTooltipProperty); }
+            set { SetValue(ButtonTooltipProperty, value); }
+        }
+
+
+
+        #endregion
 
         #region SelectFileCommand
 
@@ -157,30 +538,124 @@ namespace TimsWpfControls
 
         private static void DefaultSelectFileCommand_Execute(object parameter)
         {
-            if (parameter is FileSelectionTextBox fileSelectionTextbox)
+            if (parameter is FileSelectionTextBox fstb)
             {
-                FileDialog fileDialog;
+                string fileName;
 
-                fileDialog = (fileSelectionTextbox.FileDialogType) switch
+                switch (fstb.FileDialogType)
                 {
-                    FileDialogType.OpenFileDialog => new OpenFileDialog() { Multiselect = false },
-                    FileDialogType.SaveFileDialog => new SaveFileDialog(),
-                    _ => new OpenFileDialog()
-                };
+                    case FileDialogType.OpenFileDialog:
+                        var openDialog = new OpenFileDialog
+                        {
+                            AddExtension = fstb.DialogAddExtension,
+                            CheckFileExists = fstb.DialogCheckFileExists,
+                            CheckPathExists = fstb.DialogCheckPathExists,
+                            DefaultExt = fstb.DialogDefaultExt,
+                            DereferenceLinks = fstb.DialogDereferenceLinks,
+                            FileName = fstb.DialogInitialFilename,
+                            Filter = fstb.FilterString,
+                            FilterIndex = fstb.DialogFilterIndex,
+                            InitialDirectory = fstb.DialogInitialDirectory,
+                            Multiselect = false,
+                            ReadOnlyChecked = fstb.DialogReadOnlyChecked,
+                            RestoreDirectory = fstb.DialogRestoreDirectory,
+                            ShowReadOnly = fstb.DialogShowReadOnly,
+                            Title = fstb.DialogTitle,
+                            ValidateNames = fstb.DialogValidateNames
+                        };
 
-                fileDialog.Title = fileSelectionTextbox.DialogTitle;
-                fileDialog.Filter = fileSelectionTextbox.FilterString;
+                        if (!(fstb.DialogCustomPlaces is null))
+                        {
+                            foreach (var customPlace in fstb.DialogCustomPlaces)
+                            {
+                                openDialog.CustomPlaces.Add(new FileDialogCustomPlace(customPlace));
+                            }
+                        }
 
-                if (!string.IsNullOrEmpty(fileSelectionTextbox.Text))
-                {
-                    fileDialog.InitialDirectory = System.IO.Path.GetDirectoryName(fileSelectionTextbox.Text);
-                }
+                        if (fstb.DialogSetInitialDirectoryFromSelectedFile && !string.IsNullOrWhiteSpace(fstb.Text))
+                        {
+                            openDialog.InitialDirectory = Path.GetDirectoryName(fstb.Text);
+                        }
 
-                if (fileDialog.ShowDialog() == true)
-                {
-                    var fileName = fileSelectionTextbox.TryGetUncPath ? LocalToUNC(fileDialog.FileName) : fileDialog.FileName;
+                        if (fstb.DialogSetInitialFilenameFromSelectedFile && !string.IsNullOrWhiteSpace(fstb.Text))
+                        {
+                            openDialog.FileName = Path.GetFileName(fstb.Text);
+                        }
 
-                    fileSelectionTextbox.SetCurrentValue(TextProperty, fileName);
+                        if (openDialog.ShowDialog() == true)
+                        {
+                            fileName = fstb.TryGetUncPath ? LocalToUNC(openDialog.FileName) : openDialog.FileName;
+                            fstb.SetFileNameInternally(fileName);
+                        }
+                        break;
+
+
+                    case FileDialogType.SaveFileDialog:
+                        var saveDialog = new SaveFileDialog
+                        {
+                            AddExtension = fstb.DialogAddExtension,
+                            CheckFileExists = fstb.DialogCheckFileExists,
+                            CheckPathExists = fstb.DialogCheckPathExists,
+                            DefaultExt = fstb.DialogDefaultExt,
+                            DereferenceLinks = fstb.DialogDereferenceLinks,
+                            FileName = Path.GetFileName(fstb.Text ?? string.Empty),
+                            Filter = fstb.FilterString,
+                            FilterIndex = fstb.DialogFilterIndex,
+                            InitialDirectory = fstb.DialogInitialDirectory,
+                            RestoreDirectory = fstb.DialogRestoreDirectory,
+                            Title = fstb.DialogTitle,
+                            ValidateNames = fstb.DialogValidateNames,
+                            CreatePrompt = fstb.DialogCreatePrompt,
+                            OverwritePrompt = fstb.DialogOverwritePrompt
+                        };
+
+                        if (!(fstb.DialogCustomPlaces is null))
+                        {
+                            foreach (var customPlace in fstb.DialogCustomPlaces)
+                            {
+                                saveDialog.CustomPlaces.Add(new FileDialogCustomPlace(customPlace));
+                            }
+                        }
+
+                        if (fstb.DialogSetInitialDirectoryFromSelectedFile && !string.IsNullOrWhiteSpace(fstb.Text))
+                        {
+                            saveDialog.InitialDirectory = Path.GetDirectoryName(fstb.Text);
+                        }
+
+                        if (fstb.DialogSetInitialFilenameFromSelectedFile && !string.IsNullOrWhiteSpace(fstb.Text))
+                        {
+                            saveDialog.FileName = Path.GetFileName(fstb.Text);
+                        }
+
+                        if (saveDialog.ShowDialog() == true)
+                        {
+                            fileName = fstb.TryGetUncPath ? LocalToUNC(saveDialog.FileName) : saveDialog.FileName;
+                            fstb.SetFileNameInternally(fileName);
+                        }
+                        break;
+
+
+                    case FileDialogType.FolderBrowserDialog:
+                        var folderDialog = new VistaFolderBrowserDialog
+                        {
+                            Description = fstb.FolderDialogDescription,
+                            RootFolder = fstb.FolderDialogRootFolder,
+                            SelectedPath = fstb.FolderDialogSelectedPath,
+                            ShowNewFolderButton = fstb.FolderDialogShowNewFolderButton,
+                            UseDescriptionForTitle = fstb.FolderDialogUseDescriptionForTitle
+                        };
+                           
+                        if (fstb.DialogSetInitialDirectoryFromSelectedFile && !string.IsNullOrWhiteSpace(fstb.Text))
+                        {
+                            folderDialog.SelectedPath = fstb.Text;
+                        }
+
+                        if (folderDialog.ShowDialog() == true)
+                        {
+                            fileName = fstb.TryGetUncPath ? LocalToUNC(folderDialog.SelectedPath) : folderDialog.SelectedPath;
+                            fstb.SetFileNameInternally(fileName);
+                        }
+                        break;
                 }
             }
         }
@@ -195,7 +670,9 @@ namespace TimsWpfControls
             if(e.Data.GetData(DataFormats.FileDrop) is string[] files && files.Length == 1)
             {
                 var fileName = TryGetUncPath ? LocalToUNC(files[0]) : files[0];
-                SetCurrentValue(TextProperty, fileName);
+
+                SetFileNameInternally(fileName);
+
                 e.Handled = true;
             }
         }
@@ -288,11 +765,97 @@ namespace TimsWpfControls
 
         #endregion
 
+        #region ValidateFileName event
+
+        /// <summary>
+        /// This event will be raised when the <see cref="TextBox.TextProperty"/> is set by either using a <see cref="FileDialog"/> or <see cref="DragDrop.DropEvent"/>
+        /// </summary>
+        public static readonly RoutedEvent ValidatingFileNameEvent = EventManager.RegisterRoutedEvent(
+            nameof(ValidatingFileName), 
+            RoutingStrategy.Bubble, 
+            typeof(ValidatingFileEventHandler), 
+            typeof(FileSelectionTextBox));
+
+        // Provide CLR accessors for the event
+        public event ValidatingFileEventHandler ValidatingFileName
+        {
+            add { AddHandler(ValidatingFileNameEvent, value); }
+            remove { RemoveHandler(ValidatingFileNameEvent, value); }
+        }
+
+        private void SetFileNameInternally(string fileName)
+        {
+            var eventArgs = new ValidatingFileEventArgs(fileName, ValidatingFileNameEvent);
+
+            RaiseEvent(eventArgs);
+
+            if (eventArgs.Handled)
+            {
+                return;
+            }
+            else if (eventArgs.IsValid)
+            {
+                SetValue(TextProperty, eventArgs.FileName);
+                GetBindingExpression(TextProperty)?.UpdateSource();
+            }
+            else if (!eventArgs.IsValid && !string.IsNullOrEmpty(eventArgs.ValidFileName))
+            {
+                SetValue(TextProperty, eventArgs.ValidFileName);
+                GetBindingExpression(TextProperty)?.UpdateSource();
+            }
+        }
+
+        #endregion
+
     }
 
     public enum FileDialogType
     {
         OpenFileDialog,
-        SaveFileDialog
+        SaveFileDialog, 
+        FolderBrowserDialog
+    }
+
+    public delegate void ValidatingFileEventHandler(object sender, ValidatingFileEventArgs e);
+
+    public class ValidatingFileEventArgs : RoutedEventArgs
+    {
+        public ValidatingFileEventArgs(string fileName) : base()
+        {
+            FileName = fileName;
+        }
+
+        public ValidatingFileEventArgs(string fileName, RoutedEvent ValidatingFileEvent) : base(ValidatingFileEvent)
+        {
+            FileName = fileName;
+        }
+
+        public ValidatingFileEventArgs(string fileName, RoutedEvent ValidatingFileEvent, object source) : base(ValidatingFileEvent, source)
+        {
+            FileName = fileName;
+        }
+
+        /// <summary>
+        /// The FileName passed from the <see cref="FileSelectionTextBox"/>
+        /// </summary>
+        public string FileName { get; }
+
+        /// <summary>
+        /// Gets or Sets if the selected file is valid. If the provided <see cref="FileName"/> is not valid set this parameter to false.
+        /// </summary>
+        public bool IsValid { get; set; } = true;
+
+        /// <summary>
+        /// If <see cref="IsValid"/> is set to false the <see cref="FileName"/> will be replaced by this string. If this parameter is <c>null</c> nothing will be set.
+        /// </summary>
+        public string ValidFileName { get; set; }
+
+        protected override void InvokeEventHandler(Delegate genericHandler, object genericTarget)
+        {
+            ValidatingFileEventHandler handler;
+
+            handler = (ValidatingFileEventHandler)genericHandler;
+            handler(genericTarget, this);
+        }
     }
 }
