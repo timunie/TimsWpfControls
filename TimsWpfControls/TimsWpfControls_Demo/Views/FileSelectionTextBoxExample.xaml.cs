@@ -24,19 +24,19 @@ namespace TimsWpfControls_Demo.Views
         {
             InitializeComponent();
 
-            ExampleView.AddDemoProperty(FileSelectionTextbox.AcceptsFileDropProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.HeightProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.WidthProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.HorizontalAlignmentProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.VerticalAlignmentProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.ForegroundProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.BackgroundProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.VisibilityProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.BorderThicknessProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.BorderBrushProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.FilterProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.TextProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextbox.IsReadOnlyProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.AllowDropProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.HeightProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.WidthProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.HorizontalAlignmentProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.VerticalAlignmentProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.ForegroundProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.BackgroundProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.VisibilityProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.BorderThicknessProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.BorderBrushProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.FilterStringProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.TextProperty, fileSelectionTextBox);
+            ExampleView.AddDemoProperty(FileSelectionTextBox.IsReadOnlyProperty, fileSelectionTextBox);
             ExampleView.AddDemoProperty(TextBoxHelper.ClearTextButtonProperty, fileSelectionTextBox);
         }
     }

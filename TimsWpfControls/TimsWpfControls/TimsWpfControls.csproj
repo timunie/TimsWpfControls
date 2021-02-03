@@ -10,7 +10,9 @@
   <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.*" />
     <PackageReference Include="MaterialDesignThemes" Version="3.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,12 +21,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AccentColorNames.resx</DependentUpon>
     </Compile>
+    <Compile Update="Lang\FileSelectionTextBox.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FileSelectionTextBox.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Lang\AccentColorNames.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AccentColorNames.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Lang\FileSelectionTextBox.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>FileSelectionTextBox.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
