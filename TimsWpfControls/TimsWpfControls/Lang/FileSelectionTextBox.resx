@@ -100,4 +100,7 @@
   <data name="SelectFile" xml:space="preserve">
     <value>Select a file</value>
   </data>
+  <data name="FilterAnyFile" xml:space="preserve">
+    <value>Any File (*.*)|*.*</value>
+  </data>
 </root>
