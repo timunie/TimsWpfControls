@@ -61,6 +61,15 @@ namespace TimsWpfControls.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Any File (*.*)|*.*.
+        /// </summary>
+        public static string FilterAnyFile {
+            get {
+                return ResourceManager.GetString("FilterAnyFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select a file.
         /// </summary>
         public static string SelectFile {
