@@ -3,6 +3,7 @@ using System.Windows.Input;
 
 namespace TimsWpfControls.Model
 {
+    [Obsolete ("Use any other MVVM Toolkit instead, e.g.: Microsoft.Toolkit.Mvvm")]
     public class RelayCommand : ICommand
     {
         private Action<object> execute;

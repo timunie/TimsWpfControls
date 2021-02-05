@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 
 namespace TimsWpfControls.Model
 {
+    [Obsolete("Use any other MVVM Toolkit instead, e.g.: Microsoft.Toolkit.Mvvm")]
     public abstract class BaseClass : INotifyPropertyChanged, INotifyPropertyChanging, INotifyDataErrorInfo
     {
         #region INotifyPropertyChanged
