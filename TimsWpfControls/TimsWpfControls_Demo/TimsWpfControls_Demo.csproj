@@ -12,6 +12,7 @@
     <PackageReference Include="MahApps.Metro" Version="2.*" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="4.8.0" />
     <PackageReference Include="MaterialDesignThemes" Version="3.2.0" />
+    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.0.0-preview4" />
   </ItemGroup>
 
   <ItemGroup>

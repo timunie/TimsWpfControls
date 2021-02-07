@@ -22,7 +22,7 @@ namespace TimsWpfControls_Demo.Views
     {
         public ExampleViewBase()
         {
-            DemoProperties.CollectionChanged += DemoProperties_CollectionChanged;
+            // DemoProperties.CollectionChanged += DemoProperties_CollectionChanged;
         }
 
         private void DemoProperties_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -72,25 +72,27 @@ namespace TimsWpfControls_Demo.Views
 
         public void AddDemoProperty(DependencyPropertyDescriptor descriptor, DependencyObject bindingTarget)
         {
-            if (descriptor.IsReadOnly || descriptor.DesignTimeOnly || !descriptor.IsBrowsable) return;
+            if (descriptor.IsReadOnly || descriptor.DesignTimeOnly || !descriptor.IsBrowsable || descriptor.IsAttached) return;
 
-            DemoProperties.Add(new DemoProperty(descriptor));
+            var demoProperty = new DemoProperty(descriptor);
 
-            //try
-            //{
-            //    var binding = new Binding(descriptor.Name)
-            //    {
-            //        Mode = descriptor.IsReadOnly ? BindingMode.OneWay : BindingMode.TwoWay,
-            //        Source = bindingTarget
-            //    };
+            DemoProperties.Add(demoProperty);
+
+            try
+            {
+                var binding = new Binding(descriptor.DependencyProperty.Name)
+                {
+                    Mode = descriptor.IsReadOnly ? BindingMode.OneWay : BindingMode.TwoWay,
+                    Source = bindingTarget
+                };
 
 
-            //    BindingOperations.SetBinding(bindingTarget, descriptor.DependencyProperty, binding);
-            //}
-            //catch (Exception e)
-            //{
+                BindingOperations.SetBinding(demoProperty, descriptor.DependencyProperty, binding);
+            }
+            catch (Exception e)
+            {
 
-            //}
+            }
         }
 
 

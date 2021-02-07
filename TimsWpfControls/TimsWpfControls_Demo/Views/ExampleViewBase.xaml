@@ -16,12 +16,12 @@
                            Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </DataTemplate>
 
-    <DataTemplate x:Key="{x:Type system:Boolean}">
+    <DataTemplate x:Key="{x:Type system:Boolean}" DataType="{x:Type model:DemoProperty}">
         <CheckBox Content="{Binding Value}" IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </DataTemplate>
 
     <DataTemplate x:Key="StringDataTemplate">
-        <TextBox Text="{Binding Value, Mode=TwoWay}" />
+        <TextBox Text="{Binding Path=Value, Mode=TwoWay}" />
     </DataTemplate>
 
     <DataTemplate x:Key="EnumDataTemplate">
@@ -42,7 +42,7 @@
                         <Grid.Resources>
                             <CollectionViewSource x:Key="Tims.CollectionViewSource.DemoProperties" Source="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DemoProperties}">
                                 <CollectionViewSource.GroupDescriptions>
-                                    <PropertyGroupDescription PropertyName="Category" />
+                                    <PropertyGroupDescription PropertyName="Descriptor.Category" />
                                 </CollectionViewSource.GroupDescriptions>
                             </CollectionViewSource>
                         </Grid.Resources>

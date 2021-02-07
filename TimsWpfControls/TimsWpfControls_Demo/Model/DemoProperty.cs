@@ -1,30 +1,58 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using System;
 using System.ComponentModel;
 using System.Windows;
 using TimsWpfControls.Model;
 
 namespace TimsWpfControls_Demo.Model
 {
-    public class DemoProperty : BaseClass
+    public class DemoProperty : DependencyObject
     {
         public DemoProperty(DependencyPropertyDescriptor descriptor)
         {
             this.Descriptor = descriptor;
         }
 
-        private DependencyPropertyDescriptor _Descriptor;
+
+
         public DependencyPropertyDescriptor Descriptor
-        {
-            get { return _Descriptor; }
-            set { SetProperty(ref _Descriptor, value); }
+        {       
+            get { return (DependencyPropertyDescriptor)GetValue(DescriptorProperty); }
+            set { SetValue(DescriptorProperty, value); }
         }
 
-        private object _Value;
+        // Using a DependencyProperty as the backing store for Descriptor.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DescriptorProperty =
+            DependencyProperty.Register("Descriptor", typeof(DependencyPropertyDescriptor), typeof(DemoProperty), new PropertyMetadata(null));
+
+
+        //private DependencyPropertyDescriptor _Descriptor;
+        //public DependencyPropertyDescriptor Descriptor
+        //{
+        //    get { return _Descriptor; }
+        //    set { SetProperty(ref _Descriptor, value); }
+        //}
+
+
+
         public object Value
         {
-            get { return _Value; }
-            set { SetProperty(ref _Value, value); }
+            get { return (object)GetValue(ValueProperty); }
+            set { SetValue(ValueProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ValueProperty =
+            DependencyProperty.Register("Value", typeof(object), typeof(DemoProperty), new PropertyMetadata(null));
+
+
+
+        //private object _Value;
+        //public object Value
+        //{
+        //    get { return _Value; }
+        //    set { SetProperty(ref _Value, value); }
+        //}
 
 
         //public event PropertyChangedEventHandler PropertyChanged;

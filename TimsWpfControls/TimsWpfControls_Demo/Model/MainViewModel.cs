@@ -1,4 +1,5 @@
 ﻿using ControlzEx.Theming;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,7 +8,7 @@ using TimsWpfControls.Model;
 
 namespace TimsWpfControls_Demo.Model
 {
-    public class MainViewModel : BaseClass
+    public class MainViewModel : ObservableObject
     {
 
         public MainViewModel()
