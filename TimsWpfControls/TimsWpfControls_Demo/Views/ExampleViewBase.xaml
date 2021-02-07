@@ -1,11 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
+                    xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
                     xmlns:conv="clr-namespace:TimsWpfControls.Converter;assembly=TimsWpfControls"
+                    xmlns:ctrls="clr-namespace:TimsWpfControls;assembly=TimsWpfControls"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:model="clr-namespace:TimsWpfControls_Demo.Model"
-                    xmlns:views="clr-namespace:TimsWpfControls_Demo.Views" 
-                    xmlns:ctrls="clr-namespace:TimsWpfControls;assembly=TimsWpfControls">
+                    xmlns:system="clr-namespace:System;assembly=netstandard"
+                    xmlns:views="clr-namespace:TimsWpfControls_Demo.Views">
 
     <DataTemplate x:Key="NumericDataTemplate" DataType="{x:Type model:DemoProperty}">
         <mah:NumericUpDown Maximum="{Binding MaxValue}"
@@ -14,7 +16,7 @@
                            Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </DataTemplate>
 
-    <DataTemplate x:Key="BooleanDataTemplate">
+    <DataTemplate x:Key="{x:Type system:Boolean}">
         <CheckBox Content="{Binding Value}" IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </DataTemplate>
 
@@ -23,24 +25,24 @@
     </DataTemplate>
 
     <DataTemplate x:Key="EnumDataTemplate">
-        <ComboBox IsEditable="False" 
-                  SelectedItem="{Binding Value, Mode=TwoWay}"
-                  ItemsSource="{Binding Value, Converter={conv:EnumToItemSourceConverter}}" />
+        <ComboBox IsEditable="False"
+                  ItemsSource="{Binding Value, Converter={conv:EnumToItemSourceConverter}}"
+                  SelectedItem="{Binding Value, Mode=TwoWay}" />
     </DataTemplate>
 
     <DataTemplate x:Key="BrushDataTemplate">
         <mah:ColorPicker SelectedColor="{Binding Value}" />
     </DataTemplate>
-    
-    <Style TargetType="views:ExampleView_Base">
+
+    <Style TargetType="views:ExampleViewBase">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="views:ExampleView_Base">
+                <ControlTemplate TargetType="views:ExampleViewBase">
                     <Grid>
                         <Grid.Resources>
                             <CollectionViewSource x:Key="Tims.CollectionViewSource.DemoProperties" Source="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DemoProperties}">
                                 <CollectionViewSource.GroupDescriptions>
-                                    <PropertyGroupDescription PropertyName="GroupName" />
+                                    <PropertyGroupDescription PropertyName="Category" />
                                 </CollectionViewSource.GroupDescriptions>
                             </CollectionViewSource>
                         </Grid.Resources>
@@ -68,6 +70,13 @@
                                             </ScrollViewer>
                                         </ControlTemplate>
                                     </ItemsControl.Template>
+
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+
                                     <ItemsControl.GroupStyle>
                                         <GroupStyle>
                                             <GroupStyle.ContainerStyle>
@@ -75,8 +84,8 @@
                                                     <Setter Property="Template">
                                                         <Setter.Value>
                                                             <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                                <Expander Header="{Binding}" 
-                                                                          Margin="0,0,5,5"
+                                                                <Expander Margin="0,0,5,5"
+                                                                          Header="{Binding}"
                                                                           IsExpanded="True">
                                                                     <ItemsPresenter />
                                                                 </Expander>
@@ -88,19 +97,20 @@
                                         </GroupStyle>
                                     </ItemsControl.GroupStyle>
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
+                                        <DataTemplate DataType="{x:Type model:DemoProperty}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" SharedSizeGroup="Col01" />
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
-                                                <ContentControl Content="{Binding PropertyName}"
-                                                                Grid.Column="0"
-                                                                VerticalAlignment="Center" />
-                                                <ContentControl Content="{Binding}"
-                                                                Grid.Column="1"
+                                                <ContentControl Grid.Column="0"
+                                                                VerticalAlignment="Center"
+                                                                Content="{Binding Descriptor.Name}"
+                                                                ToolTip="{Binding Descriptor.Description}" />
+                                                <ContentControl Grid.Column="1"
                                                                 Margin="5"
-                                                                VerticalAlignment="Center">
+                                                                VerticalAlignment="Center"
+                                                                Content="{Binding}">
                                                     <ContentControl.ContentTemplateSelector>
                                                         <model:DemoPropertyTemplateSelector FallbackTemplate="{StaticResource StringDataTemplate}" />
                                                     </ContentControl.ContentTemplateSelector>

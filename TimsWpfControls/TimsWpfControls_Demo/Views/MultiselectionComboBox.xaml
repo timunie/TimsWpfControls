@@ -50,7 +50,7 @@
         </DataTemplate>
     </UserControl.Resources>
     
-    <local:ExampleView_Base x:Name="demoView">
+    <local:ExampleViewBase x:Name="demoView">
         <StackPanel>
             <ctrls:MultiSelectionComboBox x:Name="multiSelectionComboBox"
                                       VerticalAlignment="Center"
@@ -74,5 +74,5 @@
 
         </StackPanel>
 
-    </local:ExampleView_Base>
+    </local:ExampleViewBase>
 </UserControl>

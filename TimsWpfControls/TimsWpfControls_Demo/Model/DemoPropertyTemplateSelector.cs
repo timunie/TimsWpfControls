@@ -11,7 +11,7 @@ namespace TimsWpfControls_Demo.Model
         {
             if (item is DemoProperty demoProperty)
             {
-                return demoProperty.ValueTemplate ?? FallbackTemplate;
+                return App.Current.TryFindResource(demoProperty.Descriptor.PropertyType) as DataTemplate ?? FallbackTemplate;
             }
             else
             {

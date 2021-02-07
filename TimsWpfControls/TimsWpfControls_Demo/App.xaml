@@ -18,7 +18,7 @@
                 <ResourceDictionary Source="pack://application:,,,/TimsWpfControls;component/Themes/TimsStyles.xaml" />
 
                 <!--  DemoView  -->
-                <ResourceDictionary Source="pack://application:,,,/TimsWpfControls_Demo;component/Views/ExampleView_Base.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/TimsWpfControls_Demo;component/Views/ExampleViewBase.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <converters:SizeToCornerRadiusConverter x:Key="MahApps.Converters.SizeToCornerRadius" />

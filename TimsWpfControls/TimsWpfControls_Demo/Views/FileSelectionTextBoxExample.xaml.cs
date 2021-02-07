@@ -24,20 +24,7 @@ namespace TimsWpfControls_Demo.Views
         {
             InitializeComponent();
 
-            ExampleView.AddDemoProperty(FileSelectionTextBox.AllowDropProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.HeightProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.WidthProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.HorizontalAlignmentProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.VerticalAlignmentProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.ForegroundProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.BackgroundProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.VisibilityProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.BorderThicknessProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.BorderBrushProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.FilterStringProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.TextProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(FileSelectionTextBox.IsReadOnlyProperty, fileSelectionTextBox);
-            ExampleView.AddDemoProperty(TextBoxHelper.ClearTextButtonProperty, fileSelectionTextBox);
+            ExampleView.GetAllProperties(fileSelectionTextBox);
         }
     }
 }

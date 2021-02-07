@@ -29,12 +29,7 @@ namespace TimsWpfControls_Demo.Views
 
             ExampleViewBase.ExampleXaml = xaml;
 
-            ExampleViewBase.AddDemoProperty(TimsWpfControls.IntellisenseTextBox.WidthProperty, IntellisenseTextBox);
-            ExampleViewBase.AddDemoProperty(TimsWpfControls.IntellisenseTextBox.HeightProperty, IntellisenseTextBox);
-            ExampleViewBase.AddDemoProperty(TimsWpfControls.IntellisenseTextBox.SuffixAfterInsertProperty, IntellisenseTextBox);
-            ExampleViewBase.AddDemoProperty(TimsWpfControls.IntellisenseTextBox.AcceptsReturnProperty, IntellisenseTextBox);
-            ExampleViewBase.AddDemoProperty(TimsWpfControls.IntellisenseTextBox.AcceptsTabProperty, IntellisenseTextBox);
-            ExampleViewBase.AddDemoProperty(TimsWpfControls.IntellisenseTextBox.ContentAssistSourceProperty, IntellisenseTextBox);
+            ExampleViewBase.GetAllProperties(IntellisenseTextBox);
         }
     }
 }
