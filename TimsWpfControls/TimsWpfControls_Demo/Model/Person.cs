@@ -1,12 +1,22 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TimsWpfControls.Model;
 
 namespace TimsWpfControls_Demo.Model
 {
-    public class Person : BaseClass
+    public class Person : ObservableObject
     {
+
+        private Gender _Gender;
+        public Gender Gender
+        {
+            get { return _Gender; }
+            set { SetProperty(ref _Gender, value); }
+        }
+
+
         private string _FirstName;
         public string FirstName
         {
@@ -29,4 +39,5 @@ namespace TimsWpfControls_Demo.Model
         }
 
     }
+   
 }

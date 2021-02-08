@@ -59,7 +59,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" MinWidth="200" />
                             <ColumnDefinition Width="3" />
-                            <ColumnDefinition Width="2*" MinWidth="200" />
+                            <ColumnDefinition Width="*" MinWidth="200" />
                         </Grid.ColumnDefinitions>
 
                         <TabControl Grid.Column="0"

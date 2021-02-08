@@ -28,6 +28,11 @@ namespace TimsWpfControls_Demo.Model
         {
             if (item is DemoProperty demoProperty)
             {
+                if (demoProperty.Descriptor.PropertyType.IsEnum)
+                {
+                    return BuildInDataTemplates[typeof(Enum)];
+                }
+
                 return BuildInDataTemplates.TryGetValue(demoProperty.Descriptor.PropertyType, out DataTemplate result) ? result : FallbackTemplate;
             }
             else
