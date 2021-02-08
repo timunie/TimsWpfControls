@@ -44,6 +44,10 @@
         <mah:ColorPicker SelectedColor="{Binding Value}" />
     </DataTemplate>
 
+    <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock}" x:Key="MahApps.Styles.TextBlock.DataGrid">
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
     <Style TargetType="views:ExampleViewBase">
         <Setter Property="Template">
             <Setter.Value>
@@ -69,9 +73,9 @@
 
                                 <DataGrid x:Name="PART_PropertiesList"
                                           IsReadOnly="True"
+                                          BorderThickness="1"
                                           AutoGenerateColumns="False"
-                                          GridLinesVisibility="Horizontal"
-                                          HorizontalScrollBarVisibility="Disabled"
+                                          GridLinesVisibility="All"
                                           ItemsSource="{Binding Source={StaticResource Tims.CollectionViewSource.DemoProperties}}"
                                           VirtualizingPanel.IsVirtualizing="True"
                                           VirtualizingPanel.IsVirtualizingWhenGrouping="True">
@@ -83,7 +87,9 @@
                                                         <Setter.Value>
                                                             <ControlTemplate TargetType="{x:Type GroupItem}">
                                                                 <Expander Header="{Binding}"
-                                                                          Margin="0,0,5,5"
+                                                                          Padding="0"
+                                                                          Margin="0,0,0,5"
+                                                                          BorderThickness="0"
                                                                           IsExpanded="True">
                                                                     <ItemsPresenter />
                                                                 </Expander>
@@ -98,7 +104,6 @@
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Property"
                                                             Width="*"
-                                                            MinWidth="100"
                                                             Binding="{Binding Descriptor.Name}" />
                                         <DataGridTemplateColumn Header="Value" 
                                                                 Width="*"

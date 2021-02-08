@@ -19,15 +19,9 @@ namespace TimsWpfControls_Demo.Views
     /// </summary>
     public partial class IntellisenseTextBoxExample : UserControl
     {
-        private static readonly string xaml = @"
-<local:IntellisenseTextBoxExample />
-";
-
         public IntellisenseTextBoxExample()
         {
             InitializeComponent();
-
-            ExampleViewBase.ExampleXaml = xaml;
 
             ExampleViewBase.GetAllProperties(IntellisenseTextBox);
         }
