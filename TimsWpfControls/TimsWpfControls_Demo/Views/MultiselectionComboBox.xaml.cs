@@ -25,22 +25,8 @@ namespace TimsWpfControls_Demo.Views
         {
             InitializeComponent();
 
-            demoView.AddDemoProperty(MultiSelectionComboBox.TextProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(MultiSelectionComboBox.StaysOpenOnEditProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(MultiSelectionComboBox.SeparatorProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(TextBoxHelper.ClearTextButtonProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(MultiSelectionComboBox.SelectionModeProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(MultiSelectionComboBox.IsEditableProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(MultiSelectionComboBox.IsReadOnlyProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(MultiSelectionComboBox.TextWrappingProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(MultiSelectionComboBox.AcceptsReturnProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(MultiSelectionComboBox.OrderSelectedItemsByProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(MultiSelectionComboBox.SelectedItemProperty, multiSelectionComboBox);
-            demoView.AddDemoProperty(VirtualizingPanel.IsVirtualizingProperty, multiSelectionComboBox);
+            // demoView.GetAllProperties(multiSelectionComboBox);
 
-            demoView.AddDemoProperty(MultiSelectionComboBox.StyleProperty, multiSelectionComboBox, template:(DataTemplate)Resources["Styles"]);
-           //  demoView.AddDemoProperty(MultiSelectionComboBox.ItemContainerStyleProperty, multiSelectionComboBox, template:(DataTemplate)Resources["ItemContainerStyles"]);
-            demoView.AddDemoProperty(MultiSelectionComboBox.SelectedItemContainerStyleProperty, multiSelectionComboBox, template:(DataTemplate)Resources["SelectedItemContainerStyles"]);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

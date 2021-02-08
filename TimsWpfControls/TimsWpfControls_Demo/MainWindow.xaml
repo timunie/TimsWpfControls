@@ -17,32 +17,109 @@
         <model:MainViewModel />
     </mah:MetroWindow.DataContext>
 
-    <mah:HamburgerMenu CanResizeOpenPane="True" IsPaneOpen="True">
+
+    <mah:SplitView CanResizeOpenPane="True"
+                   DisplayMode="Inline"
+                   IsPaneOpen="True"
+                   OpenPaneLength="200">
+        <mah:SplitView.Pane>
+            <TreeView x:Name="NavigationTreeView">
+
+                <TreeView.Resources>
+                    <Style BasedOn="{StaticResource Tims.Styles.ScrollViewer.Win10.Navigation}" TargetType="ScrollViewer">
+                        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+                    </Style>
+                </TreeView.Resources>
+
+                <TreeViewItem Header="Controls"
+                              IsExpanded="True"
+                              ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                    <TreeViewItem Header="FileSelectionTextBox" IsSelected="True">
+                        <TreeViewItem.Tag>
+                            <views:FileSelectionTextBoxExample />
+                        </TreeViewItem.Tag>
+                    </TreeViewItem>
+
+                    <TreeViewItem Header="IntellisenseTextBox">
+                        <TreeViewItem.Tag>
+                            <views:IntellisenseTextBoxExample />
+                        </TreeViewItem.Tag>
+                    </TreeViewItem>
+
+
+                    <TreeViewItem Header="CircularProgessBar">
+                        <TreeViewItem.Tag>
+                            <views:RadialProgressExample />
+                        </TreeViewItem.Tag>
+                    </TreeViewItem>
+
+                    <TreeViewItem Header="MultiselectionComboBox">
+                        <TreeViewItem.Tag>
+                            <views:MultiselectionComboBox />
+                        </TreeViewItem.Tag>
+                    </TreeViewItem>
+                </TreeViewItem>
+
+                <TreeViewItem Header="Extras" IsExpanded="True">
+                    <TreeViewItem Header="Advanced Theming">
+                        <TreeViewItem.Tag>
+                            <views:ThemeManger />
+                        </TreeViewItem.Tag>
+                    </TreeViewItem>
+
+                    <TreeViewItem Header="Converter" IsExpanded="True">
+                        <TreeViewItem Header="EnumToBoolConverter">
+                            <TreeViewItem.Tag>
+                                <views:BoolToEnumConverterExample />
+                            </TreeViewItem.Tag>
+                        </TreeViewItem>
+                    </TreeViewItem>
+
+                </TreeViewItem>
+
+            </TreeView>
+        </mah:SplitView.Pane>
+
+        <mah:SplitView.Content>
+            <mah:TransitioningContentControl Content="{Binding ElementName=NavigationTreeView, Path=SelectedItem.Tag}" />
+        </mah:SplitView.Content>
+
+    </mah:SplitView>
+
+    <!--<mah:HamburgerMenu CanResizeOpenPane="True" IsPaneOpen="True">
         <mah:HamburgerMenu.ItemsSource>
             <mah:HamburgerMenuItemCollection>
 
-                <!--  RadialProgressBar  -->
+    -->
+    <!--  RadialProgressBar  -->
+    <!--
                 <mah:HamburgerMenuIconItem Icon="{iconPacks:JamIcons Kind=PieChartAlt}" Label="RadialProgressBar">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:RadialProgressExample />
                     </mah:HamburgerMenuIconItem.Tag>
                 </mah:HamburgerMenuIconItem>
 
-                <!--  IntellisenseTextBox  -->
+    -->
+    <!--  IntellisenseTextBox  -->
+    <!--
                 <mah:HamburgerMenuIconItem Icon="{iconPacks:Modern Kind=InterfaceTextbox}" Label="IntellisenseTextBox">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:IntellisenseTextBoxExample />
                     </mah:HamburgerMenuIconItem.Tag>
                 </mah:HamburgerMenuIconItem>
 
-                <!--  FileSelectionTextBox  -->
+    -->
+    <!--  FileSelectionTextBox  -->
+    <!--
                 <mah:HamburgerMenuIconItem Icon="{iconPacks:Modern Kind=InterfaceTextbox}" Label="FileSelectionTextBox">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:FileSelectionTextBoxExample />
                     </mah:HamburgerMenuIconItem.Tag>
                 </mah:HamburgerMenuIconItem>
 
-                <!--  ColorPicker  -->
+    -->
+    <!--  ColorPicker  -->
+    <!--
                 <mah:HamburgerMenuIconItem Icon="{iconPacks:Modern Kind=InterfaceDropdown}" Label="MultiselectionComboBox">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:MultiselectionComboBox />
@@ -52,7 +129,9 @@
                 <mah:HamburgerMenuHeaderItem Label="Theming" />
                 <mah:HamburgerMenuSeparatorItem />
 
-                <!--  Advanced Theming  -->
+    -->
+    <!--  Advanced Theming  -->
+    <!--
                 <mah:HamburgerMenuIconItem Icon="{iconPacks:Unicons Kind=PaintTool}" Label="Advanced Theming">
                     <mah:HamburgerMenuIconItem.Tag>
                         <views:ThemeManger />
@@ -81,6 +160,6 @@
                             Content="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=mah:HamburgerMenu}, Path=SelectedItem.Tag}" />
         </Grid>
 
-    </mah:HamburgerMenu>
+    </mah:HamburgerMenu>-->
 
 </mah:MetroWindow>

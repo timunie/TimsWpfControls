@@ -1,4 +1,5 @@
 ﻿using ControlzEx.Theming;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,7 +8,7 @@ using TimsWpfControls.Model;
 
 namespace TimsWpfControls_Demo.Model
 {
-    public class MainViewModel : BaseClass
+    public class MainViewModel : ObservableObject
     {
 
         public MainViewModel()
@@ -31,11 +32,12 @@ namespace TimsWpfControls_Demo.Model
         };
 
 
-        public static List<Person> People { get; } = new List<Person>()
+        public static Collection<Person> People { get; } = new Collection<Person>()
         {
-            new Person(){ FirstName="Donald", LastName="Duck", Age=-1 },
-            new Person(){ FirstName="Tim", LastName="U", Age=32 },
-            new Person(){ FirstName="Person 1", LastName="Person A", Age=5 },
+            new Person(){ FirstName="Donald", LastName="Duck", Age=-1, Gender = Gender.Male },
+            new Person(){ FirstName="Daisy", Age=2, Gender=Gender.Female },
+            new Person(){ FirstName="Tim", LastName="U", Age=32, Gender = Gender.Male },
+            new Person(){ FirstName="Person 1", LastName="Person A", Age=5, Gender = Gender.Diverse },
         };
 
 
@@ -135,7 +137,7 @@ namespace TimsWpfControls_Demo.Model
 
         #endregion ThemeMananger
 
-        public static List<Color> AccentColors = new List<Color>()
+        public static Collection<Color> AccentColors = new Collection<Color>()
         {
             (Color)App.Current.Resources["MahApps.Colors.Accent"],
             (Color)App.Current.Resources["MahApps.Colors.Accent2"],

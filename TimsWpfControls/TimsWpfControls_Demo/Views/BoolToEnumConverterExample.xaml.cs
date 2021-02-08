@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,20 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using TimsWpfControls;
 
 namespace TimsWpfControls_Demo.Views
 {
     /// <summary>
-    /// Interaction logic for IntellisenseTextBoxExample.xaml
+    /// Interaction logic for BoolToEnumConverterExample.xaml
     /// </summary>
-    public partial class IntellisenseTextBoxExample : UserControl
+    public partial class BoolToEnumConverterExample : UserControl
     {
-        public IntellisenseTextBoxExample()
+        public BoolToEnumConverterExample()
         {
             InitializeComponent();
-
-            ExampleViewBase.GetAllProperties(IntellisenseTextBox);
         }
     }
 }

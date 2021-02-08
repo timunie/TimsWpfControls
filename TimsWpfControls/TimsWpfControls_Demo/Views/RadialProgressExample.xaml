@@ -11,8 +11,8 @@
              d:DesignWidth="800"
              mc:Ignorable="d">
 
-    <local:ExampleView_Base x:Name="demoView" xml:space="preserve">
-        <local:ExampleView_Base.ExampleXaml><![CDATA[<ctrls:CircularProgressBar 
+    <local:ExampleViewBase x:Name="demoView" xml:space="preserve">
+        <local:ExampleViewBase.ExampleXaml><![CDATA[<ctrls:CircularProgressBar 
             Value="[Value]" 
             Minimum="[Minimum]"
             Maximum="[Maximum]"
@@ -22,7 +22,7 @@
             VerticalAlignment="[VerticalAlignment]"
             Content="[Content]"
             ContentStringFormat="[ContentStringFormat]" />
-            ]]></local:ExampleView_Base.ExampleXaml>
+            ]]></local:ExampleViewBase.ExampleXaml>
         <ctrls:CircularProgressBar x:Name="MyProgressBar"
                                    Width="200"
                                    Height="200"
@@ -32,5 +32,5 @@
                                    Maximum="100"
                                    Minimum="0"
                                    Value="5" />
-    </local:ExampleView_Base>
+    </local:ExampleViewBase>
 </UserControl>
