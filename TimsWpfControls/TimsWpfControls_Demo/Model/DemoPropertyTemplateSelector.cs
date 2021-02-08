@@ -33,7 +33,7 @@ namespace TimsWpfControls_Demo.Model
                     return BuildInDataTemplates[typeof(Enum)];
                 }
 
-                return BuildInDataTemplates.TryGetValue(demoProperty.Descriptor.PropertyType, out DataTemplate result) ? result : FallbackTemplate;
+                return BuildInDataTemplates.TryGetValue(demoProperty.Descriptor.PropertyType, out DataTemplate result) ? result : BuildInDataTemplates[typeof(string)];
             }
             else
             {

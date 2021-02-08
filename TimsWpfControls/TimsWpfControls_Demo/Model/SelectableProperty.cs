@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TimsWpfControls.Model;
 
 namespace TimsWpfControls_Demo.Model
 {
-    public class SelectableProperty : BaseClass
+    public class SelectableProperty : ObservableObject
     {
         public static List<SelectableProperty> Test { get; } = new List<SelectableProperty>
         {

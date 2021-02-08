@@ -36,7 +36,7 @@
     <DataTemplate x:Key="Demo.DataTemplates.Enum">
         <ComboBox IsEditable="False"
                   ItemsSource="{Binding Value, Converter={conv:EnumToItemSourceConverter}}"
-                  SelectedItem="{Binding Value, Mode=TwoWay}"
+                  SelectedItem="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   Style="{DynamicResource MahApps.Styles.ComboBox.DataGrid.Editing}" />
     </DataTemplate>
 
