@@ -9,25 +9,35 @@
                     xmlns:system="clr-namespace:System;assembly=netstandard"
                     xmlns:views="clr-namespace:TimsWpfControls_Demo.Views">
 
-    <DataTemplate x:Key="NumericDataTemplate" DataType="{x:Type model:DemoProperty}">
-        <mah:NumericUpDown Maximum="{Binding MaxValue}"
-                           Minimum="{Binding MinValue}"
-                           Speedup="True"
+    <model:DemoPropertyTemplateSelector x:Key="Demo.PropertyGrid.TemplateSelector" />
+
+    <DataTemplate x:Key="Demo.DataTemplates.Numeric" DataType="{x:Type model:DemoProperty}">
+        <mah:NumericUpDown Speedup="True"
+                           Style="{DynamicResource MahApps.Styles.NumericUpDown.DataGrid.Editing}"
                            Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </DataTemplate>
 
-    <DataTemplate x:Key="{x:Type system:Boolean}" DataType="{x:Type model:DemoProperty}">
-        <CheckBox Content="{Binding Value}" IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    <DataTemplate x:Key="Demo.DataTemplates.Bool" DataType="{x:Type model:DemoProperty}">
+        <mah:ToggleSwitch Content="{Binding Value}" IsOn="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </DataTemplate>
 
-    <DataTemplate x:Key="StringDataTemplate">
-        <TextBox Text="{Binding Path=Value, Mode=TwoWay}" />
+    <DataTemplate x:Key="Demo.DataTemplates.Bool.Nullable" DataType="{x:Type model:DemoProperty}">
+        <ComboBox SelectedItem="{Binding Value}" Style="{DynamicResource MahApps.Styles.ComboBox.DataGrid.Editing}">
+            <system:Boolean>True</system:Boolean>
+            <system:Boolean>False</system:Boolean>
+            <x:Null />
+        </ComboBox>
     </DataTemplate>
 
-    <DataTemplate x:Key="EnumDataTemplate">
+    <DataTemplate x:Key="Demo.DataTemplates.String">
+        <TextBox Style="{DynamicResource MahApps.Styles.TextBox.DataGrid.Editing}" Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="Demo.DataTemplates.Enum">
         <ComboBox IsEditable="False"
                   ItemsSource="{Binding Value, Converter={conv:EnumToItemSourceConverter}}"
-                  SelectedItem="{Binding Value, Mode=TwoWay}" />
+                  SelectedItem="{Binding Value, Mode=TwoWay}"
+                  Style="{DynamicResource MahApps.Styles.ComboBox.DataGrid.Editing}" />
     </DataTemplate>
 
     <DataTemplate x:Key="BrushDataTemplate">
@@ -57,35 +67,23 @@
                                     TabStripPlacement="Bottom">
                             <TabItem Header="Properties">
 
-                                <ItemsControl x:Name="PART_PropertiesList"
-                                              Grid.IsSharedSizeScope="True"
-                                              ItemsSource="{Binding Source={StaticResource Tims.CollectionViewSource.DemoProperties}}"
-                                              VirtualizingPanel.IsVirtualizingWhenGrouping="True">
-                                    <ItemsControl.Template>
-                                        <ControlTemplate>
-                                            <ScrollViewer x:Name="ScrollViewer"
-                                                          Padding="{TemplateBinding Padding}"
-                                                          VerticalScrollBarVisibility="Auto">
-                                                <ItemsPresenter />
-                                            </ScrollViewer>
-                                        </ControlTemplate>
-                                    </ItemsControl.Template>
-
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <VirtualizingStackPanel />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-
-                                    <ItemsControl.GroupStyle>
+                                <DataGrid x:Name="PART_PropertiesList"
+                                          IsReadOnly="True"
+                                          AutoGenerateColumns="False"
+                                          GridLinesVisibility="Horizontal"
+                                          HorizontalScrollBarVisibility="Disabled"
+                                          ItemsSource="{Binding Source={StaticResource Tims.CollectionViewSource.DemoProperties}}"
+                                          VirtualizingPanel.IsVirtualizing="True"
+                                          VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+                                    <DataGrid.GroupStyle>
                                         <GroupStyle>
                                             <GroupStyle.ContainerStyle>
                                                 <Style TargetType="{x:Type GroupItem}">
                                                     <Setter Property="Template">
                                                         <Setter.Value>
                                                             <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                                <Expander Margin="0,0,5,5"
-                                                                          Header="{Binding}"
+                                                                <Expander Header="{Binding}"
+                                                                          Margin="0,0,5,5"
                                                                           IsExpanded="True">
                                                                     <ItemsPresenter />
                                                                 </Expander>
@@ -95,30 +93,20 @@
                                                 </Style>
                                             </GroupStyle.ContainerStyle>
                                         </GroupStyle>
-                                    </ItemsControl.GroupStyle>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type model:DemoProperty}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Col01" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <ContentControl Grid.Column="0"
-                                                                VerticalAlignment="Center"
-                                                                Content="{Binding Descriptor.Name}"
-                                                                ToolTip="{Binding Descriptor.Description}" />
-                                                <ContentControl Grid.Column="1"
-                                                                Margin="5"
-                                                                VerticalAlignment="Center"
-                                                                Content="{Binding}">
-                                                    <ContentControl.ContentTemplateSelector>
-                                                        <model:DemoPropertyTemplateSelector FallbackTemplate="{StaticResource StringDataTemplate}" />
-                                                    </ContentControl.ContentTemplateSelector>
-                                                </ContentControl>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                    </DataGrid.GroupStyle>
+
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Property"
+                                                            Width="*"
+                                                            MinWidth="100"
+                                                            Binding="{Binding Descriptor.Name}" />
+                                        <DataGridTemplateColumn Header="Value" 
+                                                                Width="*"
+                                                                ClipboardContentBinding="{Binding Value}"
+                                                                CellTemplateSelector="{StaticResource Demo.PropertyGrid.TemplateSelector}"/>
+
+                                    </DataGrid.Columns>
+                                </DataGrid>
                             </TabItem>
 
                             <TabItem Header="XAML">

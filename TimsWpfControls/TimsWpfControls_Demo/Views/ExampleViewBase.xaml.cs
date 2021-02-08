@@ -70,7 +70,7 @@ namespace TimsWpfControls_Demo.Views
             return result;
         }
 
-        public void AddDemoProperty(DependencyPropertyDescriptor descriptor, DependencyObject bindingTarget)
+        public void AddDemoProperty(DependencyPropertyDescriptor descriptor, FrameworkElement bindingTarget)
         {
             if (descriptor.IsReadOnly || descriptor.DesignTimeOnly || !descriptor.IsBrowsable || descriptor.IsAttached) return;
 
@@ -80,14 +80,15 @@ namespace TimsWpfControls_Demo.Views
 
             try
             {
-                var binding = new Binding(descriptor.DependencyProperty.Name)
+                demoProperty.Value = bindingTarget.GetValue(descriptor.DependencyProperty);
+               
+                var binding = new Binding(nameof(DemoProperty.Value))
                 {
-                    Mode = descriptor.IsReadOnly ? BindingMode.OneWay : BindingMode.TwoWay,
-                    Source = bindingTarget
+                    Source = demoProperty,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                 };
 
-
-                BindingOperations.SetBinding(demoProperty, descriptor.DependencyProperty, binding);
+                bindingTarget.SetBinding(descriptor.DependencyProperty, binding);
             }
             catch (Exception e)
             {
@@ -96,7 +97,7 @@ namespace TimsWpfControls_Demo.Views
         }
 
 
-        public void GetAllProperties(DependencyObject dependencyObject)
+        public void GetAllProperties(FrameworkElement dependencyObject)
         {
             foreach (var property in TypeDescriptor.GetProperties(dependencyObject))
             {
