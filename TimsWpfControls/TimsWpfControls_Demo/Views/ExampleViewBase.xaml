@@ -103,6 +103,7 @@
 
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Property"
+                                                            ElementStyle="{DynamicResource MahApps.Styles.TextBlock.DataGrid}"
                                                             Width="*"
                                                             Binding="{Binding Descriptor.Name}" />
                                         <DataGridTemplateColumn Header="Value" 
