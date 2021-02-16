@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TimsWpfControls.Helper;
 using TimsWpfControls.Model;
 
 
@@ -22,6 +23,10 @@ namespace TimsWpfControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(FileSelectionTextBox), new FrameworkPropertyMetadata(typeof(FileSelectionTextBox)));
         }
 
+        public FileSelectionTextBox() : base()
+        {
+            InitDefaultSelectFileCommand();
+        }
 
 
         public static readonly DependencyProperty FilterStringProperty =
@@ -530,15 +535,27 @@ namespace TimsWpfControls
         }
 
 
+        public static RoutedUICommand DefaultSelectFileCommand = new RoutedUICommand(
+            Lang.FileSelectionTextBox.SelectFile,
+            "DefaultSelectFileCommand",
+            typeof(FileSelectionTextBox));
 
-        public static RelayCommand DefaultSelectFileCommand { get; } = new RelayCommand
-            (
-                (parameter) => DefaultSelectFileCommand_Execute(parameter)
-            );
+        private static readonly CommandBinding DefaultSelectFileCommandBinding = new CommandBinding(
+            DefaultSelectFileCommand,
+            DefaultSelectFileCommand_Execute);
 
-        private static void DefaultSelectFileCommand_Execute(object parameter)
+
+        private void InitDefaultSelectFileCommand()
         {
-            if (parameter is FileSelectionTextBox fstb)
+            if (!CommandBindings.Contains(DefaultSelectFileCommandBinding))
+            {
+                CommandBindings.Add(DefaultSelectFileCommandBinding);
+            }
+        }
+
+        private static void DefaultSelectFileCommand_Execute(object sender, ExecutedRoutedEventArgs _)
+        {
+            if (sender is FileSelectionTextBox fstb)
             {
                 string fileName;
 
@@ -584,7 +601,7 @@ namespace TimsWpfControls
 
                         if (openDialog.ShowDialog() == true)
                         {
-                            fileName = fstb.TryGetUncPath ? LocalToUNC(openDialog.FileName) : openDialog.FileName;
+                            fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(openDialog.FileName) : openDialog.FileName;
                             fstb.SetFileNameInternally(fileName);
                         }
                         break;
@@ -629,7 +646,7 @@ namespace TimsWpfControls
 
                         if (saveDialog.ShowDialog() == true)
                         {
-                            fileName = fstb.TryGetUncPath ? LocalToUNC(saveDialog.FileName) : saveDialog.FileName;
+                            fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(saveDialog.FileName) : saveDialog.FileName;
                             fstb.SetFileNameInternally(fileName);
                         }
                         break;
@@ -652,7 +669,7 @@ namespace TimsWpfControls
 
                         if (folderDialog.ShowDialog() == true)
                         {
-                            fileName = fstb.TryGetUncPath ? LocalToUNC(folderDialog.SelectedPath) : folderDialog.SelectedPath;
+                            fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(folderDialog.SelectedPath) : folderDialog.SelectedPath;
                             fstb.SetFileNameInternally(fileName);
                         }
                         break;
@@ -669,7 +686,7 @@ namespace TimsWpfControls
         {
             if(e.Data.GetData(DataFormats.FileDrop) is string[] files && files.Length == 1)
             {
-                var fileName = TryGetUncPath ? LocalToUNC(files[0]) : files[0];
+                var fileName = TryGetUncPath ? FileHelper.LocalPathToUNC(files[0]) : files[0];
 
                 SetFileNameInternally(fileName);
 
@@ -706,14 +723,14 @@ namespace TimsWpfControls
             PreviewDragEnter += FileSelectionTextbox_PreviewDragEnter;
             PreviewDragOver += FileSelectionTextbox_PreviewDragOver;
             PreviewDrop += FileSelectionTextbox_PreviewDrop;
+
+
         }
 
         #endregion
 
 
         #region Handle UNC Path
-
-
 
         public bool TryGetUncPath
         {
@@ -724,44 +741,6 @@ namespace TimsWpfControls
         // Using a DependencyProperty as the backing store for TryGetUncPath.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TryGetUncPathProperty =
             DependencyProperty.Register("TryGetUncPath", typeof(bool), typeof(FileSelectionTextBox), new PropertyMetadata(BooleanBoxes.FalseBox));
-
-        [DllImport("mpr.dll")]
-        static extern int WNetGetUniversalNameA(string lpLocalPath, int dwInfoLevel, IntPtr lpBuffer, ref int lpBufferSize);
-
-        // I think max length for UNC is actually 32,767
-        static string LocalToUNC(string localPath, int maxLen = 2000)
-        {
-            IntPtr lpBuff;
-
-            // Allocate the memory
-            try
-            {
-                lpBuff = Marshal.AllocHGlobal(maxLen);
-            }
-            catch (OutOfMemoryException)
-            {
-                return null;
-            }
-
-            try
-            {
-                int res = WNetGetUniversalNameA(localPath, 1, lpBuff, ref maxLen);
-
-                if (res != 0)
-                    return localPath;
-
-                // lpbuff is a structure, whose first element is a pointer to the UNC name (just going to be lpBuff + sizeof(int))
-                return Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(lpBuff));
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-            finally
-            {
-                Marshal.FreeHGlobal(lpBuff);
-            }
-        }
 
         #endregion
 

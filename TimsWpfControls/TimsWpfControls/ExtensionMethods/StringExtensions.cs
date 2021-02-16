@@ -59,5 +59,15 @@ namespace TimsWpfControls.ExtensionMethods
                 _ => throw new ArgumentException("StopCharacters must either be char[], string[] or string")
             };
         }
+
+        public static string ReplaceFirst(this string text, string search, string replace, StringComparison stringComparison = StringComparison.Ordinal)
+        {
+            int pos = text.IndexOf(search, stringComparison);
+            if (pos < 0)
+            {
+                return text;
+            }
+            return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
+        }
     }
 }
