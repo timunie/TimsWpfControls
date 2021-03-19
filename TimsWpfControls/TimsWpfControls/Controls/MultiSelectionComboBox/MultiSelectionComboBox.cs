@@ -900,7 +900,7 @@ namespace TimsWpfControls
             }
 
             // If we have the ItemsSource set, we need to exit here. 
-            if (ReadLocalValue(ItemsSourceProperty) != DependencyProperty.UnsetValue)
+            if ((PART_PopupListBox.Items as IList)?.IsReadOnly ?? false)
             {
                 return;
             }
@@ -1056,13 +1056,15 @@ namespace TimsWpfControls
             Loaded -= MultiSelectionComboBox_Loaded;
 
             // If we have the ItemsSource set, we need to exit here. 
-            if (ReadLocalValue(ItemsSourceProperty) == DependencyProperty.UnsetValue)
+            if ((PART_PopupListBox.Items as IList)?.IsReadOnly ?? false)
             {
-                PART_PopupListBox.Items.Clear();
-                foreach (var item in Items)
-                {
-                    PART_PopupListBox.Items.Add(item);
-                }
+                return;
+            }
+
+            PART_PopupListBox.Items.Clear();
+            foreach (var item in Items)
+            {
+                PART_PopupListBox.Items.Add(item);
             }
         }
 
