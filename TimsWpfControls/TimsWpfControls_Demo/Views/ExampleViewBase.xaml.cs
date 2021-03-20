@@ -116,7 +116,7 @@ namespace TimsWpfControls_Demo.Views
 
         public void AddDemoProperty(DependencyPropertyDescriptor descriptor, FrameworkElement bindingTarget)
         {
-            if (descriptor.IsReadOnly || descriptor.DesignTimeOnly || !descriptor.IsBrowsable || descriptor.IsAttached) return;
+            if (descriptor.IsReadOnly || descriptor.DesignTimeOnly || !descriptor.IsBrowsable) return;
 
             var demoProperty = new DemoProperty(descriptor);
 

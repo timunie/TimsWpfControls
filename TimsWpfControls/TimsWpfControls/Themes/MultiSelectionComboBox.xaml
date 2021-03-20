@@ -294,9 +294,7 @@
                                     Grid.RowSpan="2"
                                     Grid.Column="1"
                                     Width="{TemplateBinding mah:TextBoxHelper.ButtonWidth}"
-                                    mah:TextBoxHelper.IsClearTextButtonBehaviorEnabled="False"
-                                    Command="{TemplateBinding mah:TextBoxHelper.ButtonCommand}"
-                                    CommandParameter="{TemplateBinding mah:TextBoxHelper.ButtonCommandParameter}"
+                                    Command="{x:Static ctrls:MultiSelectionComboBox.ClearContentCommand}"
                                     Content="{TemplateBinding mah:TextBoxHelper.ButtonContent}"
                                     ContentTemplate="{TemplateBinding mah:TextBoxHelper.ButtonContentTemplate}"
                                     Focusable="False"
@@ -306,6 +304,7 @@
                                     IsTabStop="False"
                                     Style="{DynamicResource MahApps.Styles.Button.Chromeless}"
                                     Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:TextBoxHelper.ClearTextButton), Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                       
                         </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -395,10 +394,10 @@
                         <Button x:Name="PART_ClearText"
                                 Grid.Column="1"
                                 Width="{TemplateBinding mah:TextBoxHelper.ButtonWidth}"
-                                mah:TextBoxHelper.IsClearTextButtonBehaviorEnabled="{Binding RelativeSource={RelativeSource AncestorType={x:Type ctrls:MultiSelectionComboBox}}, Path=(mah:TextBoxHelper.ClearTextButton), Mode=OneWay}"
                                 Content="{TemplateBinding mah:TextBoxHelper.ButtonContent}"
                                 ContentTemplate="{TemplateBinding mah:TextBoxHelper.ButtonContentTemplate}"
                                 Focusable="False"
+                                Command="{x:Static ctrls:MultiSelectionComboBox.ClearContentCommand}"
                                 FontFamily="{TemplateBinding mah:TextBoxHelper.ButtonFontFamily}"
                                 FontSize="{TemplateBinding mah:TextBoxHelper.ButtonFontSize}"
                                 Foreground="{TemplateBinding Foreground}"

@@ -30,6 +30,8 @@ namespace TimsWpfControls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(typeof(MultiSelectionComboBox)));
             TextProperty.OverrideMetadata(typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(String.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.Journal, new PropertyChangedCallback(OnTextChanged)));
+
+            CommandManager.RegisterClassCommandBinding(typeof(MultiSelectionComboBox), new CommandBinding(ClearContentCommand, ExecutedClearContentCommand));
         }
 
         #endregion
@@ -525,6 +527,9 @@ namespace TimsWpfControls
                 return;
             }
 
+            var oldSelectionStart = PART_EditableTextBox.SelectionStart;
+            var oldSelectionLength = PART_EditableTextBox.SelectionLength;
+
             var selectedItemsText = GetSelectedItemsText();
 
             if (!HasCustomText)
@@ -533,6 +538,9 @@ namespace TimsWpfControls
             }
 
             UpdateHasCustomText(selectedItemsText);
+
+            PART_EditableTextBox.SelectionStart = oldSelectionStart;
+            PART_EditableTextBox.SelectionLength = oldSelectionLength;
         }
 
         private void UpdateDisplaySelectedItems()
@@ -753,7 +761,7 @@ namespace TimsWpfControls
         // Clear Text Command
         public static RoutedUICommand ClearContentCommand { get; } = new RoutedUICommand("ClearContent", nameof(ClearContentCommand), typeof(MultiSelectionComboBox));
 
-        private void ExecutedClearContentCommand(object sender, ExecutedRoutedEventArgs e)
+        private static void ExecutedClearContentCommand(object sender, ExecutedRoutedEventArgs e)
         {
             if (sender is MultiSelectionComboBox multiSelectionCombo)
             {

@@ -25,7 +25,7 @@ namespace TimsWpfControls_Demo.Views
         {
             InitializeComponent();
 
-            // demoView.GetAllProperties(multiSelectionComboBox);
+            demoView.GetAllProperties(multiSelectionComboBox);
 
         }
 
