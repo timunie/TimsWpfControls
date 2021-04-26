@@ -10,6 +10,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using TimsWpfControls.Helper;
@@ -908,7 +909,7 @@ namespace TimsWpfControls
             }
 
             // If we have the ItemsSource set, we need to exit here. 
-            if ((PART_PopupListBox.Items as IList)?.IsReadOnly ?? false)
+            if (((PART_PopupListBox?.Items as IList)?.IsReadOnly ?? false) || BindingOperations.IsDataBound(this, ItemsSourceProperty))
             {
                 return;
             }
@@ -1064,7 +1065,7 @@ namespace TimsWpfControls
             Loaded -= MultiSelectionComboBox_Loaded;
 
             // If we have the ItemsSource set, we need to exit here. 
-            if ((PART_PopupListBox.Items as IList)?.IsReadOnly ?? false)
+            if (((PART_PopupListBox.Items as IList)?.IsReadOnly ?? false) || BindingOperations.IsDataBound(PART_PopupListBox, ItemsSourceProperty))
             {
                 return;
             }

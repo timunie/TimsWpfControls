@@ -9,7 +9,7 @@ namespace TimsWpfControls.ExtensionMethods
         {
             var StartIndex = input.LastIndexOf(StopCharacter, CaretIndex - 1);
             if (StartIndex < 0) StartIndex = 0;
-            return input.Substring(StartIndex, CaretIndex - StartIndex).Trim(StopCharacter).TrimStart();
+            return input[StartIndex..CaretIndex].Trim(StopCharacter).TrimStart();
         }
 
         internal static string GetStringToTheRight(this string input, int CaretIndex, char[] StopCharacters)
@@ -23,7 +23,7 @@ namespace TimsWpfControls.ExtensionMethods
             }
 
             if (StartIndex < 0) StartIndex = 0;
-            return input.Substring(StartIndex, CaretIndex - StartIndex).Trim(StopCharacters).TrimStart();
+            return input[StartIndex..CaretIndex].Trim(StopCharacters).TrimStart();
         }
 
         internal static string GetStringToTheRight(this string input, int CaretIndex, string[] StopCharacters)
@@ -37,7 +37,7 @@ namespace TimsWpfControls.ExtensionMethods
             }
 
             if (StartIndex < 0) StartIndex = 0;
-            var result = input.Substring(StartIndex, CaretIndex - StartIndex).TrimStart();
+            var result = input[StartIndex..CaretIndex].TrimStart();
 
             foreach (var str in StopCharacters)
             {
@@ -67,7 +67,7 @@ namespace TimsWpfControls.ExtensionMethods
             {
                 return text;
             }
-            return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
+            return text.Substring(0, pos) + replace + text[(pos + search.Length)..];
         }
     }
 }

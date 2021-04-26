@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using Ookii.Dialogs.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -598,11 +599,25 @@ namespace TimsWpfControls
                         {
                             openDialog.FileName = Path.GetFileName(fstb.Text);
                         }
-
-                        if (openDialog.ShowDialog() == true)
+                        try
                         {
-                            fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(openDialog.FileName) : openDialog.FileName;
-                            fstb.SetFileNameInternally(fileName);
+                            if (openDialog.ShowDialog() == true)
+                            {
+                                fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(openDialog.FileName) : openDialog.FileName;
+                                fstb.SetFileNameInternally(fileName);
+                            }
+                        }
+                        catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)
+                        {
+                            Trace.TraceError("FileSelectionTextBox was Unable to open the given Path. We will try anotherone now.");
+
+                            openDialog.InitialDirectory = null;
+
+                            if (openDialog.ShowDialog() == true)
+                            {
+                                fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(openDialog.FileName) : openDialog.FileName;
+                                fstb.SetFileNameInternally(fileName);
+                            }
                         }
                         break;
 
@@ -644,10 +659,25 @@ namespace TimsWpfControls
                             saveDialog.FileName = Path.GetFileName(fstb.Text);
                         }
 
-                        if (saveDialog.ShowDialog() == true)
+                        try
                         {
-                            fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(saveDialog.FileName) : saveDialog.FileName;
-                            fstb.SetFileNameInternally(fileName);
+                            if (saveDialog.ShowDialog() == true)
+                            {
+                                fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(saveDialog.FileName) : saveDialog.FileName;
+                                fstb.SetFileNameInternally(fileName);
+                            }
+                        }
+                        catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)
+                        {
+                            Trace.TraceError("FileSelectionTextBox was Unable to open the given Path. We will try anotherone now.");
+
+                            saveDialog.InitialDirectory = null;
+
+                            if (saveDialog.ShowDialog() == true)
+                            {
+                                fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(saveDialog.FileName) : saveDialog.FileName;
+                                fstb.SetFileNameInternally(fileName);
+                            }
                         }
                         break;
 
@@ -667,10 +697,25 @@ namespace TimsWpfControls
                             folderDialog.SelectedPath = fstb.Text;
                         }
 
-                        if (folderDialog.ShowDialog() == true)
+                        try
                         {
-                            fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(folderDialog.SelectedPath) : folderDialog.SelectedPath;
-                            fstb.SetFileNameInternally(fileName);
+                            if (folderDialog.ShowDialog() == true)
+                            {
+                                fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(folderDialog.SelectedPath) : folderDialog.SelectedPath;
+                                fstb.SetFileNameInternally(fileName);
+                            }
+                        }
+                        catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException)
+                        {
+                            Trace.TraceError("FileSelectionTextBox was Unable to open the given Path. We will try anotherone now.");
+
+                            folderDialog.SelectedPath = null;
+
+                            if (folderDialog.ShowDialog() == true)
+                            {
+                                fileName = fstb.TryGetUncPath ? FileHelper.LocalPathToUNC(folderDialog.SelectedPath) : folderDialog.SelectedPath;
+                                fstb.SetFileNameInternally(fileName);
+                            }
                         }
                         break;
                 }

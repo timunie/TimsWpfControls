@@ -16,13 +16,13 @@ namespace TimsWpfControls.Converter
 
             bool inverse = (parameter as string)?.ToLowerInvariant() == "true";
 
-            if (value is double)
+            if (value is double @double)
             {
                 if (inverse)
                 {
-                    value = 1 - (double)value;
+                    @double = 1 - @double;
                 }
-                return new GridLength((double)value, GridUnitType.Star);
+                return new GridLength(@double, GridUnitType.Star);
             }
 
             throw new NotImplementedException();

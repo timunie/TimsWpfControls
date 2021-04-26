@@ -86,7 +86,7 @@ namespace TimsWpfControls
 
             // Bind to the selected TargetProperty, e.g. ActualHeight and get
             // notified about changes in OnTargetPropertyListenerChanged
-            Binding listenerBinding = new Binding
+            Binding listenerBinding = new()
             {
                 Source = targetObject,
                 Mode = BindingMode.OneWay
@@ -107,13 +107,13 @@ namespace TimsWpfControls
             BindingOperations.SetBinding(this, TargetPropertyMirrorProperty, Binding);
             
             TargetPropertyValueChanged();
-            if (targetObject is FrameworkElement)
+            if (targetObject is FrameworkElement element1)
             {
-                ((FrameworkElement)targetObject).Loaded += delegate { TargetPropertyValueChanged(); };
+                element1.Loaded += delegate { TargetPropertyValueChanged(); };
             }
-            else if (targetObject is FrameworkContentElement)
+            else if (targetObject is FrameworkContentElement element)
             {
-                ((FrameworkContentElement)targetObject).Loaded += delegate { TargetPropertyValueChanged(); };
+                element.Loaded += delegate { TargetPropertyValueChanged(); };
             }
         }
 

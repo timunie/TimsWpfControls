@@ -17,6 +17,7 @@
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualHeight}" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.TransparentWhite}" />
