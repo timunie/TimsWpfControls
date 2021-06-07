@@ -9,7 +9,7 @@ namespace TimsWpfControls
     /// <summary>
     /// Defines how the selected Items should be arranged for display
     /// </summary>
-    public enum OrderSelectedItemsBy
+    public enum SelectedItemsOrderType
     {
         /// <summary>
         /// Displays the selected items in the same order as they were selected
