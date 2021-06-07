@@ -16,6 +16,7 @@ namespace TimsWpfControls.Helper
         {
             try
             {
+                if (string.IsNullOrEmpty(fileName)) return false;
                 return IsFullyQualifiedAdvanced(new Uri(fileName));
             }
             catch
@@ -26,7 +27,14 @@ namespace TimsWpfControls.Helper
 
         public static bool IsFullyQualifiedAdvanced(Uri uri)
         {
-            return uri.Host == Dns.GetHostEntry(uri.Host).HostName;
+            try
+            {
+                return uri.Host == Dns.GetHostEntry(uri.Host).HostName;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
 
