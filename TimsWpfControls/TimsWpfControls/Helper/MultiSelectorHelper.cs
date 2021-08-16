@@ -25,6 +25,7 @@ namespace TimsWpfControls
                 typeof(MultiSelectorHelper),
                 new FrameworkPropertyMetadata(null, OnSelectedItemsChanged));
 
+       
         /// <summary>
         /// Handles disposal and creation of old and new bindings
         /// </summary>

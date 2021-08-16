@@ -15,7 +15,7 @@
 
     <!--#region DataTemplates-->
 
-    <DataTemplate x:Key="MahApps.DataTemplates.MultiSelectionComboBox.DisabledPopupOverlay">
+    <DataTemplate x:Key="Tims.DataTemplates.MultiSelectionComboBox.DisabledPopupOverlay">
         <Border>
             <Border.Background>
                 <SolidColorBrush Opacity="0.5" Color="{DynamicResource MahApps.Colors.ThemeForeground}" />
@@ -447,7 +447,7 @@
         <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}" />
         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.TextBox.Border}" />
         <Setter Property="BorderThickness" Value="{DynamicResource ComboBoxBorderThemeThickness}" />
-        <Setter Property="DisabledPopupOverlayContentTemplate" Value="{DynamicResource MahApps.DataTemplates.MultiSelectionComboBox.DisabledPopupOverlay}" />
+        <Setter Property="DisabledPopupOverlayContentTemplate" Value="{DynamicResource Tims.DataTemplates.MultiSelectionComboBox.DisabledPopupOverlay}" />
         <Setter Property="FontFamily" Value="{DynamicResource MahApps.Fonts.Family.Control}" />
         <Setter Property="FontSize" Value="{DynamicResource MahApps.Font.Size.Content}" />
         <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}" />
