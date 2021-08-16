@@ -1,11 +1,13 @@
 ﻿using ControlzEx;
-using ControlzEx.Standard;
+using MahApps.Metro.Controls;
 using MahApps.Metro.ValueBoxes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,7 +24,6 @@ namespace TimsWpfControls
     [TemplatePart(Name = nameof(PART_SelectedItemsPresenter), Type = typeof(ListBox))]
     [StyleTypedProperty(Property = nameof(SelectedItemContainerStyle), StyleTargetType = typeof(ListBoxItem))]
     [StyleTypedProperty(Property = nameof(ItemContainerStyle), StyleTargetType = typeof(ListBoxItem))]
-
     public class MultiSelectionComboBox : ComboBox
     {
         #region Constructors
@@ -30,10 +31,19 @@ namespace TimsWpfControls
         static MultiSelectionComboBox()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(typeof(MultiSelectionComboBox)));
-            TextProperty.OverrideMetadata(typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(String.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.Journal, new PropertyChangedCallback(OnTextChanged)));
-
-            CommandManager.RegisterClassCommandBinding(typeof(MultiSelectionComboBox), new CommandBinding(ClearContentCommand, ExecutedClearContentCommand));
+            TextProperty.OverrideMetadata(typeof(MultiSelectionComboBox), new FrameworkPropertyMetadata(String.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.Journal, OnTextChanged));
+            CommandManager.RegisterClassCommandBinding(typeof(MultiSelectionComboBox), new CommandBinding(ClearContentCommand, ExecutedClearContentCommand, CanExecuteClearContentCommand));
+            CommandManager.RegisterClassCommandBinding(typeof(MultiSelectionComboBox), new CommandBinding(RemoveItemCommand, RemoveItemCommand_Executed, RemoveItemCommand_CanExecute));
         }
+
+        public MultiSelectionComboBox() : base()
+        {
+            var selectedItemsImpl = new ObservableCollection<object>();
+            SetValue(SelectedItemsPropertyKey, selectedItemsImpl);
+
+            selectedItemsImpl.CollectionChanged += SelectedItemsImpl_CollectionChanged;
+        }
+
 
         #endregion
 
@@ -51,6 +61,9 @@ namespace TimsWpfControls
         private ListBox PART_SelectedItemsPresenter;
 
         private bool isUserdefinedTextInputPending;
+        private bool shouldDoTextReset; // Defines if the Text should be reset after selecting items from string
+        private bool shouldAddItems; // Defines if the MSCB should add new items from text input. Don't set this to true while input is pending. We cannot know how long the user needs for typing.
+        private bool IsSyncingSelectedItems; // true if syncing in one or the other direction already running
         private DispatcherTimer _updateSelectedItemsFromTextTimer;
 
         #endregion
@@ -64,23 +77,29 @@ namespace TimsWpfControls
         #region Public Properties
 
         /// <summary>Identifies the <see cref="SelectionMode"/> dependency property.</summary>
-        public static readonly DependencyProperty SelectionModeProperty =
-                DependencyProperty.Register(
-                        nameof(SelectionMode),
-                        typeof(SelectionMode),
-                        typeof(MultiSelectionComboBox),
-                        new PropertyMetadata(SelectionMode.Single),
-                        new ValidateValueCallback(IsValidSelectionMode));
+        public static readonly DependencyProperty SelectionModeProperty
+            = DependencyProperty.Register(nameof(SelectionMode),
+                                          typeof(SelectionMode),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(SelectionMode.Single),
+                                          IsValidSelectionMode);
+
+        private static bool IsValidSelectionMode(object o)
+        {
+            SelectionMode value = (SelectionMode)o;
+            return value == SelectionMode.Single
+                   || value == SelectionMode.Multiple
+                   || value == SelectionMode.Extended;
+        }
 
         /// <summary>
         ///     Indicates the selection behavior for the ListBox.
         /// </summary>
         public SelectionMode SelectionMode
         {
-            get { return (SelectionMode)GetValue(SelectionModeProperty); }
-            set { SetValue(SelectionModeProperty, value); }
+            get => (SelectionMode)this.GetValue(SelectionModeProperty);
+            set => this.SetValue(SelectionModeProperty, value);
         }
-
 
         /// <summary>Identifies the <see cref="SelectedItem"/> dependency property.</summary>
         public static new readonly DependencyProperty SelectedItemProperty =
@@ -130,21 +149,15 @@ namespace TimsWpfControls
             set { SetValue(SelectedValueProperty, value); }
         }
 
-        private static bool IsValidSelectionMode(object o)
-        {
-            SelectionMode value = (SelectionMode)o;
-            return value == SelectionMode.Single
-                || value == SelectionMode.Multiple
-                || value == SelectionMode.Extended;
-        }
+        /// <summary>Identifies the <see cref="SelectedItems"/> dependency property.</summary>
+        internal static readonly DependencyPropertyKey SelectedItemsPropertyKey
+            = DependencyProperty.RegisterReadOnly(nameof(SelectedItems),
+                                                  typeof(IList),
+                                                  typeof(MultiSelectionComboBox),
+                                                  new PropertyMetadata((IList)null));
 
         /// <summary>Identifies the <see cref="SelectedItems"/> dependency property.</summary>
-        public static readonly DependencyProperty SelectedItemsProperty =
-            DependencyProperty.Register(
-                nameof(SelectedItems),
-                typeof(IList),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata((IList)null));
+        public static readonly DependencyProperty SelectedItemsProperty = SelectedItemsPropertyKey.DependencyProperty;
 
         /// <summary>
         /// The currently selected items.
@@ -152,126 +165,116 @@ namespace TimsWpfControls
         [Bindable(true), Category("Appearance"), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IList SelectedItems
         {
-            get
-            {
-                return PART_PopupListBox?.SelectedItems;
-            }
+            get => (IList)this.GetValue(SelectedItemsProperty);
+            protected set => this.SetValue(SelectedItemsPropertyKey, value);
         }
 
         /// <summary>Identifies the <see cref="DisplaySelectedItems"/> dependency property.</summary>
-        public static readonly DependencyProperty DisplaySelectedItemsProperty =
-            DependencyProperty.Register(
-                nameof(DisplaySelectedItems),
-                typeof(IEnumerable),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata((IEnumerable)null));
+        internal static readonly DependencyPropertyKey DisplaySelectedItemsPropertyKey
+            = DependencyProperty.RegisterReadOnly(nameof(DisplaySelectedItems),
+                                                  typeof(IEnumerable),
+                                                  typeof(MultiSelectionComboBox),
+                                                  new PropertyMetadata((IEnumerable)null));
+
+        /// <summary>Identifies the <see cref="DisplaySelectedItems"/> dependency property.</summary>
+        public static readonly DependencyProperty DisplaySelectedItemsProperty = DisplaySelectedItemsPropertyKey.DependencyProperty;
 
         /// <summary>
         /// Gets the <see cref="SelectedItems"/> in the specified order which was set via <see cref="OrderSelectedItemsBy"/>
         /// </summary>
         public IEnumerable DisplaySelectedItems
         {
-            get { return (IEnumerable)GetValue(DisplaySelectedItemsProperty); }
+            get => (IEnumerable)this.GetValue(DisplaySelectedItemsProperty);
+            protected set => this.SetValue(DisplaySelectedItemsPropertyKey, value);
         }
 
         /// <summary>Identifies the <see cref="OrderSelectedItemsBy"/> dependency property.</summary>
-        public static readonly DependencyProperty OrderSelectedItemsByProperty =
-            DependencyProperty.Register(
-                nameof(OrderSelectedItemsBy),
-                typeof(OrderSelectedItemsBy),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(OrderSelectedItemsBy.SelectedOrder, new PropertyChangedCallback(OnOrderSelectedItemsByChanged)));
+        public static readonly DependencyProperty OrderSelectedItemsByProperty
+            = DependencyProperty.Register(nameof(OrderSelectedItemsBy),
+                                          typeof(SelectedItemsOrderType),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(SelectedItemsOrderType.SelectedOrder, OnOrderSelectedItemsByChanged));
 
         /// <summary>
         /// Gets or sets how the <see cref="SelectedItems"/> should be sorted
         /// </summary>
-        public OrderSelectedItemsBy OrderSelectedItemsBy
+        public SelectedItemsOrderType OrderSelectedItemsBy
         {
-            get { return (OrderSelectedItemsBy)GetValue(OrderSelectedItemsByProperty); }
-            set { SetValue(OrderSelectedItemsByProperty, value); }
+            get => (SelectedItemsOrderType)this.GetValue(OrderSelectedItemsByProperty);
+            set => this.SetValue(OrderSelectedItemsByProperty, value);
         }
 
         /// <summary>Identifies the <see cref="SelectedItemContainerStyle"/> dependency property.</summary>
-        public static readonly DependencyProperty SelectedItemContainerStyleProperty =
-            DependencyProperty.Register(
-                nameof(SelectedItemContainerStyle),
-                typeof(Style),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(null));
+        public static readonly DependencyProperty SelectedItemContainerStyleProperty
+            = DependencyProperty.Register(nameof(SelectedItemContainerStyle),
+                                          typeof(Style),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(null));
 
         /// <summary>
         /// Gets or sets the <see cref="Style"/> for the <see cref="SelectedItems"/>
         /// </summary>
         public Style SelectedItemContainerStyle
         {
-            get { return (Style)GetValue(SelectedItemContainerStyleProperty); }
-            set { SetValue(SelectedItemContainerStyleProperty, value); }
+            get => (Style)this.GetValue(SelectedItemContainerStyleProperty);
+            set => this.SetValue(SelectedItemContainerStyleProperty, value);
         }
 
-
-
         /// <summary>Identifies the <see cref="SelectedItemContainerStyleSelector"/> dependency property.</summary>
-        public static readonly DependencyProperty SelectedItemContainerStyleSelectorProperty =
-            DependencyProperty.Register(
-                nameof(SelectedItemContainerStyleSelector),
-                typeof(StyleSelector),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(null));
+        public static readonly DependencyProperty SelectedItemContainerStyleSelectorProperty
+            = DependencyProperty.Register(nameof(SelectedItemContainerStyleSelector),
+                                          typeof(StyleSelector),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(null));
 
         /// <summary>
         /// Gets or sets the <see cref="StyleSelector"/> for the <see cref="SelectedItemContainerStyle"/>
         /// </summary>
         public StyleSelector SelectedItemContainerStyleSelector
         {
-            get { return (StyleSelector)GetValue(SelectedItemContainerStyleSelectorProperty); }
-            set { SetValue(SelectedItemContainerStyleSelectorProperty, value); }
+            get => (StyleSelector)this.GetValue(SelectedItemContainerStyleSelectorProperty);
+            set => this.SetValue(SelectedItemContainerStyleSelectorProperty, value);
         }
 
-
-
         /// <summary>Identifies the <see cref="Separator"/> dependency property.</summary>
-        public static readonly DependencyProperty SeparatorProperty =
-            DependencyProperty.Register(
-                nameof(Separator),
-                typeof(string),
-                typeof(MultiSelectionComboBox),
-                new FrameworkPropertyMetadata(null, new PropertyChangedCallback(UpdateText)));
+        public static readonly DependencyProperty SeparatorProperty
+            = DependencyProperty.Register(nameof(Separator),
+                                          typeof(string),
+                                          typeof(MultiSelectionComboBox),
+                                          new FrameworkPropertyMetadata(null, UpdateText));
 
         /// <summary>
         /// Gets or Sets the Separator which will be used if the ComboBox is editable.
         /// </summary>
         public string Separator
         {
-            get { return (string)GetValue(SeparatorProperty); }
-            set { SetValue(SeparatorProperty, value); }
+            get => (string)this.GetValue(SeparatorProperty);
+            set => this.SetValue(SeparatorProperty, value);
         }
 
-
-        // We need this as this property is readonly
-        internal static readonly DependencyPropertyKey HasCustomTextPropertyKey =
-            DependencyProperty.RegisterReadOnly(
-                nameof(HasCustomText),
-                typeof(bool),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(BooleanBoxes.TrueBox));
+        /// <summary>Identifies the <see cref="HasCustomText"/> dependency property.</summary>
+        internal static readonly DependencyPropertyKey HasCustomTextPropertyKey
+            = DependencyProperty.RegisterReadOnly(nameof(HasCustomText),
+                                                  typeof(bool),
+                                                  typeof(MultiSelectionComboBox),
+                                                  new PropertyMetadata(BooleanBoxes.FalseBox));
 
         /// <summary>Identifies the <see cref="HasCustomText"/> dependency property.</summary>
         public static readonly DependencyProperty HasCustomTextProperty = HasCustomTextPropertyKey.DependencyProperty;
 
         /// <summary>
-        /// Indicates if the text is userdefined
+        /// Indicates if the text is user defined
         /// </summary>
         public bool HasCustomText
         {
-            get { return (bool)GetValue(HasCustomTextProperty); }
-            protected set { SetValue(HasCustomTextPropertyKey, BooleanBoxes.Box(value)); }
+            get => (bool)this.GetValue(HasCustomTextProperty);
+            protected set => this.SetValue(HasCustomTextPropertyKey, BooleanBoxes.Box(value));
         }
 
         /// <summary>Identifies the <see cref="TextWrapping"/> dependency property.</summary>
-        public static readonly DependencyProperty TextWrappingProperty =
-            TextBlock.TextWrappingProperty.AddOwner(
-                typeof(MultiSelectionComboBox),
-                new FrameworkPropertyMetadata(TextWrapping.NoWrap, FrameworkPropertyMetadataOptions.AffectsMeasure));
+        public static readonly DependencyProperty TextWrappingProperty
+            = TextBlock.TextWrappingProperty.AddOwner(typeof(MultiSelectionComboBox),
+                                                      new FrameworkPropertyMetadata(TextWrapping.NoWrap, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         /// <summary>
         /// The TextWrapping property controls whether or not text wraps
@@ -279,13 +282,13 @@ namespace TimsWpfControls
         /// </summary>
         public TextWrapping TextWrapping
         {
-            get { return (TextWrapping)GetValue(TextWrappingProperty); }
-            set { SetValue(TextWrappingProperty, value); }
+            get => (TextWrapping)this.GetValue(TextWrappingProperty);
+            set => this.SetValue(TextWrappingProperty, value);
         }
 
         /// <summary>Identifies the <see cref="AcceptsReturn"/> dependency property.</summary>
-        public static readonly DependencyProperty AcceptsReturnProperty =
-            TextBoxBase.AcceptsReturnProperty.AddOwner(typeof(MultiSelectionComboBox));
+        public static readonly DependencyProperty AcceptsReturnProperty
+            = TextBoxBase.AcceptsReturnProperty.AddOwner(typeof(MultiSelectionComboBox));
 
         /// <summary>
         /// The TextWrapping property controls whether or not text wraps
@@ -293,62 +296,237 @@ namespace TimsWpfControls
         /// </summary>
         public bool AcceptsReturn
         {
-            get { return (bool)GetValue(AcceptsReturnProperty); }
-            set { SetValue(AcceptsReturnProperty, value); }
+            get => (bool)this.GetValue(AcceptsReturnProperty);
+            set => this.SetValue(AcceptsReturnProperty, value);
         }
 
-
         /// <summary>Identifies the <see cref="ObjectToStringComparer"/> dependency property.</summary>
-        public static readonly DependencyProperty ObjectToStringComparerProperty =
-            DependencyProperty.Register(
-                nameof(ObjectToStringComparer),
-                typeof(ICompareObjectToString),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(null));
+        public static readonly DependencyProperty ObjectToStringComparerProperty
+            = DependencyProperty.Register(nameof(ObjectToStringComparer),
+                                          typeof(ICompareObjectToString),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(null));
 
         /// <summary>
         /// Gets or Sets a function that is used to check if the entered Text is an object that should be selected.
         /// </summary>
         public ICompareObjectToString ObjectToStringComparer
         {
-            get { return (ICompareObjectToString)GetValue(ObjectToStringComparerProperty); }
-            set { SetValue(ObjectToStringComparerProperty, value); }
+            get => (ICompareObjectToString)this.GetValue(ObjectToStringComparerProperty);
+            set => this.SetValue(ObjectToStringComparerProperty, value);
         }
 
-
         /// <summary>Identifies the <see cref="EditableTextStringComparision"/> dependency property.</summary>
-        public static readonly DependencyProperty EditableTextStringComparisionProperty =
-            DependencyProperty.Register(
-                nameof(EditableTextStringComparision),
-                typeof(StringComparison),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(StringComparison.Ordinal));
+        public static readonly DependencyProperty EditableTextStringComparisionProperty
+            = DependencyProperty.Register(nameof(EditableTextStringComparision),
+                                          typeof(StringComparison),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(StringComparison.Ordinal));
 
         /// <summary>
         ///  Gets or Sets the <see cref="StringComparison"/> that is used to check if the entered <see cref="ComboBox.Text"/> matches to the <see cref="SelectedItems"/>
         /// </summary>
         public StringComparison EditableTextStringComparision
         {
-            get { return (StringComparison)GetValue(EditableTextStringComparisionProperty); }
-            set { SetValue(EditableTextStringComparisionProperty, value); }
+            get => (StringComparison)this.GetValue(EditableTextStringComparisionProperty);
+            set => this.SetValue(EditableTextStringComparisionProperty, value);
         }
 
-
         /// <summary>Identifies the <see cref="StringToObjectParser"/> dependency property.</summary>
-        public static readonly DependencyProperty StringToObjectParserProperty =
-            DependencyProperty.Register(
-                nameof(StringToObjectParser),
-                typeof(IParseStringToObject),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(null));
+        public static readonly DependencyProperty StringToObjectParserProperty
+            = DependencyProperty.Register(nameof(StringToObjectParser),
+                                          typeof(IParseStringToObject),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(null));
 
         /// <summary>
         /// Gets or Sets a parser-class that implements <see cref="IParseStringToObject"/> 
         /// </summary>
         public IParseStringToObject StringToObjectParser
         {
-            get { return (IParseStringToObject)GetValue(StringToObjectParserProperty); }
-            set { SetValue(StringToObjectParserProperty, value); }
+            get => (IParseStringToObject)this.GetValue(StringToObjectParserProperty);
+            set => this.SetValue(StringToObjectParserProperty, value);
+        }
+
+        /// <summary>Identifies the <see cref="DisabledPopupOverlayContent"/> dependency property.</summary>
+        public static readonly DependencyProperty DisabledPopupOverlayContentProperty
+            = DependencyProperty.Register(nameof(DisabledPopupOverlayContent),
+                                          typeof(object),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or Sets the DisabledPopupOverlayContent
+        /// </summary>
+        public object DisabledPopupOverlayContent
+        {
+            get => (object)this.GetValue(DisabledPopupOverlayContentProperty);
+            set => this.SetValue(DisabledPopupOverlayContentProperty, value);
+        }
+
+        /// <summary>Identifies the <see cref="DisabledPopupOverlayContentTemplate"/> dependency property.</summary>
+        public static readonly DependencyProperty DisabledPopupOverlayContentTemplateProperty
+            = DependencyProperty.Register(nameof(DisabledPopupOverlayContentTemplate),
+                                          typeof(DataTemplate),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or Sets the DisabledPopupOverlayContentTemplate
+        /// </summary>
+        public DataTemplate DisabledPopupOverlayContentTemplate
+        {
+            get => (DataTemplate)this.GetValue(DisabledPopupOverlayContentTemplateProperty);
+            set => this.SetValue(DisabledPopupOverlayContentTemplateProperty, value);
+        }
+
+        /// <summary>Identifies the <see cref="SelectedItemTemplate"/> dependency property.</summary>
+        public static readonly DependencyProperty SelectedItemTemplateProperty
+            = DependencyProperty.Register(nameof(SelectedItemTemplate),
+                                          typeof(DataTemplate),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or Sets the SelectedItemTemplate
+        /// </summary>
+        public DataTemplate SelectedItemTemplate
+        {
+            get => (DataTemplate)this.GetValue(SelectedItemTemplateProperty);
+            set => this.SetValue(SelectedItemTemplateProperty, value);
+        }
+
+        /// <summary>Identifies the <see cref="SelectedItemTemplateSelector"/> dependency property.</summary>
+        public static readonly DependencyProperty SelectedItemTemplateSelectorProperty
+            = DependencyProperty.Register(nameof(SelectedItemTemplateSelector),
+                                          typeof(DataTemplateSelector),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or Sets the SelectedItemTemplateSelector
+        /// </summary>
+        public DataTemplateSelector SelectedItemTemplateSelector
+        {
+            get => (DataTemplateSelector)this.GetValue(SelectedItemTemplateSelectorProperty);
+            set => this.SetValue(SelectedItemTemplateSelectorProperty, value);
+        }
+
+        /// <summary>Identifies the <see cref="SelectedItemStringFormat"/> dependency property.</summary>
+        public static readonly DependencyProperty SelectedItemStringFormatProperty
+            = DependencyProperty.Register(nameof(SelectedItemStringFormat),
+                                          typeof(string),
+                                          typeof(MultiSelectionComboBox),
+                                          new FrameworkPropertyMetadata(null, UpdateText));
+
+        /// <summary>
+        /// Gets or Sets the string format for the selected items
+        /// </summary>
+        public string SelectedItemStringFormat
+        {
+            get => (string)this.GetValue(SelectedItemStringFormatProperty);
+            set => this.SetValue(SelectedItemStringFormatProperty, value);
+        }
+
+        /// <summary>Identifies the <see cref="VerticalScrollBarVisibility"/> dependency property.</summary>
+        public static readonly DependencyProperty VerticalScrollBarVisibilityProperty
+            = DependencyProperty.Register(nameof(VerticalScrollBarVisibility),
+                                          typeof(ScrollBarVisibility),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(ScrollBarVisibility.Auto));
+
+        /// <summary>
+        /// Gets or Sets if the vertical scrollbar is visible
+        /// </summary>
+        public ScrollBarVisibility VerticalScrollBarVisibility
+        {
+            get => (ScrollBarVisibility)this.GetValue(VerticalScrollBarVisibilityProperty);
+            set => this.SetValue(VerticalScrollBarVisibilityProperty, value);
+        }
+
+        /// <summary>Identifies the <see cref="HorizontalScrollBarVisibility"/> dependency property.</summary>
+        public static readonly DependencyProperty HorizontalScrollBarVisibilityProperty
+            = DependencyProperty.Register(nameof(HorizontalScrollBarVisibility),
+                                          typeof(ScrollBarVisibility),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(ScrollBarVisibility.Auto));
+
+        /// <summary>
+        /// Gets or Sets if the horizontal scrollbar is visible
+        /// </summary>
+        public ScrollBarVisibility HorizontalScrollBarVisibility
+        {
+            get => (ScrollBarVisibility)this.GetValue(HorizontalScrollBarVisibilityProperty);
+            set => this.SetValue(HorizontalScrollBarVisibilityProperty, value);
+        }
+
+        /// <summary>Identifies the <see cref="SelectedItemsPanelTemplate"/> dependency property.</summary>
+        public static readonly DependencyProperty SelectedItemsPanelTemplateProperty
+            = DependencyProperty.Register(nameof(SelectedItemsPanelTemplate),
+                                          typeof(ItemsPanelTemplate),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(null));
+
+        /// <summary>
+        /// Gets or sets the <see cref="ItemsPanelTemplate"/> for the selected items.
+        /// </summary>
+        public ItemsPanelTemplate SelectedItemsPanelTemplate
+        {
+            get => (ItemsPanelTemplate)this.GetValue(SelectedItemsPanelTemplateProperty);
+            set => this.SetValue(SelectedItemsPanelTemplateProperty, value);
+        }
+
+        /// <summary>Identifies the <see cref="SelectItemsFromTextInputDelay"/> dependency property.</summary>
+        public static readonly DependencyProperty SelectItemsFromTextInputDelayProperty
+            = DependencyProperty.Register(nameof(SelectItemsFromTextInputDelay),
+                                          typeof(int),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(-1));
+
+        /// <summary>
+        /// Gets or Sets the delay in milliseconds to wait before the selection is updated during text input.
+        /// If this value is -1 the selection will not be updated during text input. 
+        /// Note: You also need to set <see cref="ObjectToStringComparer"/> to get this to work. 
+        /// </summary>
+        public int SelectItemsFromTextInputDelay
+        {
+            get => (int)this.GetValue(SelectItemsFromTextInputDelayProperty);
+            set => this.SetValue(SelectItemsFromTextInputDelayProperty, value);
+        }
+
+
+        /// <summary>Identifies the <see cref="InterceptKeyboardSelection"/> dependency property.</summary>
+        public static readonly DependencyProperty InterceptKeyboardSelectionProperty
+            = DependencyProperty.Register(nameof(InterceptKeyboardSelection),
+                                          typeof(bool),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        /// <summary>
+        /// Gets or Sets if the user can select items from the keyborad, e.g. with the ▲ ▼ Keys. 
+        /// This property is only applied when the <see cref="SelectionMode"/> is <see cref="SelectionMode.Single"/>
+        /// </summary>
+        public bool InterceptKeyboardSelection
+        {
+            get => (bool)this.GetValue(InterceptKeyboardSelectionProperty);
+            set => this.SetValue(InterceptKeyboardSelectionProperty, value);
+        }
+
+        /// <summary>Identifies the <see cref="InterceptMouseWheelSelection"/> dependency property.</summary>
+        public static readonly DependencyProperty InterceptMouseWheelSelectionProperty
+            = DependencyProperty.Register(nameof(InterceptMouseWheelSelection),
+                                          typeof(bool),
+                                          typeof(MultiSelectionComboBox),
+                                          new PropertyMetadata(BooleanBoxes.TrueBox));
+
+        /// <summary>
+        /// Gets or Sets if the user can select items by mouse wheel. 
+        /// This property is only applied when the <see cref="SelectionMode"/> is <see cref="SelectionMode.Single"/>
+        /// </summary>
+        public bool InterceptMouseWheelSelection
+        {
+            get => (bool)this.GetValue(InterceptMouseWheelSelectionProperty);
+            set => this.SetValue(InterceptMouseWheelSelectionProperty, value);
         }
 
         /// <summary>
@@ -356,161 +534,14 @@ namespace TimsWpfControls
         /// </summary>
         public void ResetEditableText()
         {
-            HasCustomText = false;
-            UpdateEditableText();
-        }
+            var oldSelectionStart = this.PART_EditableTextBox.SelectionStart;
+            var oldSelectionLength = this.PART_EditableTextBox.SelectionLength;
 
-        /// <summary>Identifies the <see cref="DisabledPopupOverlayContent"/> dependency property.</summary>
-        public static readonly DependencyProperty DisabledPopupOverlayContentProperty =
-            DependencyProperty.Register(
-                nameof(DisabledPopupOverlayContent),
-                typeof(object),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(null));
+            this.SetValue(HasCustomTextPropertyKey, false);
+            this.UpdateEditableText();
 
-        /// <summary>
-        /// Gets or Sets the DisabledPopupOverlayContent
-        /// </summary>
-        public object DisabledPopupOverlayContent
-        {
-            get { return (object)GetValue(DisabledPopupOverlayContentProperty); }
-            set { SetValue(DisabledPopupOverlayContentProperty, value); }
-        }
-
-        /// <summary>Identifies the <see cref="DisabledPopupOverlayContentTemplate"/> dependency property.</summary>
-        public static readonly DependencyProperty DisabledPopupOverlayContentTemplateProperty =
-            DependencyProperty.Register(
-                nameof(DisabledPopupOverlayContentTemplate),
-                typeof(DataTemplate),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(null));
-
-        /// <summary>
-        /// Gets or Sets the DisabledPopupOverlayContentTemplate
-        /// </summary>
-        public DataTemplate DisabledPopupOverlayContentTemplate
-        {
-            get { return (DataTemplate)GetValue(DisabledPopupOverlayContentTemplateProperty); }
-            set { SetValue(DisabledPopupOverlayContentTemplateProperty, value); }
-        }
-
-        /// <summary>Identifies the <see cref="SelectedItemTemplate"/> dependency property.</summary>
-        public static readonly DependencyProperty SelectedItemTemplateProperty =
-            DependencyProperty.Register(
-                nameof(SelectedItemTemplate),
-                typeof(DataTemplate),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(null));
-
-        /// <summary>
-        /// Gets or Sets the SelectedItemTemplate
-        /// </summary>
-        public DataTemplate SelectedItemTemplate
-        {
-            get { return (DataTemplate)GetValue(SelectedItemTemplateProperty); }
-            set { SetValue(SelectedItemTemplateProperty, value); }
-        }
-
-        /// <summary>Identifies the <see cref="SelectedItemTemplateSelector"/> dependency property.</summary>
-        public static readonly DependencyProperty SelectedItemTemplateSelectorProperty =
-            DependencyProperty.Register(
-                nameof(SelectedItemTemplateSelector),
-                typeof(DataTemplateSelector),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(null));
-
-        /// <summary>
-        /// Gets or Sets the SelectedItemTemplateSelector
-        /// </summary>
-        public DataTemplateSelector SelectedItemTemplateSelector
-        {
-            get { return (DataTemplateSelector)GetValue(SelectedItemTemplateSelectorProperty); }
-            set { SetValue(SelectedItemTemplateSelectorProperty, value); }
-        }
-
-        /// <summary>Identifies the <see cref="SelectedItemStringFormat"/> dependency property.</summary>
-        public static readonly DependencyProperty SelectedItemStringFormatProperty =
-            DependencyProperty.Register(
-                nameof(SelectedItemStringFormat),
-                typeof(string),
-                typeof(MultiSelectionComboBox),
-                new FrameworkPropertyMetadata(null, new PropertyChangedCallback(UpdateText)));
-
-        /// <summary>
-        /// Gets or Sets the string format for the selected items
-        /// </summary>
-        public string SelectedItemStringFormat
-        {
-            get { return (string)GetValue(SelectedItemStringFormatProperty); }
-            set { SetValue(SelectedItemStringFormatProperty, value); }
-        }
-
-
-        /// <summary>Identifies the <see cref="VerticalScrollBarVisibility"/> dependency property.</summary>
-        public static readonly DependencyProperty VerticalScrollBarVisibilityProperty = DependencyProperty.Register(nameof(VerticalScrollBarVisibility), typeof(ScrollBarVisibility), typeof(MultiSelectionComboBox), new PropertyMetadata(ScrollBarVisibility.Auto));
-
-        /// <summary>
-        /// Gets or Sets if the vertical scrollbar is visible
-        /// </summary>
-        public ScrollBarVisibility VerticalScrollBarVisibility
-        {
-            get { return (ScrollBarVisibility)GetValue(VerticalScrollBarVisibilityProperty); }
-            set { SetValue(VerticalScrollBarVisibilityProperty, value); }
-        }
-
-
-        /// <summary>Identifies the <see cref="HorizontalScrollBarVisibility"/> dependency property.</summary>
-        public static readonly DependencyProperty HorizontalScrollBarVisibilityProperty =
-            DependencyProperty.Register(
-                nameof(HorizontalScrollBarVisibility),
-                typeof(ScrollBarVisibility),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(ScrollBarVisibility.Auto));
-
-        /// <summary>
-        /// Gets or Sets if the horizontal scrollbar is visible
-        /// </summary>
-        public ScrollBarVisibility HorizontalScrollBarVisibility
-        {
-            get { return (ScrollBarVisibility)GetValue(HorizontalScrollBarVisibilityProperty); }
-            set { SetValue(HorizontalScrollBarVisibilityProperty, value); }
-        }
-
-
-        /// <summary>Identifies the <see cref="SelectedItemsPanelTemplate"/> dependency property.</summary>
-        public static readonly DependencyProperty SelectedItemsPanelTemplateProperty =
-            DependencyProperty.Register(
-                nameof(SelectedItemsPanelTemplate),
-                typeof(ItemsPanelTemplate),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(null));
-
-        /// <summary>
-        /// Gets or sets the <see cref="ItemsPanelTemplate"/> for the selected items.
-        /// </summary>
-        public ItemsPanelTemplate SelectedItemsPanelTemplate
-        {
-            get { return (ItemsPanelTemplate)GetValue(SelectedItemsPanelTemplateProperty); }
-            set { SetValue(SelectedItemsPanelTemplateProperty, value); }
-        }
-
-
-        /// <summary>Identifies the <see cref="SelectItemsFromTextInputDelay"/> dependency property.</summary>
-        public static readonly DependencyProperty SelectItemsFromTextInputDelayProperty =
-            DependencyProperty.Register(
-                nameof(SelectItemsFromTextInputDelay),
-                typeof(int),
-                typeof(MultiSelectionComboBox),
-                new PropertyMetadata(-1));
-
-        /// <summary>
-        /// Gets or Sets the delay in miliseconds to wait before the selection is updated during text input. If this value is -1 the selection will not be updated during text input. 
-        /// Note: You also need to set <see cref="ObjectToStringComparer"/> to get this to work. 
-        /// </summary>
-        public int SelectItemsFromTextInputDelay
-        {
-            get { return (int)GetValue(SelectItemsFromTextInputDelayProperty); }
-            set { SetValue(SelectItemsFromTextInputDelayProperty, value); }
+            this.PART_EditableTextBox.SelectionStart = oldSelectionStart;
+            this.PART_EditableTextBox.SelectionLength = oldSelectionLength;
         }
 
         #endregion
@@ -521,63 +552,77 @@ namespace TimsWpfControls
         /// Updates the Text of the editable Textbox.
         /// Sets the custom Text if any otherwise the concatenated string.
         /// </summary>
-        private void UpdateEditableText()
+        private void UpdateEditableText(bool forceUpdate = false)
         {
-            if (PART_EditableTextBox is null || SelectedItems is null)
+            if (this.PART_EditableTextBox is null || (PART_EditableTextBox.IsKeyboardFocused && !forceUpdate))
             {
                 return;
             }
 
             var oldSelectionStart = PART_EditableTextBox.SelectionStart;
             var oldSelectionLength = PART_EditableTextBox.SelectionLength;
+            var oldTextLenth = PART_EditableTextBox.Text.Length;
 
-            var selectedItemsText = GetSelectedItemsText();
+            var selectedItemsText = this.GetSelectedItemsText();
 
-            if (!HasCustomText)
+            if (!this.HasCustomText)
             {
-                SetCurrentValue(TextProperty, selectedItemsText);
+                this.SetCurrentValue(TextProperty, selectedItemsText);
             }
 
-            UpdateHasCustomText(selectedItemsText);
+            this.UpdateHasCustomText(selectedItemsText);
 
-            PART_EditableTextBox.SelectionStart = oldSelectionStart;
-            PART_EditableTextBox.SelectionLength = oldSelectionLength;
+            if (oldSelectionLength == oldTextLenth) // We had all Text selected, so we select all again
+            {
+                PART_EditableTextBox.SelectionStart = 0;
+                PART_EditableTextBox.SelectionLength = PART_EditableTextBox.Text.Length;
+            }
+            else if (oldSelectionStart == oldTextLenth) // we had the cursor at the last position, so we move the cursor to the end again
+            {
+                PART_EditableTextBox.SelectionStart = PART_EditableTextBox.Text.Length;
+            }
+            else // we retore the old selection
+            {
+                PART_EditableTextBox.SelectionStart = oldSelectionStart;
+                PART_EditableTextBox.SelectionLength = oldSelectionLength;
+            }
         }
 
         private void UpdateDisplaySelectedItems()
         {
-            UpdateDisplaySelectedItems(OrderSelectedItemsBy);
+            this.UpdateDisplaySelectedItems(this.OrderSelectedItemsBy);
         }
-
 
         public string GetSelectedItemsText()
         {
-            switch (SelectionMode)
+            switch (this.SelectionMode)
             {
                 case SelectionMode.Single:
-                    if (ReadLocalValue(DisplayMemberPathProperty) != DependencyProperty.UnsetValue || ReadLocalValue(SelectedItemStringFormatProperty) != DependencyProperty.UnsetValue)
+                    if (this.ReadLocalValue(DisplayMemberPathProperty) != DependencyProperty.UnsetValue
+                        || this.ReadLocalValue(SelectedItemStringFormatProperty) != DependencyProperty.UnsetValue)
                     {
-                        return BindingHelper.Eval(SelectedItem, DisplayMemberPath ?? "", SelectedItemStringFormat)?.ToString();
+                        return BindingHelper.Eval(this.SelectedItem, this.DisplayMemberPath ?? string.Empty, this.SelectedItemStringFormat)?.ToString();
                     }
                     else
                     {
-                        return SelectedItem?.ToString();
+                        return this.SelectedItem?.ToString();
                     }
 
                 case SelectionMode.Multiple:
                 case SelectionMode.Extended:
                     IEnumerable<object> values;
 
-                    if (ReadLocalValue(DisplayMemberPathProperty) != DependencyProperty.UnsetValue || ReadLocalValue(SelectedItemStringFormatProperty) != DependencyProperty.UnsetValue)
+                    if (this.ReadLocalValue(DisplayMemberPathProperty) != DependencyProperty.UnsetValue
+                        || this.ReadLocalValue(SelectedItemStringFormatProperty) != DependencyProperty.UnsetValue)
                     {
-                        values = ((IEnumerable<object>)DisplaySelectedItems)?.Select(o => BindingHelper.Eval(o, DisplayMemberPath ?? string.Empty, SelectedItemStringFormat));
+                        values = ((IEnumerable<object>)this.DisplaySelectedItems)?.Select(o => BindingHelper.Eval(o, this.DisplayMemberPath ?? string.Empty, this.SelectedItemStringFormat));
                     }
                     else
                     {
-                        values = (IEnumerable<object>)DisplaySelectedItems;
+                        values = (IEnumerable<object>)this.DisplaySelectedItems;
                     }
 
-                    return values is null ? null : string.Join(Separator ?? string.Empty, values);
+                    return values is null ? null : string.Join(this.Separator ?? string.Empty, values);
 
                 default:
                     return null;
@@ -587,174 +632,262 @@ namespace TimsWpfControls
         private void UpdateHasCustomText(string selectedItemsText)
         {
             // if the parameter was null lets get the text on our own.
-            selectedItemsText ??= GetSelectedItemsText();
+            selectedItemsText ??= this.GetSelectedItemsText();
 
-            HasCustomText = !((string.IsNullOrEmpty(selectedItemsText) && string.IsNullOrEmpty(Text)) || string.Equals(Text, selectedItemsText, EditableTextStringComparision));
+            this.HasCustomText = !((string.IsNullOrEmpty(selectedItemsText) && string.IsNullOrEmpty(this.Text))
+                                   || string.Equals(this.Text, selectedItemsText, this.EditableTextStringComparision));
         }
 
-        private void UpdateDisplaySelectedItems(OrderSelectedItemsBy orderBy)
+        private void UpdateDisplaySelectedItems(SelectedItemsOrderType selectedItemsOrderType)
         {
-            if (orderBy == OrderSelectedItemsBy.SelectedOrder)
+            var displaySelectedItems = selectedItemsOrderType switch
             {
-                SetCurrentValue(DisplaySelectedItemsProperty, SelectedItems);
-            }
-            else if (orderBy == OrderSelectedItemsBy.ItemsSourceOrder)
-            {
-                SetCurrentValue(DisplaySelectedItemsProperty, ((IEnumerable<object>)PART_PopupListBox.SelectedItems).OrderBy(o => Items.IndexOf(o)));
-            }
+                SelectedItemsOrderType.SelectedOrder => this.SelectedItems,
+                SelectedItemsOrderType.ItemsSourceOrder => ((IEnumerable<object>)this.SelectedItems).OrderBy(o => this.Items.IndexOf(o)),
+                _ => this.DisplaySelectedItems
+            };
+
+            this.SetValue(DisplaySelectedItemsPropertyKey, displaySelectedItems);
         }
 
-        private void SelectItemsFromText(int miliSecondsToWait)
+        private void SelectItemsFromText(int millisecondsToWait)
         {
-            if (!isUserdefinedTextInputPending)
+            if (!this.isUserdefinedTextInputPending)
             {
                 return;
             }
 
-            if (_updateSelectedItemsFromTextTimer is null)
+            // We want to do a text reset or add items only if we don't need to wait for more input. 
+            shouldDoTextReset = millisecondsToWait == 0;
+            shouldAddItems = millisecondsToWait == 0;
+
+            if (this._updateSelectedItemsFromTextTimer is null)
             {
-                _updateSelectedItemsFromTextTimer = new DispatcherTimer(DispatcherPriority.Background);
-                _updateSelectedItemsFromTextTimer.Tick += UpdateSelectedItemsFromTextTimer_Tick;
+                this._updateSelectedItemsFromTextTimer = new DispatcherTimer(DispatcherPriority.Background);
+                this._updateSelectedItemsFromTextTimer.Tick += this.UpdateSelectedItemsFromTextTimer_Tick;
             }
 
-            if (_updateSelectedItemsFromTextTimer.IsEnabled)
+            if (this._updateSelectedItemsFromTextTimer.IsEnabled)
             {
-                _updateSelectedItemsFromTextTimer.Stop();
+                this._updateSelectedItemsFromTextTimer.Stop();
             }
 
-            if (HasCustomText && !(ObjectToStringComparer is null) && !string.IsNullOrEmpty(Separator))
+            if (!(this.ObjectToStringComparer is null) && (!string.IsNullOrEmpty(this.Separator) || this.SelectionMode == SelectionMode.Single))
             {
-                _updateSelectedItemsFromTextTimer.Interval = TimeSpan.FromMilliseconds(miliSecondsToWait > 0 ? miliSecondsToWait : 0);
-                _updateSelectedItemsFromTextTimer.Start();
+                this._updateSelectedItemsFromTextTimer.Interval = TimeSpan.FromMilliseconds(millisecondsToWait > 0 ? millisecondsToWait : 0);
+                this._updateSelectedItemsFromTextTimer.Start();
             }
         }
 
+
         private void UpdateSelectedItemsFromTextTimer_Tick(object sender, EventArgs e)
         {
-            _updateSelectedItemsFromTextTimer.Stop();
+            this._updateSelectedItemsFromTextTimer.Stop();
 
-            bool foundItem;
+
 
             // We clear the selection if there is no text available. 
-            if (string.IsNullOrEmpty(Text))
+            if (string.IsNullOrEmpty(this.Text))
             {
-                switch (SelectionMode)
+                switch (this.SelectionMode)
                 {
                     case SelectionMode.Single:
-                        SelectedItem = null;
+                        this.SetCurrentValue(SelectedItemProperty, null);
                         break;
                     case SelectionMode.Multiple:
                     case SelectionMode.Extended:
-                        SelectedItems.Clear();
+                        this.SelectedItems.Clear();
                         break;
                     default:
                         throw new NotSupportedException("Unknown SelectionMode");
                 }
+
                 return;
             }
 
-            switch (SelectionMode)
+            bool foundItem;
+
+            switch (this.SelectionMode)
             {
                 case SelectionMode.Single:
                     foundItem = false;
-                    SelectedItem = null;
-                    for (int i = 0; i < Items.Count; i++)
+
+                    if (ObjectToStringComparer.CheckIfStringMatchesObject(Text, SelectedItem, EditableTextStringComparision, SelectedItemStringFormat))
                     {
-                        if (ObjectToStringComparer.CheckIfStringMatchesObject(Text, Items[i], EditableTextStringComparision, SelectedItemStringFormat))
+                        foundItem = true;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < Items.Count; i++)
                         {
-                            SetCurrentValue(SelectedItemProperty, Items[i]);
-                            foundItem = true;
-                            break;
+                            if (ObjectToStringComparer.CheckIfStringMatchesObject(Text, Items[i], EditableTextStringComparision, SelectedItemStringFormat))
+                            {
+                                SetCurrentValue(SelectedItemProperty, Items[i]);
+                                foundItem = true;
+                                break;
+                            }
                         }
                     }
 
                     if (!foundItem)
                     {
-                        var result = TryAddObjectFromString(Text);
-                        if (!(result is null))
+                        // We try to add a new item. If we were able to do so we need to update the text as it may differ. 
+                        if (shouldAddItems && TryAddObjectFromString(Text, out object result))
                         {
                             SelectedItem = result;
                         }
+                        else
+                        {
+                            SetCurrentValue(SelectedItemProperty, null);
+                            shouldDoTextReset = false; // We did not find the needed item so we should not do the text reset.
+                        }
                     }
-
                     break;
+
                 case SelectionMode.Multiple:
                 case SelectionMode.Extended:
 
                     var strings = Text.Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
 
-                    SelectedItems.Clear();
+                    int k = 0; // our counter index to insert into the selection
 
                     for (int i = 0; i < strings.Length; i++)
                     {
                         foundItem = false;
-                        for (int j = 0; j < Items.Count; j++)
+
+                        // First we check if we have this item already selected
+                        for (int j = k; j < SelectedItems.Count; j++)
                         {
-                            if (ObjectToStringComparer.CheckIfStringMatchesObject(strings[i], Items[j], EditableTextStringComparision, SelectedItemStringFormat))
+                            if (ObjectToStringComparer.CheckIfStringMatchesObject(strings[i], SelectedItems[j], EditableTextStringComparision, SelectedItemStringFormat))
                             {
-                                SelectedItems.Add(Items[j]);
                                 foundItem = true;
+
+                                // We move the item to the right index
+                                if (j > k)
+                                {
+                                    var itemToMove = SelectedItems[j];
+                                    SelectedItems.RemoveAt(j);
+                                    SelectedItems.Insert(k++, itemToMove);
+                                }
+                                else
+                                {
+                                    k++;
+                                }
                             }
                         }
 
+                        // if we have the item not already selected we will check if we have it in our items collection
                         if (!foundItem)
                         {
-                            var result = TryAddObjectFromString(strings[i]);
-                            if (!(result is null))
+                            for (int j = 0; j < Items.Count; j++)
                             {
-                                SelectedItems.Add(result);
+                                if (ObjectToStringComparer.CheckIfStringMatchesObject(strings[i], Items[j], EditableTextStringComparision, SelectedItemStringFormat))
+                                {
+                                    SelectedItems.Insert(k++, Items[j]);
+                                    foundItem = true;
+                                }
+                            }
+                        }
+
+                        // If we still have no item found we try to add a new item
+                        if (!foundItem)
+                        {
+                            if (shouldAddItems && TryAddObjectFromString(strings[i], out object result))
+                            {
+                                SelectedItems.Insert(k++, result);
+                            }
+                            else
+                            {
+                                shouldDoTextReset = false;
                             }
                         }
                     }
+
+                    // We may have more items in our List than needed, so we need to remove the extended
+                    for (int j = SelectedItems.Count - 1; j >= k; j--)
+                    {
+                        SelectedItems.RemoveAt(j);
+                    }
                     break;
+
                 default:
                     throw new NotSupportedException("Unknown SelectionMode");
             }
 
-
             // First we need to check if the string matches completely to the selected items. Therefore we need to display the items in the selected order first
-            UpdateDisplaySelectedItems(OrderSelectedItemsBy.SelectedOrder);
-            UpdateHasCustomText(null);
+            this.UpdateDisplaySelectedItems(SelectedItemsOrderType.SelectedOrder);
+            this.UpdateHasCustomText(null);
 
             // If the items should be ordered differntly than above we need to reoder them accordingly.
-            if (OrderSelectedItemsBy != OrderSelectedItemsBy.SelectedOrder)
+            if (this.OrderSelectedItemsBy != SelectedItemsOrderType.SelectedOrder)
             {
-                UpdateDisplaySelectedItems();
+                this.UpdateDisplaySelectedItems();
             }
 
-            var oldCaretPos = PART_EditableTextBox.CaretIndex;
-            UpdateEditableText();
-            PART_EditableTextBox.CaretIndex = oldCaretPos;
+            // We do a text reset if all items were successfully found and we don't have to wait for more input.
+            if (shouldDoTextReset)
+            {
+                var oldCaretPos = this.PART_EditableTextBox.CaretIndex;
+                this.ResetEditableText();
+                this.PART_EditableTextBox.CaretIndex = oldCaretPos;
+            }
 
-            isUserdefinedTextInputPending = false;
+            // If we have the KeyboardFocus we need to update the text later in order to not inerrupt the user.
+            // Therefore we connect this flag to the KeyboardFocus of the TextBox.
+            this.isUserdefinedTextInputPending = PART_EditableTextBox.IsKeyboardFocused;
         }
 
-        private object TryAddObjectFromString(string input)
+        private bool TryAddObjectFromString(string input, out object result)
         {
-            if (!(StringToObjectParser is null))
+            try
             {
-                object item = StringToObjectParser.CreateObjectFromString(input, Language.GetEquivalentCulture(), SelectedItemStringFormat);
-
-                if (item is null)
+                if (StringToObjectParser is null)
                 {
-                    return null;
-                }
-                else if (ReadLocalValue(ItemsSourceProperty) == DependencyProperty.UnsetValue)
-                {
-                    Items.Add(item);
-                }
-                else if (ItemsSource is IList list)
-                {
-                    list.Add(item);
+                    result = null;
+                    return false;
                 }
 
-                return item;
+                var elementType = BuiltInStringToObjectParser.Instance.GetElementType(ItemsSource);
+
+                var foundItem = this.StringToObjectParser.TryCreateObjectFromString(input, out result, this.Language.GetEquivalentCulture(), this.SelectedItemStringFormat, elementType);
+
+                var addingItemEventArgs = new AddingItemEventArgs(AddingItemEvent,
+                                                                  this,
+                                                                  input,
+                                                                  result,
+                                                                  foundItem,
+                                                                  this.ReadLocalValue(ItemsSourceProperty) == DependencyProperty.UnsetValue ? this.ItemsSource as IList : this.ItemsSource as IList,
+                                                                  elementType,
+                                                                  this.SelectedItemStringFormat,
+                                                                  this.Language.GetEquivalentCulture(),
+                                                                  this.StringToObjectParser);
+
+                this.RaiseEvent(addingItemEventArgs);
+
+                if (addingItemEventArgs.Handled)
+                {
+                    addingItemEventArgs.Accepted = false;
+                }
+
+                // If the adding event was not handled and the item is markeed as accepted and we are allowed to modify the items list we can add the pared item
+                if (addingItemEventArgs.Accepted && (!addingItemEventArgs.TargetList?.IsReadOnly ?? false))
+                {
+                    addingItemEventArgs.TargetList.Add(addingItemEventArgs.ParsedObject);
+
+                    this.RaiseEvent(new AddedItemEventArgs(AddedItemEvent, this, addingItemEventArgs.ParsedObject, addingItemEventArgs.TargetList));
+                }
+
+                result = addingItemEventArgs.ParsedObject;
+                return addingItemEventArgs.Accepted;
             }
-            else
+            catch (Exception e)
             {
-                return null;
+                Trace.WriteLine(e.Message);
+                result = null;
+                return false;
             }
         }
+
         #endregion
 
         #region Commands
@@ -775,7 +908,7 @@ namespace TimsWpfControls
                     switch (multiSelectionCombo.SelectionMode)
                     {
                         case SelectionMode.Single:
-                            multiSelectionCombo.SelectedItem = null;
+                            multiSelectionCombo.SetCurrentValue(SelectedItemProperty, null);
                             break;
                         case SelectionMode.Multiple:
                         case SelectionMode.Extended:
@@ -788,31 +921,35 @@ namespace TimsWpfControls
             }
         }
 
-        private void CanExecuteClearContentCommand(object sender, CanExecuteRoutedEventArgs e)
+        private static void CanExecuteClearContentCommand(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = false;
             if (sender is MultiSelectionComboBox multiSelectionComboBox)
             {
-                e.CanExecute = multiSelectionComboBox.Text != null || multiSelectionComboBox.SelectedItems?.Count > 0;
+                e.CanExecute = !string.IsNullOrEmpty(multiSelectionComboBox.Text) || multiSelectionComboBox.SelectedItems.Count > 0;
             }
         }
 
         public static RoutedUICommand RemoveItemCommand { get; } = new RoutedUICommand("Remove item", nameof(RemoveItemCommand), typeof(MultiSelectionComboBox));
 
-        private void RemoveItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        private static void RemoveItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (sender is MultiSelectionComboBox multiSelectionCombo && multiSelectionCombo.SelectedItems.Contains(e.Parameter))
+            if (sender is MultiSelectionComboBox multiSelectionCombo)
             {
                 if (multiSelectionCombo.SelectionMode == SelectionMode.Single)
                 {
-                    multiSelectionCombo.SelectedItem = null;
+                    multiSelectionCombo.SetCurrentValue(SelectedItemProperty, null);
                     return;
                 }
-                multiSelectionCombo.SelectedItems.Remove(e.Parameter);
+
+                if (multiSelectionCombo.SelectedItems.Contains(e.Parameter))
+                {
+                    multiSelectionCombo.SelectedItems.Remove(e.Parameter);
+                }
             }
         }
 
-        private void RemoveItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private static void RemoveItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = false;
             if (sender is MultiSelectionComboBox)
@@ -830,81 +967,78 @@ namespace TimsWpfControls
             base.OnApplyTemplate();
 
             // Init SelectedItemsPresenter
-            PART_SelectedItemsPresenter = GetTemplateChild(nameof(PART_SelectedItemsPresenter)) as ListBox;
-            if (!(PART_SelectedItemsPresenter is null))
-            {
-                PART_SelectedItemsPresenter.MouseLeftButtonUp -= PART_SelectedItemsPresenter_MouseLeftButtonUp;
-                PART_SelectedItemsPresenter.SelectionChanged -= PART_SelectedItemsPresenter_SelectionChanged;
+            this.PART_SelectedItemsPresenter = this.GetTemplateChild(nameof(this.PART_SelectedItemsPresenter)) as ListBox;
 
-                PART_SelectedItemsPresenter.MouseLeftButtonUp += PART_SelectedItemsPresenter_MouseLeftButtonUp;
-                PART_SelectedItemsPresenter.SelectionChanged += PART_SelectedItemsPresenter_SelectionChanged;
+            if (!(this.PART_SelectedItemsPresenter is null))
+            {
+                this.PART_SelectedItemsPresenter.MouseLeftButtonUp -= this.PART_SelectedItemsPresenter_MouseLeftButtonUp;
+                this.PART_SelectedItemsPresenter.SelectionChanged -= this.PART_SelectedItemsPresenter_SelectionChanged;
+
+                this.PART_SelectedItemsPresenter.MouseLeftButtonUp += this.PART_SelectedItemsPresenter_MouseLeftButtonUp;
+                this.PART_SelectedItemsPresenter.SelectionChanged += this.PART_SelectedItemsPresenter_SelectionChanged;
             }
             else
             {
-                throw new Exception($"The template part \"{nameof(PART_SelectedItemsPresenter)}\" could not be found.");
+                throw new ArgumentNullException($"The template part \"{nameof(this.PART_SelectedItemsPresenter)}\" could not be found.");
             }
+
             // Init EditableTextBox
-            PART_EditableTextBox = GetTemplateChild(nameof(PART_EditableTextBox)) as TextBox;
+            this.PART_EditableTextBox = this.GetTemplateChild(nameof(this.PART_EditableTextBox)) as TextBox;
 
-            if (!(PART_EditableTextBox is null))
+            if (!(this.PART_EditableTextBox is null))
             {
-                PART_EditableTextBox.LostFocus -= PART_EditableTextBox_LostFocus;
-                PART_EditableTextBox.LostFocus += PART_EditableTextBox_LostFocus;
+                this.PART_EditableTextBox.LostFocus -= this.PART_EditableTextBox_LostFocus;
+                this.PART_EditableTextBox.LostFocus += this.PART_EditableTextBox_LostFocus;
             }
             else
             {
-                throw new Exception($"The template part \"{nameof(PART_EditableTextBox)}\" could not be found.");
+                throw new ArgumentNullException($"The template part \"{nameof(this.PART_EditableTextBox)}\" could not be found.");
             }
 
             // Init Popup
-            PART_Popup = GetTemplateChild(nameof(PART_Popup)) as Popup;
+            this.PART_Popup = this.GetTemplateChild(nameof(this.PART_Popup)) as Popup;
 
-            if (PART_Popup is null)
+            if (this.PART_Popup is null)
             {
-                throw new Exception($"The template part \"{nameof(PART_Popup)}\" could not be found.");
+                throw new ArgumentNullException($"The template part \"{nameof(this.PART_Popup)}\" could not be found.");
             }
 
-            if (!PART_Popup.IsOpen && !PART_Popup.IsInitialized)
+            this.PART_PopupListBox = this.GetTemplateChild(nameof(this.PART_PopupListBox)) as ListBox;
+
+            if (!(this.PART_PopupListBox is null) && this.PART_PopupListBox.SelectedItems is INotifyCollectionChanged selectedItemsCollection)
             {
-                PART_Popup.SetCurrentValue(Popup.IsOpenProperty, BooleanBoxes.TrueBox);
-                PART_Popup.SetCurrentValue(Popup.IsOpenProperty, BooleanBoxes.FalseBox);
-
-            }
-
-            PART_PopupListBox = GetTemplateChild(nameof(PART_PopupListBox)) as ListBox;
-
-            if (!(PART_PopupListBox is null))
-            {
-                PART_PopupListBox.SelectionChanged -= PART_PopupListBox_SelectionChanged;
-                PART_PopupListBox.SelectionChanged += PART_PopupListBox_SelectionChanged;
+                selectedItemsCollection.CollectionChanged -= PART_PopupListBox_SelectedItems_CollectionChanged;
+                selectedItemsCollection.CollectionChanged += PART_PopupListBox_SelectedItems_CollectionChanged;
             }
             else
             {
-                throw new Exception($"The template part \"{nameof(PART_PopupListBox)}\" could not be found.");
+                throw new ArgumentNullException($"The template part \"{nameof(this.PART_PopupListBox)}\" could not be found.");
             }
 
-            CommandBindings.Add(new CommandBinding(ClearContentCommand, ExecutedClearContentCommand, CanExecuteClearContentCommand));
-            CommandBindings.Add(new CommandBinding(RemoveItemCommand, RemoveItemCommand_Executed, RemoveItemCommand_CanExecute));
-
             // Do update the text 
-            UpdateDisplaySelectedItems();
-            UpdateEditableText();
+            this.UpdateDisplaySelectedItems();
+            this.UpdateEditableText(true);
+        }
+
+        private void PART_PopupListBox_SelectedItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            SyncSelectedItems(PART_PopupListBox.SelectedItems, SelectedItems, e);
         }
 
         protected override void OnSelectionChanged(SelectionChangedEventArgs e)
         {
             base.OnSelectionChanged(e);
-            UpdateEditableText();
-            UpdateDisplaySelectedItems();
+            this.UpdateEditableText();
+            this.UpdateDisplaySelectedItems();
         }
 
         protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
         {
             base.OnItemsChanged(e);
 
-            if (!IsLoaded)
+            if (!this.IsLoaded)
             {
-                Loaded += MultiSelectionComboBox_Loaded;
+                this.Loaded += this.MultiSelectionComboBox_Loaded;
                 return;
             }
 
@@ -919,25 +1053,28 @@ namespace TimsWpfControls
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
                     {
-                        PART_PopupListBox.Items.Add(item);
+                        this.PART_PopupListBox.Items.Add(item);
                     }
+
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
-                        PART_PopupListBox.Items.Remove(item);
+                        this.PART_PopupListBox.Items.Remove(item);
                     }
+
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
                 case NotifyCollectionChangedAction.Move:
                 case NotifyCollectionChangedAction.Reset:
-                    PART_PopupListBox.Items.Clear();
-                    foreach (var item in Items)
+                    this.PART_PopupListBox.Items.Clear();
+                    foreach (var item in this.Items)
                     {
-                        PART_PopupListBox.Items.Add(item);
+                        this.PART_PopupListBox.Items.Add(item);
                     }
+
                     break;
                 default:
                     throw new NotSupportedException("Unsupported NotifyCollectionChangedAction");
@@ -949,17 +1086,17 @@ namespace TimsWpfControls
             base.OnRenderSizeChanged(sizeInfo);
 
             // For now we only want to update our poition if the height changed. Else we will get a flickering in SharedGridColumns
-            if (IsDropDownOpen && sizeInfo.HeightChanged && !(PART_Popup is null))
+            if (this.IsDropDownOpen && sizeInfo.HeightChanged && !(this.PART_Popup is null))
             {
                 this.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       (DispatcherOperationCallback)((object arg) =>
-                       {
-                           MultiSelectionComboBox mscb = (MultiSelectionComboBox)arg;
-                           mscb.PART_Popup.HorizontalOffset++;
-                           mscb.PART_Popup.HorizontalOffset--;
+                                            (DispatcherOperationCallback)((object arg) =>
+                                            {
+                                                MultiSelectionComboBox mscb = (MultiSelectionComboBox)arg;
+                                                mscb.PART_Popup.HorizontalOffset++;
+                                                mscb.PART_Popup.HorizontalOffset--;
 
-                           return null;
-                       }), this);
+                                                return null;
+                                            }), this);
             }
         }
 
@@ -967,15 +1104,24 @@ namespace TimsWpfControls
         {
             base.OnDropDownOpened(e);
 
+            this.PART_PopupListBox.Focus();
 
-            PART_PopupListBox.Focus();
-
-            if (PART_PopupListBox.Items.Count == 0)
+            if (this.PART_PopupListBox.Items.Count == 0)
             {
                 return;
             }
 
-            var index = PART_PopupListBox.SelectedIndex;
+            MoveFocusToDropDown();
+
+            this.SelectItemsFromText(0);
+        }
+
+        /// <summary>
+        /// Sets the Keyboard focus to the dropdown
+        /// </summary>
+        private void MoveFocusToDropDown()
+        {
+            var index = this.PART_PopupListBox.SelectedIndex;
             if (index < 0)
             {
                 index = 0;
@@ -983,18 +1129,25 @@ namespace TimsWpfControls
 
             Action action = () =>
             {
-                PART_PopupListBox.ScrollIntoView(PART_PopupListBox.SelectedItem);
+                ListBoxItem item = null;
+                if (index >= 0)
+                {
+                    PART_PopupListBox.ScrollIntoView(PART_PopupListBox.Items[index]);
+                    item = this.PART_PopupListBox.ItemContainerGenerator.ContainerFromIndex(index) as ListBoxItem;
+                }
 
-                if (PART_PopupListBox.ItemContainerGenerator.ContainerFromIndex(index) is ListBoxItem item)
+                if (item != null)
                 {
                     item.Focus();
                     KeyboardNavigationEx.Focus(item);
+                    this.PART_PopupListBox.ScrollIntoView(item);
+                }
+                else
+                {
+                    this.PART_Popup.Focus();
                 }
             };
-
-            Dispatcher.BeginInvoke(DispatcherPriority.Background, action);
-
-            SelectItemsFromText(0);
+            this.Dispatcher.BeginInvoke(DispatcherPriority.Send, action);
         }
 
         /// <summary>
@@ -1011,87 +1164,455 @@ namespace TimsWpfControls
             return new ListBoxItem();
         }
 
-
         protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
         {
-            if (IsEditable && !IsDropDownOpen && !(PART_EditableTextBox is null))
+            if (this.IsEditable && !this.IsDropDownOpen && !(this.PART_EditableTextBox is null) && !this.InterceptKeyboardSelection)
             {
-                if (HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled && VerticalScrollBarVisibility == ScrollBarVisibility.Disabled)
+                if (this.HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled && ScrollViewerHelper.GetIsHorizontalScrollWheelEnabled(this))
                 {
                     if (e.Delta > 0)
                     {
-                        PART_EditableTextBox.LineLeft();
+                        this.PART_EditableTextBox.LineLeft();
                     }
                     else
                     {
-                        PART_EditableTextBox.LineRight();
+                        this.PART_EditableTextBox.LineRight();
                     }
                 }
                 else
                 {
                     if (e.Delta > 0)
                     {
-                        PART_EditableTextBox.LineUp();
+                        this.PART_EditableTextBox.LineUp();
                     }
                     else
                     {
-                        PART_EditableTextBox.LineDown();
+                        this.PART_EditableTextBox.LineDown();
                     }
                 }
             }
-            else if (!IsDropDownOpen)
+            else if (!IsEditable && !this.IsDropDownOpen && !(this.PART_SelectedItemsPresenter is null) && !this.InterceptMouseWheelSelection)
             {
-                base.OnPreviewMouseWheel(e);
-                return;
+                var scrollViewer = PART_SelectedItemsPresenter.FindChild<ScrollViewer>();
+                if (scrollViewer?.HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled && ScrollViewerHelper.GetIsHorizontalScrollWheelEnabled(this))
+                {
+                    if (e.Delta > 0)
+                    {
+                        scrollViewer?.LineLeft();
+                    }
+                    else
+                    {
+                        scrollViewer?.LineRight();
+                    }
+                }
+                else
+                {
+                    if (e.Delta > 0)
+                    {
+                        scrollViewer?.LineUp();
+                    }
+                    else
+                    {
+                        scrollViewer?.LineDown();
+                    }
+                }
+            }
+            // ListBox eats the selection so we need to handle this event here if we want to select the next item.
+            else if (!this.IsDropDownOpen && this.InterceptMouseWheelSelection && this.SelectionMode == SelectionMode.Single)
+            {
+                if (e.Delta > 0 && this.PART_PopupListBox.SelectedIndex > 0)
+                {
+                    this.SelectPrev();
+                }
+                else if (e.Delta < 0 && this.PART_PopupListBox.SelectedIndex < this.PART_PopupListBox.Items.Count - 1)
+                {
+                    this.SelectNext();
+                }
             }
 
             // The event is handled if the drop down is not open. 
-            e.Handled = !IsDropDownOpen;
+            e.Handled = !this.IsDropDownOpen;
             base.OnPreviewMouseWheel(e);
         }
+
+        /// <summary>
+        ///     An event reporting a key was pressed
+        /// </summary>
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            // Only process preview key events if they going to our editable text box
+            if (IsEditable && e.OriginalSource == PART_EditableTextBox)
+            {
+                KeyDownHandler(e);
+            }
+        }
+
+        /// <summary>
+        ///     An event reporting a key was pressed
+        /// </summary>
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            KeyDownHandler(e);
+        }
+
+        private void KeyDownHandler(KeyEventArgs e)
+        {
+            bool handled = false;
+            Key key = e.Key;
+
+            // We want to handle Alt key. Get the real key if it is Key.System.
+            if (key == Key.System)
+            {
+                key = e.SystemKey;
+            }
+
+            // In Right to Left mode we switch Right and Left keys
+            bool isRTL = (FlowDirection == FlowDirection.RightToLeft);
+
+            switch (key)
+            {
+                case Key.Up:
+                    handled = true;
+                    if ((e.KeyboardDevice.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt)
+                    {
+                        this.IsDropDownOpen = !this.IsDropDownOpen;
+                    }
+                    else
+                    {
+                        // When the drop down isn't open then focus is on the ComboBox
+                        // and we can't use KeyboardNavigation.
+                        if (IsDropDownOpen)
+                        {
+                            MoveFocusToDropDown();
+                        }
+                        else if (!IsDropDownOpen && InterceptKeyboardSelection && SelectionMode == SelectionMode.Single)
+                        {
+                            this.SelectPrev();
+                        }
+                    }
+
+                    break;
+
+                case Key.Down:
+                    handled = true;
+                    if ((e.KeyboardDevice.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt)
+                    {
+                        this.IsDropDownOpen = !this.IsDropDownOpen;
+                    }
+                    else
+                    {
+                        // When the drop down isn't open then focus is on the ComboBox
+                        // and we can't use KeyboardNavigation.
+                        if (IsDropDownOpen)
+                        {
+                            MoveFocusToDropDown();
+                        }
+                        else if (!IsDropDownOpen && InterceptKeyboardSelection && SelectionMode == SelectionMode.Single)
+                        {
+                            this.SelectNext();
+                        }
+                    }
+
+                    break;
+
+                case Key.F4:
+                    if ((e.KeyboardDevice.Modifiers & ModifierKeys.Alt) == 0)
+                    {
+                        this.IsDropDownOpen = !this.IsDropDownOpen;
+                        handled = true;
+                    }
+                    break;
+
+                case Key.Escape:
+                    base.OnKeyDown(e);
+                    break;
+
+                case Key.Enter:
+                    if (IsDropDownOpen)
+                    {
+                        base.OnKeyDown(e);
+                    }
+                    break;
+
+                case Key.Home:
+                    if ((e.KeyboardDevice.Modifiers & ModifierKeys.Alt) != ModifierKeys.Alt && !IsEditable)
+                    {
+                        if (!IsDropDownOpen && InterceptKeyboardSelection && SelectionMode == SelectionMode.Single)
+                        {
+                            SelectFirst();
+                        }
+                        handled = true;
+                    }
+                    break;
+
+                case Key.End:
+                    if ((e.KeyboardDevice.Modifiers & ModifierKeys.Alt) != ModifierKeys.Alt && !IsEditable)
+                    {
+                        if (!IsDropDownOpen && InterceptKeyboardSelection && SelectionMode == SelectionMode.Single)
+                        {
+                            SelectLast();
+                        }
+                        handled = true;
+                    }
+                    break;
+
+                case Key.Right:
+                    if ((e.KeyboardDevice.Modifiers & ModifierKeys.Alt) != ModifierKeys.Alt && !IsEditable)
+                    {
+                        if (IsDropDownOpen)
+                        {
+                            MoveFocusToDropDown();
+                        }
+                        else
+                        {
+                            if (!isRTL)
+                            {
+                                SelectNext();
+                            }
+                            else if (!IsDropDownOpen && InterceptKeyboardSelection && SelectionMode == SelectionMode.Single)
+                            {
+                                // If it's RTL then Right should go backwards
+                                SelectPrev();
+                            }
+                        }
+                        handled = true;
+                    }
+                    break;
+
+                case Key.Left:
+                    if ((e.KeyboardDevice.Modifiers & ModifierKeys.Alt) != ModifierKeys.Alt && !IsEditable)
+                    {
+                        if (IsDropDownOpen)
+                        {
+                            MoveFocusToDropDown();
+                        }
+                        else if (!IsDropDownOpen && InterceptKeyboardSelection && SelectionMode == SelectionMode.Single)
+                        {
+                            if (!isRTL)
+                            {
+                                SelectPrev();
+                            }
+                            else
+                            {
+                                // If it's RTL then Left should go the other direction
+                                SelectNext();
+                            }
+                        }
+                        handled = true;
+                    }
+                    break;
+
+                case Key.PageUp:
+                    if (IsDropDownOpen)
+                    {
+                        // At the moment this feature is not implemented for this control.
+                        handled = true;
+                    }
+                    break;
+
+                case Key.PageDown:
+                    if (IsDropDownOpen)
+                    {
+                        // At the moment this feature is not implemented for this control.
+                        handled = true;
+                    }
+                    break;
+
+                case Key.Oem5:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        // At the moment this feature is not implemented for this control.
+                        handled = true;
+                    }
+                    break;
+
+                default:
+                    handled = false;
+                    break;
+            }
+            if (handled)
+            {
+                e.Handled = true;
+            }
+        }
+
+        // adopted from original ComoBox
+        private void SelectPrev()
+        {
+            if (!Items.IsEmpty)
+            {
+                // Search backwards from SelectedIndex - 1 but don't start before the beginning.
+                // If SelectedIndex is less than 0, there is nothing to select before this item.
+                if (SelectedIndex > 0)
+                {
+                    SelectItemHelper(SelectedIndex - 1, -1, -1);
+                }
+            }
+        }
+
+
+        // adopted from original ComoBox
+        private void SelectNext()
+        {
+            int count = Items.Count;
+            if (count > 0)
+            {
+                // Search forwards from SelectedIndex + 1 but don't start past the end.
+                // If SelectedIndex is before the last item then there is potentially
+                // something afterwards that we could select.
+                if (SelectedIndex < count - 1)
+                {
+                    SelectItemHelper(SelectedIndex + 1, +1, count);
+                }
+            }
+        }
+
+        // adopted from original ComoBox
+        private void SelectFirst()
+        {
+            SelectItemHelper(0, +1, Items.Count);
+        }
+
+        // adopted from original ComoBox
+        private void SelectLast()
+        {
+            SelectItemHelper(Items.Count - 1, -1, -1);
+        }
+
+        // adopted from original ComoBox
+        // Walk in the specified direction until we get to a selectable
+        // item or to the stopIndex.
+        // NOTE: stopIndex is not inclusive (it should be one past the end of the range)
+        private void SelectItemHelper(int startIndex, int increment, int stopIndex)
+        {
+            Debug.Assert((increment > 0 && startIndex <= stopIndex) || (increment < 0 && startIndex >= stopIndex), "Infinite loop detected");
+
+            for (int i = startIndex; i != stopIndex; i += increment)
+            {
+                // If the item is selectable and the wrapper is selectable, select it.
+                // Need to check both because the user could set any combination of
+                // IsSelectable and IsEnabled on the item and wrapper.
+                object item = Items[i];
+                DependencyObject container = ItemContainerGenerator.ContainerFromIndex(i);
+                if (IsSelectableHelper(item) && IsSelectableHelper(container))
+                {
+                    SelectedIndex = i;
+                    UpdateEditableText(true); // We force the update of the text
+                    this.isUserdefinedTextInputPending = false;
+                    break;
+                }
+            }
+        }
+
+        // adopted from original ComoBox
+        private bool IsSelectableHelper(object o)
+        {
+            DependencyObject d = o as DependencyObject;
+            // If o is not a DependencyObject, it is just a plain
+            // object and must be selectable and enabled.
+            if (d == null)
+            {
+                return true;
+            }
+            // It's selectable if IsSelectable is true and IsEnabled is true.
+            return (bool)d.GetValue(IsEnabledProperty);
+        }
+
         #endregion
 
         #region Events
 
-        private void PART_PopupListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SelectedItemsImpl_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            UpdateDisplaySelectedItems();
-            UpdateEditableText();
-            isUserdefinedTextInputPending = false;
+
+            SyncSelectedItems(sender as IList, PART_PopupListBox?.SelectedItems, e);
         }
 
-        private void MultiSelectionComboBox_Loaded(object sender, EventArgs e)
-        {
-            Loaded -= MultiSelectionComboBox_Loaded;
 
-            // If we have the ItemsSource set, we need to exit here. 
-            if (((PART_PopupListBox.Items as IList)?.IsReadOnly ?? false) || BindingOperations.IsDataBound(PART_PopupListBox, ItemsSourceProperty))
+        private void SyncSelectedItems(IList sourceCollection, IList targetCollection, NotifyCollectionChangedEventArgs e)
+        {
+            if (IsSyncingSelectedItems || sourceCollection is null || targetCollection is null)
             {
                 return;
             }
 
-            PART_PopupListBox.Items.Clear();
-            foreach (var item in Items)
+            IsSyncingSelectedItems = true;
+
+            switch (e.Action)
             {
-                PART_PopupListBox.Items.Add(item);
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in e.NewItems)
+                    {
+                        targetCollection.Add(item);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in e.OldItems)
+                    {
+                        targetCollection.Remove(item);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (var item in e.NewItems)
+                    {
+                        targetCollection.Add(item);
+                    }
+                    foreach (var item in e.OldItems)
+                    {
+                        targetCollection.Remove(item);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    targetCollection.Clear();
+
+                    for (int i = 0; i < sourceCollection.Count; i++)
+                    {
+                        targetCollection.Add(sourceCollection[i]);
+                    }
+                    break;
+            }
+
+            this.UpdateDisplaySelectedItems();
+            this.UpdateEditableText();
+            this.UpdateHasCustomText(null);
+
+            IsSyncingSelectedItems = false;
+        }
+
+        private void MultiSelectionComboBox_Loaded(object sender, EventArgs e)
+        {
+            this.Loaded -= this.MultiSelectionComboBox_Loaded;
+
+            // If we have the ItemsSource set, we need to exit here. 
+            if (PART_PopupListBox is null || ((PART_PopupListBox?.Items as IList)?.IsReadOnly ?? false) || BindingOperations.IsDataBound(PART_PopupListBox, ItemsSourceProperty))
+            {
+                return;
+            }
+
+            this.PART_PopupListBox.Items.Clear();
+            foreach (var item in this.Items)
+            {
+                this.PART_PopupListBox.Items.Add(item);
             }
         }
 
         private void PART_EditableTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            SelectItemsFromText(0);
+            this.SelectItemsFromText(0);
         }
 
         private void PART_SelectedItemsPresenter_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             // If we have a ScrollViewer (ListBox has) we need to handle this event here as it will not be forwarded to the ToggleButton
-            SetCurrentValue(IsDropDownOpenProperty, BooleanBoxes.Box(!IsDropDownOpen));
+            this.SetCurrentValue(IsDropDownOpenProperty, BooleanBoxes.Box(!this.IsDropDownOpen));
         }
 
         private void PART_SelectedItemsPresenter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // We don't want the SelctedItems to be selectable. So anytime the selection will be changed we will reset it. 
-            PART_SelectedItemsPresenter.SelectedItem = null;
+            this.PART_SelectedItemsPresenter.SetCurrentValue(SelectedItemProperty, null);
         }
 
         private static void UpdateText(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -1125,6 +1646,33 @@ namespace TimsWpfControls
                 multiSelectionComboBox.UpdateEditableText();
             }
         }
+
+        /// <summary>Identifies the <see cref="AddingItem"/> routed event.</summary>
+        public static readonly RoutedEvent AddingItemEvent = EventManager.RegisterRoutedEvent(
+            nameof(AddingItem), RoutingStrategy.Bubble, typeof(AddingItemEventArgsHandler), typeof(MultiSelectionComboBox));
+
+        /// <summary>
+        ///     Occurs before a new object is added to the Items-List
+        /// </summary>
+        public event AddingItemEventArgsHandler AddingItem
+        {
+            add { AddHandler(AddingItemEvent, value); }
+            remove { RemoveHandler(AddingItemEvent, value); }
+        }
+
+        /// <summary>Identifies the <see cref="AddedItem"/> routed event.</summary>
+        public static readonly RoutedEvent AddedItemEvent = EventManager.RegisterRoutedEvent(
+            nameof(AddedItem), RoutingStrategy.Bubble, typeof(AddedItemEventArgsHandler), typeof(MultiSelectionComboBox));
+
+        /// <summary>
+        ///     Occurs before a new object is added to the Items-List
+        /// </summary>
+        public event AddedItemEventArgsHandler AddedItem
+        {
+            add { AddHandler(AddedItemEvent, value); }
+            remove { RemoveHandler(AddedItemEvent, value); }
+        }
+
         #endregion
     }
 }

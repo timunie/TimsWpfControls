@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="IndexRange" Version="1.0.0" />
     <PackageReference Include="MahApps.Metro" Version="2.*" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.0.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.1.0" />
@@ -27,6 +27,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>FileSelectionTextBox.resx</DependentUpon>
     </Compile>
+    <Compile Update="Lang\MultiSelectionComboBox.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MultiSelectionComboBox.resx</DependentUpon>
+    </Compile>
     <Compile Update="Lang\ValidationMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -42,6 +47,10 @@
     <EmbeddedResource Update="Lang\FileSelectionTextBox.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FileSelectionTextBox.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Lang\MultiSelectionComboBox.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MultiSelectionComboBox.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Lang\ValidationMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>

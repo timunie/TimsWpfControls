@@ -18,23 +18,20 @@ namespace TimsWpfControls
         /// <param name="input">The string to compare</param>
         /// <param name="objectToCompare">The object to compare</param>
         /// <param name="stringComparison">The <see cref="StringComparison"/> used to check if the string matches</param>
-        /// <param name="stringFormat">The string format to applay</param>
-        /// <returns>true if the string represents the object, otherwise fase.</returns>
+        /// <param name="stringFormat">The string format to apply</param>
+        /// <returns>true if the string represents the object, otherwise false.</returns>
         public bool CheckIfStringMatchesObject(string input, object objectToCompare, StringComparison stringComparison, string stringFormat);
     }
-
 
     [MarkupExtensionReturnType(typeof(DefaultObjectToStringComparer))]
     public class DefaultObjectToStringComparer : MarkupExtension, ICompareObjectToString
     {
-        private static DefaultObjectToStringComparer _Instance;
-
         /// <inheritdoc/>
         public bool CheckIfStringMatchesObject(string input, object objectToCompare, StringComparison stringComparison, string stringFormat)
         {
             if (input is null)
             {
-                throw new ArgumentNullException(nameof(input));
+                return objectToCompare is null;
             }
 
             if (objectToCompare is null)
@@ -62,7 +59,7 @@ namespace TimsWpfControls
         /// <inheritdoc/>
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return _Instance ??= new DefaultObjectToStringComparer();
+            return this;
         }
     }
 }
